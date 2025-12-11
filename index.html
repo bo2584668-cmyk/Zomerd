@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام نشر متكامل وعصري</title>
+    <!-- تأكد من وجود اتصال بالإنترنت لتحميل الخطوط -->
+    <link href="fonts.googleapis.com" rel="stylesheet">
+    
+    <style>
+        /* CSS Code Start - تم دمج الستايلات من كلا الجزئين وجعلها متناسقة */
+        body {
+            font-family: 'Cairo', Arial, sans-serif;
+            background-color: #e9ecf1;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #f7b731;
+        }
+
+        .page-section {
+            display: none; /* إخفاء جميع الأقسام افتراضياً */
+            padding: 20px;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        .page-section.active {
+            display: block; /* إظهار القسم النشط فقط */
+        }
+        
+        h1 {
+            color: #1a73e8;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        /* ستايلات نظام النشر */
+        header.post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .open-post-btn { background-color: #f7b731; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .open-post-btn:hover { background-color: #f0932b; }
+        .input-section { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 30px; display: none; }
+        #postInput, #postAuthor, #postCategory { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 1rem; }
+        #postInput { resize: vertical; min-height: 100px; }
+        button#publishBtn { background-color: #1a73e8; color: white; padding: 10px 18px; border: none; border-radius: 5px; cursor: pointer; float: left; font-family: inherit; }
+        button#publishBtn:hover { background-color: #0d47a1; }
+        
+        .filters { margin-bottom: 20px; text-align: center; }
+        .filter-btn { background-color: #fff; border: 1px solid #ccc; padding: 8px 15px; margin: 5px; border-radius: 20px; cursor: pointer; transition: all 0.3s; }
+        .filter-btn.active, .filter-btn:hover { background-color: #1a73e8; color: white; border-color: #1a73e8; }
+
+        .posts-grid { display: flex; flex-direction: column; gap: 20px; }
+        .post-card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-right: 6px solid #1a73e8; }
+        .post-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: #888; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
+        .post-author { font-weight: bold; color: #555; }
+        .post-category { background-color: #e0f7fa; padding: 3px 8px; border-radius: 4px; color: #007bff; }
+        /* End CSS Code */
+ <style>
+    /* ... الستايلات الأخرى ... */
+
+    html, body {
+        height: 100%; /* اجعل ارتفاع الـ HTML والـ Body يساوي ارتفاع الشاشة */
+        margin: 0;    /* إزالة الهامش الافتراضي الذي تضعه المتصفحات */
+        padding: 0;   /* إزالة الحشوة (البادينغ) الافتراضية */
+    }
+
+    body {
+        font-family: 'Cairo', Arial, sans-serif;
+        background-color: #e9ecf1; 
+        /* تم دمج الـ margin: 0 و padding: 0 هنا أيضاً */
+        line-height: 1.6;
+    }
+
+    /* ... بقية الستايلات ... */
+</style>
+
+    </style>
+</head>
+
+<body>
+    <!-- قائمة التنقل (الروابط) -->
+    <nav>
+        <a onclick="showPage('home')">الرئيسية</a>
+        <a onclick="showPage('about')">حول</a>
+        <a onclick="showPage('services')">الخدمات</a>
+        <a onclick="showPage('contact')">اتصل بنا</a>
+        <a onclick="showPage('posts-section')">المنشورات</a> <!-- رابط جديد لقسم المنشورات -->
+    </nav>
+    
+    <div class="container">
+        <!-- الأقسام المختلفة -->
+   <div id="home" class="page-section active">
+   <div id = "home">
+        <!-- بداية محتوى الصفhomeحة الرئيسية -->
+      
+            <h1>مرحباً بكِ في <span class="site-name">وصفاتي</span>! ✨</h1>
+            <p class="tagline">بوابتك الأولى لعالم الجمال، الأناقة، والوصفات الطبيعية الساحرة. هنا تتألقين بكل ثقة.</p>
+            
+            <!-- قسم الإحصائيات الجذاب -->
+                <div class="stat-card">
+                    <strong>+1 مليون</strong>
+                    <span>زائرة شهرية</span>
+                </div>
+                <div class="stat-card">
+                    <strong>+500</strong>
+                    <span>وصفة مجربة</span>
+                </div>
+                <div class="stat-card">
+                    <strong>#1</strong>
+                    <span>في الجمال العربي</span>
+                </div>
+            </div>
+
+            <h2>ابدئي رحلة جمالكِ الآن:</h2>
+            
+            <!-- أزرار التنقل السريع (الاختصارات) -->
+            <div class="quick-links">
+                <!-- عند الضغط على الزر، ينتقل للقسم posts-section ويقوم بالفلترة تلقائياً -->
+                <button class="action-btn" onclick="showPageAndFilter('posts-section', 'شعر')">
+                    💆‍♀️ وصفات الشعر
+                </button>
+                <button class="action-btn" onclick="showPageAndFilter('posts-section', 'وصفات طبيعية')">
+                    ✨ العناية بالوجه
+                </button>
+                <button class="action-btn" onclick="showPageAndFilter('about')">
+                    💖 من نحن؟
+                </button>
+            
+       <style>
+                 /* ستايلات قسم الرئيسية (Hero Section) */
+        .hero-section {
+            text-align: center;
+            padding: 50px 20px;
+            background: linear-gradient(135deg, #fcefee 0%, #ffffff 100%);
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            color: #D81B60;
+            margin-bottom: 10px;
+            border-bottom: none;
+        }
+
+        .site-name {
+            color: #E91E63;
+            font-weight: bold;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ستايلات الإحصائيات */
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background-color: #FFF0F5;
+            padding: 15px 25px;
+            border-radius: 8px;
+            border: 1px solid #FF4081;
+        }
+        
+        .stat-card strong {
+            display: block;
+            font-size: 1.5rem;
+            color: #E91E63;
+        }
+
+        .stat-card span {
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        /* ستايلات الأزرار */
+        .quick-links {
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            background-color: #FF4081;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px; /* شكل بيضاوي جميل */
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(255, 64, 129, 0.3);
+        }
+
+        .action-btn:hover {
+            background-color: #E91E63;
+            transform: translateY(-2px);
+        }
+
+       </style>
+       <script>
+                 // دالة مخصصة للنقل إلى قسم المنشورات مع الفلترة التلقائية
+        function showPageAndFilter(pageId, filterCategory = 'all') {
+            // أولاً، ننتقل إلى الصفحة المطلوبة
+            showPage(pageId); 
+
+            // ثانياً، إذا كانت الصفحة هي المنشورات، نطبق الفلتر
+            if (pageId === 'posts-section') {
+                // نجد الزر المناسب للفلترة ونمرره لدالة filterPosts
+                // يجب التأكد من أن الأزرار لديها data-filter مطابق
+                const filterButton = document.querySelector(`.filter-btn[data-filter="${filterCategory}"]`);
+                if (filterButton) {
+                    filterPosts(filterCategory, filterButton);
+                } else if (filterCategory === 'all') {
+                    // إذا لم نجد زر الفئة، نفترض "الكل" ونطبق الفلترة الافتراضية
+                    filterPosts('all', document.querySelector('.filter-btn[data-filter="all"]'));
+                }
+            }
+        }
+
+       </script>
+       
+        </div>
+        <!-- نهاية محتوى الصفحة الرئيسية -->
+    </div>
+
+   
+   
+   
+   
+        </div>
+
+        <div id="about" class="page-section">
+            
+         
+                           <h1>✨ حول موقع وصفاتي ✨</h1>
+                <p>مرحباً بك في عالم الجمال، حيث تتلاقى الطبيعة مع الموضة.</p>
+            
+            
+            
+              
+                    <i class="icon-heart">💖</i>
+                    <h3>رؤيتنا</h3>
+                    <p>نؤمن بأن كل امرأة تستحق أن تتألق. نقدم لكِ أسرار الجمال الطبيعي والوصفات المجربة التي تعزز ثقتك بنفسكِ.</p>
+                
+                
+                    <i class="icon-magic">🌟</i>
+                    <h3>مهمتنا</h3>
+                    <p>إلهامكِ يومياً بأحدث صيحات الموضة، نصائح العناية بالشعر، ووصفات منزلية فعالة لبشرة نضرة وشعر صحي.</p>
+                <
+                
+              
+                    <i class="icon-leaf">🌿</i>
+                    <h3>قيمنا</h3>
+                    <p>الشفافية، الأصالة، والاعتماد على المكونات الطبيعية والآمنة. جمالكِ هو أولويتنا القصوى.</p>
+            
+            <
+            
+            <div class="about-footer">
+                <p>انضمي إلينا في رحلة استكشاف الجمال والعناية!</p>
+            
+      
+        <!-- نهاية قسم "حول موقع وصفاتي" -->
+    </div>
+
+    <!-- ... بقية الأقسام ... -->
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        </div>
+        
+
+        <div id="services" class="page-section">
+                
+            <h1>💎 خدمات موقع وصفاتي وكيفية استخدامها 💎</h1>
+            <p class="subtitle">نقدم لكِ مجموعة شاملة من الأدوات والمحتوى لمساعدتك في رحلتك نحو الجمال والتألق.</p>
+            
+            <div class="service-items-grid">
+                
+                <!-- الخدمة 1: وصفات طبيعية للشعر والبشرة -->
+                <div class="service-card-item">
+                    <div class="icon-circle">🌿</div>
+                    <h3>وصفات طبيعية مجربة</h3>
+                    <p>اكتشفي كنزاً من الوصفات المنزلية للعناية بالبشرة والشعر. جميعها مشروحة بالتفصيل وسهلة التحضير باستخدام مكونات طبيعية.</p>
+                    <h4>طريقة الاستخدام:</h4>
+                    <ul>
+                        <li>انتقلي إلى قسم "الوصفات" عبر القائمة.</li>
+                        <li>استخدمي الفلتر للبحث حسب "البشرة"، "الشعر"، أو "الجسم".</li>
+                        <li>اقرئي التعليمات خطوة بخطوة وطبقيها بحذر.</li>
+                    </ul>
+                </div>
+
+                <!-- الخدمة 2: دليل الموضة والأناقة -->
+                <div class="service-card-item">
+                    <div class="icon-circle">👗</div>
+                    <h3>دليل الموضة والأناقة</h3>
+                    <p>تابعي أحدث صيحات الموضة العالمية، تنسيقات الملابس، ونصائح لاختيار ما يناسب شكل جسمك ولون بشرتك.</p>
+                    <h4>طريقة الاستخدام:</h4>
+                    <ul>
+                        <li>زوري قسم "الموضة" أو "المنشورات" للاطلاع على المقالات.</li>
+                        <li>استلهمي الأفكار وطبقي الإطلالات التي تعجبك.</li>
+                    </ul>
+                </div>
+
+                <!-- الخدمة 3: مجتمع وصفاتي التفاعلي -->
+                <div class="service-card-item">
+                    <div class="icon-circle">💬</div>
+                    <h3>مجتمع وصفاتي التفاعلي</h3>
+                    <p>تفاعلي مع خبيرات التجميل والأعضاء الآخرين. اطرحي أسئلتك، شاركي تجاربك الناجحة، واحصلي على الدعم والنصائح المتبادلة.</p>
+                    <h4>طريقة الاستخدام:</h4>
+                    <ul>
+                        <li>توجهي إلى قسم "المنشورات" في القائمة العلوية.</li>
+                        <li>يمكنك النشر (بعد إدخال كلمة المرور إذا كنتِ محررة) أو قراءة تعليقات وتجارب الآخرين.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- نهاية قسم "خدمات موقع وصفاتي" -->
+    </div>
+
+    
+    
+    
+    
+    
+        </div>
+
+
+
+
+
+
+
+
+        <div id="contact" class="page-section">
+              <!-- بداية قسم "اتصل بنا" -->
+ <div class="contact-header">
+                <h1> تواصلي معنا بكل حب! 💖</h1>
+                <p>نحن هنا للاستماع إليكِ، الإجابة على استفساراتك، وتلقي اقتراحاتكِ حول الجمال والموضة. لا تترددي في التواصل معنا عبر القنوات التالية:</p>
+            </div>
+            
+            <div class="contact-info-grid">
+                
+                <!-- وسيلة الاتصال 1: الهاتف/واتساب -->
+                <div class="contact-item">
+                    <i class="icon-phone">📞</i>
+                    <h3>المكالمات والواتساب</h3>
+                    <p>للاستفسارات السريعة والدعم الفوري عبر الهاتف أو الواتساب.</p>
+                    <a href="tel:+201273740256">+201273740256</a>
+                </div>
+
+                <!-- وسيلة الاتصال 2: البريد الإلكتروني -->
+                <div class="contact-item">
+                    <i class="icon-mail">📧</i>
+                    <h3>البريد الإلكتروني</h3>
+                    <p>أرسلي لنا رسالتكِ المفصلة أو استفسار الشراكة.</p>
+                    <a href="mailto:bo2584668@gmail.com">bo2584668@gmail.com</a>
+                </div>
+
+                <!-- وسيلة الاتصال 3: تيك توك -->
+                <div class="contact-item">
+                    <i class="icon-tiktok">🎵</i>
+                    <h3>حساب تيك توك</h3>
+                    <p>تابعينا على تيك توك لمشاهدة أحدث الفيديوهات والنصائح الجمالية.</p>
+                    <a href="www.tiktok.com" target="_blank">@baraa_offical</a>
+                </div>
+            </div>
+
+            <div class="contact-footer-note">
+                <p>نعدكِ بالرد عليكِ في أقرب وقت ممكن. جمالكِ يبدأ من هنا! ✨</p>
+            </div>
+        </div>
+        <!-- نهاية قسم "اتصل بنا" -->
+    </div>
+
+       
+       
+       
+       
+        </div>
+
+        <!-- قسم المنشورات المدمج -->
+        <div id="posts-section" class="page-section">
+            <header class="post-header">
+                <h1>المنشورات</h1>
+                <button class="open-post-btn" onclick="promptForPassword()">🔐 فتح النشر</button>
+            </header>
+
+            <div id="inputSection" class="input-section">
+                <input type="text" id="postAuthor" placeholder="اسم الناشر (مثال: bebo)">
+                <select id="postCategory">
+                    <option value="عام">عام</option>
+                    <option value="شعر">شعر</option>
+                    <option value="وصفات طبيعية">وصفات طبيعية</option>
+                    <option value="وجهات">وجهات</option>
+                </select>
+                <textarea id="postInput" placeholder="اكتب وصف المنشور هنا..."></textarea>
+                <button id="publishBtn" onclick="publishPost()">نشر الآن</button>
+                <div style="clear: both;"></div> <!-- لتنظيف الفلوت -->
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all" onclick="filterPosts('all', this)">الكل</button>
+                <button class="filter-btn" data-filter="عام" onclick="filterPosts('عام', this)">عام</button>
+                <button class="filter-btn" data-filter="شعر" onclick="filterPosts('شعر', this)">شعر</button>
+                <button class="filter-btn" data-filter="وصفات طبيعية" onclick="filterPosts('وصفات طبيعية', this)">وصفات طبيعية</button>
+                <button class="filter-btn" data-filter="وجهات" onclick="filterPosts('وجهات', this)">وجهات</button>
+            </div>
+            
+            <div id="postsContainer" class="posts-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        /* JavaScript Code Start */
+        const CORRECT_PASSWORD = "bebo1999"; 
+        const inputSection = document.getElementById('inputSection');
+        const postsContainer = document.getElementById('postsContainer');
+        const postInput = document.getElementById('postInput');
+        const postAuthor = document.getElementById('postAuthor');
+        const postCategory = document.getElementById('postCategory');
+
+        // 1. وظيفة التبديل بين الصفحات (من الجزء الأول من الكود)
+        function showPage(pageId) {
+            // إخفاء جميع الأقسام
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // إظهار القسم المطلوب
+            const activeSection = document.getElementById(pageId);
+            if (activeSection) {
+                activeSection.classList.add('active');
+            }
+        }
+
+        // 2. وظيفة التحقق من كلمة المرور
+        function promptForPassword() {
+            const enteredPassword = prompt("الرجاء إدخال كلمة المرور:");
+            if (enteredPassword === CORRECT_PASSWORD) {
+                inputSection.style.display = 'block'; 
+                alert("تم فتح لوحة النشر.");
+            } else {
+                alert("كلمة المرور غير صحيحة.");
+            }
+        }
+
+        // 3. وظيفة جلب المنشورات من التخزين المحلي عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', (event) => {
+            loadPosts();
+        });
+
+        function getStoredPosts() {
+            const postsJson = localStorage.getItem('blogPosts');
+            return postsJson ? JSON.parse(postsJson) : [];
+        }
+
+        function savePosts(posts) {
+            localStorage.setItem('blogPosts', JSON.stringify(posts));
+        }
+
+        // 4. وظيفة إنشاء عنصر DOM للمنشور
+        function createPostElement(post) {
+            const postCard = document.createElement('div');
+            postCard.classList.add('post-card');
+            postCard.dataset.category = post.category; // لإضافة الفلترة
+            
+            postCard.innerHTML = `
+                <p>${post.content}</p>
+                <div class="post-meta">
+                    <span class="post-author">بقلم: ${post.author || 'مجهول'}</span>
+                    <span class="post-category">${post.category}</span>
+                </div>
+            `;
+            return postCard;
+        }
+
+        // 5. وظيفة عرض جميع المنشورات
+        function loadPosts() {
+            const posts = getStoredPosts();
+            postsContainer.innerHTML = ''; // مسح المحتوى الحالي
+            posts.reverse().forEach(post => { // عرض الأحدث أولاً
+                postsContainer.appendChild(createPostElement(post));
+            });
+        }
+
+        // 6. وظيفة النشر (المكملة)
+        function publishPost() {
+            const content = postInput.value.trim();
+            const author = postAuthor.value.trim() || 'مجهول';
+            const category = postCategory.value;
+
+            if (content && category) {
+                const newPost = {
+                    content,
+                    author,
+                    category,
+                    timestamp: new Date().toISOString()
+                };
+
+                const posts = getStoredPosts();
+                posts.push(newPost);
+                savePosts(posts);
+
+                // إعادة تحميل القائمة بعد النشر وإعادة تعيين الحقول
+                loadPosts(); 
+                postInput.value = '';
+                // لا نمسح اسم المؤلف أو الفئة تلقائياً لتسهيل النشر المتكرر
+
+            } else {
+                alert("الرجاء كتابة محتوى المنشور واختيار الفئة.");
+            }
+        }
+        
+        // 7. وظيفة الفلترة (المكملة)
+        function filterPosts(category, clickedButton) {
+            // تحديث حالة الأزرار النشطة
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            if (clickedButton) clickedButton.classList.add('active');
+
+            const allPosts = document.querySelectorAll('.post-card');
+            allPosts.forEach(post => {
+                if (category === 'all' || post.dataset.category === category) {
+                    post.style.display = 'block';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        }
+
+        /* End JavaScript Code */
+    </script>
+</body>
+</html>
