@@ -1,0 +1,47 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 Int                 @id @default(autoincrement())
+  email              String              @unique
+  name               String?
+  role               String              @default("user") // "admin" | "owner" | "user"
+  password           String?
+  isActive           Boolean             @default(false)
+  isAdmin            Boolean             @default(false)
+  createdAt          DateTime            @default(now())
+  posts              Post[]
+  activationRequests ActivationRequest[]
+}
+
+model Post {
+  id         Int      @id @default(autoincrement())
+  title      String
+  excerpt    String?
+  content    String?
+  imageUrl   String?
+  category   String?
+  published  Boolean  @default(false)
+  author     User?    @relation(fields: [authorId], references: [id])
+  authorId   Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ActivationRequest {
+  id         Int      @id @default(autoincrement())
+  email      String
+  name       String?
+  message    String?
+  userId     Int?
+  status     String   @default("pending") // pending | approved | rejected
+  createdAt  DateTime @default(now())
+  handledBy  Int?
+  handledAt  DateTime?
+}
