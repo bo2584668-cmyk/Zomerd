@@ -66,6 +66,212 @@
         .btn-logout { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-top: 20px; font-weight: bold; }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+ 
+    /* تنسيقات استوديو النشر - زمرد نت */
+:root {
+    --p: #00d2ff; /* اللون الزمردي الأساسي */
+    --p-dark: #00a8cc;
+    --bg: #0b0f19;
+    --card: #151c2c;
+    --txt: #f1f5f9;
+    --dim: #94a3b8;
+    --border: rgba(255,255,255,0.08);
+}
+
+/* الحاوية الرئيسية */
+.editor-container {
+    width: 100%;
+    max-width: 950px;
+    background: var(--card);
+    padding: 35px;
+    border-radius: 25px;
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    margin: 20px auto;
+}
+
+.editor-container h2 {
+    color: var(--p);
+    text-align: center;
+    font-weight: 900;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+}
+
+/* المجموعات الإدخالية */
+.input-group { margin-bottom: 20px; }
+.input-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--p);
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+    color: #fff;
+    font-family: 'Cairo', sans-serif;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--p);
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.1);
+}
+
+/* شريط الأدوات */
+.toolbar {
+    background: #1e293b;
+    padding: 12px;
+    border-radius: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    border: 1px solid var(--border);
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+}
+
+.tool-btn {
+    background: #334155;
+    color: white;
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.tool-btn:hover {
+    background: var(--p);
+    color: #000;
+    transform: translateY(-2px);
+}
+
+.tool-btn.ad-trigger {
+    background: var(--p);
+    color: #000;
+    font-weight: bold;
+    width: auto;
+    padding: 0 15px;
+}
+
+select {
+    background: #334155;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0 10px;
+    font-family: 'Cairo';
+    cursor: pointer;
+}
+
+/* ساحة التحرير */
+#editor {
+    min-height: 450px;
+    padding: 25px;
+    background: rgba(0,0,0,0.15);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    outline: none;
+    line-height: 1.8;
+    color: var(--txt);
+    font-size: 1.1rem;
+    overflow-y: auto;
+}
+
+#editor:empty:before {
+    content: attr(placeholder);
+    color: var(--dim);
+}
+
+/* مربع الإعلان داخل المحرر */
+.ad-box {
+    background: rgba(0, 210, 255, 0.08);
+    border: 2px dashed var(--p);
+    padding: 20px;
+    text-align: center;
+    margin: 20px 0;
+    border-radius: 12px;
+    color: var(--p);
+    font-weight: 900;
+    cursor: default;
+}
+
+/* أزرار الإجراءات */
+.actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 18px 30px;
+    border-radius: 15px;
+    border: none;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.3s;
+    flex: 1;
+    font-family: 'Cairo';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+.btn-publish {
+    background: var(--p);
+    color: #000;
+    box-shadow: 0 10px 20px rgba(0, 210, 255, 0.2);
+}
+
+.btn-publish:hover {
+    background: var(--p-dark);
+    transform: translateY(-3px);
+}
+
+.btn-draft {
+    background: #334155;
+    color: #fff;
+}
+
+.btn-draft:hover {
+    background: #475569;
+}
+
+/* رسالة الحالة */
+#status-msg {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: var(--dim);
+    font-style: italic;
+}
+
+/* تحسينات للجوال */
+@media (max-width: 600px) {
+    .editor-container { padding: 20px; }
+    .toolbar { gap: 5px; }
+    .tool-btn { width: 35px; height: 35px; }
+    .actions { flex-direction: column; }
+}
+    
     </style>
 </head>
 <body id="main-body">
@@ -149,12 +355,61 @@
         </section>
 
         <section id="sec-write" class="section">
-            <div class="editor-wrap">
-                <h2>✍️ محرر المقالات (الأدمن فقط)</h2><br>
-                <input type="text" id="p-title" placeholder="أدخل عنوان المقال..." style="width:100%; padding:10px; margin-bottom:10px;">
-                <div id="post-body" contenteditable="true"></div>
-                <br>
-                <button onclick="publishPost()" id="pub-btn" style="background:var(--p); color:#000; padding:15px; border-radius:12px; font-weight:900; border:none; width:100%; cursor:pointer;">نشر المقال الآن</button>
+            <div class="editor-container" id="admin-panel">
+    <h2><i class="fa-solid fa-gem"></i> استوديو زمرد للنشر</h2>
+
+    <div class="input-group">
+        <label for="post-title">عنوان المقال:</label>
+        <input type="text" id="post-title" placeholder="أدخل عنواناً جذاباً لمقالك...">
+    </div>
+
+    <div class="input-group">
+        <label for="post-desc">وصف المنشور (Excerpt):</label>
+        <textarea id="post-desc" rows="2" placeholder="اكتب وصفاً قصيراً يظهر في قائمة الأخبار..."></textarea>
+    </div>
+
+    <div class="toolbar">
+        <button class="tool-btn" type="button" onclick="exec('bold')" title="خط عريض"><i class="fa-solid fa-bold"></i></button>
+        <button class="tool-btn" type="button" onclick="exec('italic')" title="خط مائل"><i class="fa-solid fa-italic"></i></button>
+        <button class="tool-btn" type="button" onclick="exec('underline')" title="خط تحت النص"><i class="fa-solid fa-underline"></i></button>
+        
+        <button class="tool-btn" type="button" onclick="exec('justifyRight')" title="محاذاة لليمين"><i class="fa-solid fa-align-right"></i></button>
+        <button class="tool-btn" type="button" onclick="exec('justifyCenter')" title="توسيط النص"><i class="fa-solid fa-align-center"></i></button>
+        
+        <button class="tool-btn" type="button" onclick="promptLink()" title="إضافة رابط"><i class="fa-solid fa-link"></i></button>
+        <button class="tool-btn" type="button" onclick="promptImg()" title="إضافة صورة"><i class="fa-solid fa-image"></i></button>
+        
+        <select onchange="exec('foreColor', this.value)" title="لون الخط">
+            <option value="#f1f5f9">لون النص</option>
+            <option value="#00d2ff">زمردي</option>
+            <option value="#fbbf24">ذهبي</option>
+            <option value="#ef4444">أحمر</option>
+            <option value="#22c55e">أخضر</option>
+        </select>
+
+        <button class="tool-btn ad-trigger" type="button" onclick="insertAd()" style="width:auto; padding:0 15px;">
+            <i class="fa-solid fa-rectangle-ad"></i> إدراج إعلان
+        </button>
+    </div>
+
+    <div id="editor" contenteditable="true" placeholder="ابدأ بكتابة محتوى مقالك هنا..."></div>
+
+    <div class="input-group" style="margin-top:20px;">
+        <label for="post-ad-code">كود الإعلان البرمجي (HTML/JavaScript):</label>
+        <textarea id="post-ad-code" rows="2" placeholder="الصق كود AdSense أو كود إعلان خارجي هنا ليظهر مكان مربع الإعلان..."></textarea>
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-publish" type="button" onclick="publish()">
+            <i class="fa-solid fa-paper-plane"></i> نشر المقال الآن
+        </button>
+        <button class="btn btn-draft" type="button" onclick="saveDraft()">
+            <i class="fa-solid fa-floppy-disk"></i> حفظ كمسودة
+        </button>
+    </div>
+
+    <div id="status-msg">جاهز للكتابة...</div>
+            
             </div>
         </section>
 
@@ -164,7 +419,7 @@
             <div class="contact-card">
                 <h2>براء عمر - Baraa Omar</h2>
                 <p>مدير زمرد نت</p>
-                <p>admin@zomerd.net</p>
+                <p> bo2584668@gmail.com: ايميل المطور 
             </div>
         </section>
     </main>
@@ -301,7 +556,146 @@
                     <div style="margin-top:10px;">${p.content}</div>
                 </div>
             `).join('');
+   
+    }
+        /* سكربت محرك زمرد نت - استوديو النشر */
+
+// 1. إعدادات الثوابت
+const ADMIN_EMAIL = "bo2584668@gmail.com";
+const draftKey = 'zomerd_admin_draft';
+const postsKey = 'zomerd_posts';
+
+// 2. التحقق من صلاحية الوصول (الأدمن فقط)
+window.addEventListener('DOMContentLoaded', () => {
+    const user = JSON.parse(localStorage.getItem('zomerd_user'));
+    
+    if (!user || user.email !== ADMIN_EMAIL) {
+        document.getElementById('admin-panel').innerHTML = `
+            <div style="text-align:center; padding:50px;">
+                <i class="fa-solid fa-lock" style="font-size:3rem; color:#ef4444;"></i>
+                <h2 style="margin-top:20px;">عذراً براء، يجب تسجيل الدخول بإيميل الإدارة للوصول هنا.</h2>
+            </div>
+        `;
+        return;
+    }
+    
+    // تحميل المسودة إذا وجدت عند فتح الصفحة
+    loadDraft();
+});
+
+// 3. أوامر تنسيق النصوص
+function exec(cmd, val = null) {
+    document.execCommand(cmd, false, val);
+    // تحديث الحالة بعد كل تعديل
+    updateStatus("جاري التعديل...");
+}
+
+// 4. إضافة الروابط والصور
+function promptLink() {
+    const url = prompt("أدخل الرابط المطلوب (مثال: https://google.com):");
+    if (url) exec('createLink', url);
+}
+
+function promptImg() {
+    const url = prompt("أدخل رابط الصورة المباشر:");
+    if (url) exec('insertImage', url);
+}
+
+// 5. إدراج مكان الإعلان
+function insertAd() {
+    const placeholder = `
+        <div class="ad-box" contenteditable="false">
+            <i class="fa-solid fa-rectangle-ad"></i> [مكان ظهور الإعلان التلقائي]
+        </div>
+        <p><br></p>
+    `;
+    exec('insertHTML', placeholder);
+}
+
+// 6. نظام المسودات (Draft System)
+function saveDraft() {
+    const draftData = {
+        title: document.getElementById('post-title').value,
+        desc: document.getElementById('post-desc').value,
+        content: document.getElementById('editor').innerHTML,
+        adCode: document.getElementById('post-ad-code').value,
+        lastSaved: new Date().toLocaleTimeString('ar-EG')
+    };
+
+    localStorage.setItem(draftKey, JSON.stringify(draftData));
+    updateStatus(`✅ تم حفظ المسودة تلقائياً: ${draftData.lastSaved}`);
+}
+
+function loadDraft() {
+    const saved = localStorage.getItem(draftKey);
+    if (saved) {
+        const data = JSON.parse(saved);
+        // لا نستعيد المسودة إلا إذا كان هناك محتوى فعلي
+        if (data.title || data.content.length > 20) {
+            if (confirm("يا براء، وجدنا مقالاً لم تنتهِ من كتابته. هل تود استعادته الآن؟")) {
+                document.getElementById('post-title').value = data.title || '';
+                document.getElementById('post-desc').value = data.desc || '';
+                document.getElementById('editor').innerHTML = data.content || '';
+                document.getElementById('post-ad-code').value = data.adCode || '';
+                updateStatus(`تم استعادة العمل المحفوظ في: ${data.lastSaved}`);
+            }
         }
+    }
+}
+
+// 7. الحفظ التلقائي (كل 20 ثانية)
+setInterval(() => {
+    const title = document.getElementById('post-title').value;
+    if (title.trim().length > 5) {
+        saveDraft();
+    }
+}, 20000);
+
+// 8. وظيفة النشر النهائي
+function publish() {
+    const title = document.getElementById('post-title').value;
+    const desc = document.getElementById('post-desc').value;
+    const content = document.getElementById('editor').innerHTML;
+    const adCode = document.getElementById('post-ad-code').value;
+
+    if (!title || content.length < 50) {
+        alert("تأكد من كتابة عنوان ومحتوى كافٍ للمقال أولاً!");
+        return;
+    }
+
+    const newPost = {
+        id: Date.now(),
+        title: title,
+        desc: desc,
+        content: content,
+        adCode: adCode,
+        author: "براء عمر",
+        date: new Date().toLocaleString('ar-EG'),
+        timestamp: new Date().getTime()
+    };
+
+    // حفظ في قائمة المقالات
+    let posts = JSON.parse(localStorage.getItem(postsKey)) || [];
+    posts.unshift(newPost); // إضافة في البداية
+    localStorage.setItem(postsKey, JSON.stringify(posts));
+
+    // مسح المسودة وتصفير الحقول
+    localStorage.removeItem(draftKey);
+    alert("مبروك يا براء! تم نشر المقال بنجاح في زمرد نت.");
+    
+    // إعادة التوجيه لصفحة Feed (إذا كانت موجودة) أو تصفير الصفحة
+    location.reload();
+}
+
+// 9. تحديث رسالة الحالة أسفل المحرر
+function updateStatus(msg) {
+    const statusEl = document.getElementById('status-msg');
+    if (statusEl) {
+        statusEl.innerText = msg;
+        statusEl.style.color = "var(--p)";
+        setTimeout(() => { statusEl.style.color = "var(--dim)"; }, 2000);
+    }
+    }
 
         setInterval(() => {
             document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG');
