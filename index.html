@@ -34,7 +34,93 @@
             flex-direction: column; align-items: center; justify-content: center;
             text-align: center;
         }
+/* --- إعدادات التجاوب مع الموبايل (Responsive Design) --- */
 
+/* للشاشات الصغيرة (أقل من 768px) */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column; /* ترتيب العناصر طولياً */
+        height: auto;
+        overflow-y: auto;
+    }
+
+    /* إخفاء السايد بار التقليدي وتحويله لشريط سفلي */
+    aside {
+        width: 100% !important;
+        height: 65px !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        flex-direction: row !important;
+        background: var(--card);
+        border-top: 1px solid var(--border);
+        border-left: none !important;
+        display: flex !important;
+        padding: 0;
+        justify-content: space-around;
+        z-index: 1000;
+    }
+
+    .logo {
+        display: none; /* إخفاء اللوجو من الشريط السفلي لتوفير مساحة */
+    }
+
+    nav {
+        display: flex;
+        flex-direction: row !important;
+        width: 100%;
+        padding: 0 !important;
+        justify-content: space-around;
+    }
+
+    .nav-link {
+        flex-direction: column; /* الأيقونة فوق النص */
+        gap: 4px !important;
+        padding: 8px 0 !important;
+        font-size: 0.65rem !important; /* تصغير الخط ليناسب الجوال */
+        flex: 1;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        justify-content: center;
+    }
+
+    .nav-link i {
+        font-size: 1.2rem;
+    }
+
+    /* تعديل منطقة المحتوى الرئيسية */
+    main {
+        padding-bottom: 70px; /* مساحة فارغة في الأسفل لكي لا يغطي الشريط السفلي على المحتوى */
+        width: 100% !important;
+    }
+
+    header {
+        padding: 0 20px !important;
+        height: 60px;
+    }
+
+    .section {
+        padding: 15px !important; /* تقليل الحواف الجانبية في الموبايل */
+    }
+
+    .grid {
+        grid-template-columns: 1fr !important; /* جعل البطاقات تأخذ العرض الكامل */
+    }
+
+    /* تعديل المحرر في الموبايل */
+    .toolbar {
+        position: sticky;
+        top: 60px;
+        padding: 5px;
+        overflow-x: auto; /* السماح بالتمرير الجانبي للأدوات */
+        white-space: nowrap;
+        display: flex;
+    }
+    
+    .editor-wrap {
+        padding: 15px !important;
+    }
+}
         /* Sidebar */
         aside { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: none; flex-direction: column; z-index: 100; }
         .logo { padding: 30px; text-align: center; border-bottom: 1px solid var(--border); }
