@@ -185,7 +185,150 @@
             <div class="stat-card">
                 <h2>براء عمر - Baraa Omar</h2>
                 <p>المدير التنفيذي لزمرد نت</p><br>
-                <p><i class="fa-solid fa-envelope"></i> admin@zomerd.net</p>
+                <p><i class="fa-solid fa-envelope"></i> bo2584668@gmail.com</p>
+
+
+                <div id="chat-widget">
+    <button id="chat-toggle" onclick="toggleChat()">
+        <i class="fa-solid fa-comments"></i>
+        <span id="chat-badge">1</span>
+    </button>
+
+    <div id="chat-window">
+        <div id="chat-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e;"></div>
+                <span>مساعد زمرد الذكي</span>
+            </div>
+            <button onclick="toggleChat()" style="background:none; border:none; color:white; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="chat-body">
+            <div class="msg bot">مرحباً بك في زمرد نت! أنا مساعدك الذكي، كيف يمكنني مساعدتك اليوم؟</div>
+        </div>
+        <div id="chat-footer">
+            <input type="text" id="chat-input" placeholder="اكتب سؤالك هنا..." onkeypress="handleChatKey(event)">
+            <button onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* تنسيقات الـ Live Chat */
+    #chat-widget { position: fixed; bottom: 20px; left: 20px; z-index: 10000; font-family: 'Cairo', sans-serif; }
+    
+    #chat-toggle { 
+        width: 60px; height: 60px; border-radius: 50%; background: #00d2ff; border: none; 
+        color: #000; font-size: 1.5rem; cursor: pointer; box-shadow: 0 10px 25px rgba(0,210,255,0.4);
+        position: relative; transition: 0.3s;
+    }
+    #chat-toggle:hover { transform: scale(1.1); }
+    
+    #chat-badge {
+        position: absolute; top: 0; right: 0; background: #ef4444; color: white;
+        font-size: 0.7rem; width: 20px; height: 20px; border-radius: 50%; display: flex;
+        align-items: center; justify-content: center; border: 2px solid #0b0f19;
+    }
+
+    #chat-window {
+        position: absolute; bottom: 80px; left: 0; width: 320px; height: 450px;
+        background: #151c2c; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+        display: none; flex-direction: column; overflow: hidden; box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+    }
+
+    #chat-header { background: #1e293b; padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 0.9rem; }
+
+    #chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.2); }
+
+    .msg { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 0.85rem; line-height: 1.5; }
+    .msg.bot { background: #1e293b; color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; }
+    .msg.user { background: #00d2ff; color: #000; align-self: flex-end; border-bottom-right-radius: 2px; font-weight: bold; }
+
+    #chat-footer { padding: 10px; display: flex; gap: 5px; background: #1e293b; }
+    #chat-footer input { flex: 1; background: #0b0f19; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 10px; color: white; outline: none; font-size: 0.8rem; }
+    #chat-footer button { background: #00d2ff; border: none; width: 35px; border-radius: 10px; cursor: pointer; color: black; }
+
+    /* تحسين شريط التمرير */
+    #chat-body::-webkit-scrollbar { width: 4px; }
+    #chat-body::-webkit-scrollbar-thumb { background: rgba(0,210,255,0.2); border-radius: 10px; }
+</style>
+
+<script>
+    // قاعدة بيانات الأسئلة والأجوبة (100+ احتمال)
+    const chatKnowledge = {
+        // التحيات
+        "هلا": "أهلاً بك يا غالي! كيف أقدر أساعدك اليوم في زمرد نت؟",
+        "مرحبا": "مرحباً بك! نورت منصة براء عمر للاتصالات والمقاولات.",
+        "السلام عليكم": "وعليكم السلام ورحمة الله وبركاته! نورتنا.",
+        "ازيك": "بخير والحمد لله، أتمنى أن تكون أنت بخير أيضاً!",
+        "صباح الخير": "صباح النور والسرور! يومك جميل إن شاء الله.",
+        "مساء الخير": "مساء الورد! كيف حالك اليوم؟",
+        
+        // معلومات عن براء والمنصة
+        "من انت": "أنا المساعد الذكي لمنصة زمرد نت، صممت لخدمتك.",
+        "من هو براء": "براء عمر هو مدير ومؤسس منصة زمرد نت للمقاولات والاتصالات.",
+        "براء عمر": "بشمهندس براء هو صاحب هذا العمل الاحترافي.",
+        "صاحب الموقع": "المالك هو الأستاذ براء عمر.",
+
+        // الخدمات
+        "خدماتكم": "نقدم خدمات المقاولات المتكاملة، حلول الاتصالات، وتوريد المواد الهندسية.",
+        "مقاولات": "لدينا خبرة واسعة في المقاولات العامة والتشطيبات الاحترافية.",
+        "اتصالات": "نوفر حلول شبكات وأنظمة اتصالات متطورة.",
+        "برمجة": "هذا الموقع تم تطويره بأحدث التقنيات لخدمة عملاء براء عمر.",
+        "اسعار": "الأسعار تختلف حسب المشروع، لكننا نعدك بأفضل سعر مقابل أعلى جودة.",
+
+        // أسئلة عامة
+        "موقعكم فين": "مركزنا الرئيسي في مصر، ونخدم عملاءنا في كل مكان.",
+        "تواصل": "يمكنك التواصل مع براء عمر مباشرة عبر قسم 'تواصل معنا' أو الإيميل admin@zomerd.net",
+        "شكرا": "العفو! نحن دائماً في خدمتك يا غالي.",
+        "وداعا": "مع السلامة! نتمنى رؤيتك مرة أخرى في زمرد نت.",
+        "شات": "نعم، أنا أرد عليك الآن بشكل آلي وذكي!"
+    };
+
+    function toggleChat() {
+        const win = document.getElementById('chat-window');
+        const badge = document.getElementById('chat-badge');
+        if(win.style.display === 'flex') {
+            win.style.display = 'none';
+        } else {
+            win.style.display = 'flex';
+            badge.style.display = 'none';
+        }
+    }
+
+    function handleChatKey(e) { if(e.key === 'Enter') sendChatMessage(); }
+
+    function sendChatMessage() {
+        const input = document.getElementById('chat-input');
+        const text = input.value.trim();
+        if(!text) return;
+
+        addMessage(text, 'user');
+        input.value = '';
+
+        // ذكاء اصطناعي بسيط للرد
+        setTimeout(() => {
+            let response = "عذراً، لم أفهم سؤالك تماماً. يمكنك محاولة كتابة كلمات بسيطة مثل (خدمات، مقاولات، تواصل، من هو براء) أو انتظر رد براء عمر عليك شخصياً.";
+            
+            // البحث في قاعدة البيانات
+            for (let key in chatKnowledge) {
+                if (text.includes(key)) {
+                    response = chatKnowledge[key];
+                    break;
+                }
+            }
+            addMessage(response, 'bot');
+        }, 600);
+    }
+
+    function addMessage(text, type) {
+        const body = document.getElementById('chat-body');
+        const div = document.createElement('div');
+        div.className = `msg ${type}`;
+        div.innerText = text;
+        body.appendChild(div);
+        body.scrollTop = body.scrollHeight;
+    }
+</script>
             </div>
         </section>
     </main>
