@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>زمرد نت | للمقاولات والاتصالات</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 
     <style>
         /* نظام الثيمات المتغير */
@@ -27,273 +27,285 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; transition: 0.3s; }
         body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; }
 
+        /* شاشة تسجيل الدخول الإجبارية */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0b0f19; z-index: 9999; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+            text-align: center;
+        }
+
         /* Sidebar */
-        aside { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
+        aside { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: none; flex-direction: column; z-index: 100; }
         .logo { padding: 30px; text-align: center; border-bottom: 1px solid var(--border); }
         .logo h1 { font-weight: 900; color: var(--p); font-size: 1.6rem; }
 
         nav { flex: 1; padding: 20px 10px; }
         .nav-link { padding: 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--dim); margin-bottom: 5px; font-weight: 700; }
         .nav-link:hover, .nav-link.active { background: var(--p); color: white; }
+        #nav-admin-only { display: none; } /* مخفي افتراضياً */
 
         /* Content Area */
-        main { flex: 1; overflow-y: auto; background: var(--bg); position: relative; }
-        header { height: 70px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); sticky: top; background: var(--card); }
+        main { flex: 1; overflow-y: auto; background: var(--bg); position: relative; display: none; }
+        header { height: 70px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--card); }
 
         .section { padding: 40px; display: none; max-width: 1100px; margin: 0 auto; }
         .section.active { display: block; animation: fadeInUp 0.5s ease; }
 
-        /* Dashboard Stats */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
         .stat-card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
-        .stat-card h4 { color: var(--dim); font-size: 0.9rem; margin-bottom: 10px; }
         .stat-card .val { font-size: 2rem; font-weight: 900; color: var(--p); }
 
-        /* Rich Editor */
+        /* Editor */
         .editor-wrap { background: var(--card); padding: 30px; border-radius: 25px; border: 1px solid var(--border); }
-        .toolbar { display: flex; gap: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .tool-btn { background: #334155; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
         #post-body { min-height: 300px; padding: 20px; border: 1px solid var(--border); border-radius: 12px; background: rgba(0,0,0,0.1); overflow-y: auto; }
-        
-        /* Posts Display */
-        .post-card { background: var(--card); border-radius: 20px; padding: 25px; margin-bottom: 25px; border: 1px solid var(--border); }
-        .post-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .author-info { display: flex; align-items: center; gap: 10px; }
-        .author-img { width: 35px; height: 35px; background: var(--p); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #000; }
-        
-        .comment-section { margin-top: 20px; padding-top: 15px; border-top: 1px dashed var(--border); }
-        .comment-box { background: rgba(0,0,0,0.1); padding: 10px; border-radius: 10px; margin-top: 10px; font-size: 0.85rem; }
 
-        /* Contact Page */
-        .contact-card { text-align: center; padding: 40px; background: var(--card); border-radius: 25px; border: 2px solid var(--p); }
+        /* Settings Inputs */
+        .settings-input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: white; margin-bottom: 15px; }
+        
+        .btn-logout { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-top: 20px; font-weight: bold; }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .word-count { font-size: 0.8rem; color: var(--dim); margin-top: 10px; display: block; }
     </style>
 </head>
 <body id="main-body">
 
-    <aside>
+    <div id="login-overlay">
+        <h1 style="color:var(--p); font-size: 3rem; margin-bottom: 20px;">زمرد نت</h1>
+        <p style="color:white; margin-bottom: 30px;">يرجى تسجيل الدخول للمتابعة</p>
+        <div id="g_id_onload"
+             data-client_id="891317685860-k731dsdbp24p87iirkahnptf23opj7hn.apps.googleusercontent.com"
+             data-context="signin"
+             data-ux_mode="popup"
+             data-callback="onGoogleLogin"
+             data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_blue" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
+    </div>
+
+    <aside id="app-sidebar">
         <div class="logo"><h1>زمرد نت</h1></div>
         <nav>
-            <div class="nav-link active" onclick="nav('dash')"><i class="fa-solid fa-chart-pie"></i> لوحة التحكم</div>
-            <div class="nav-link" onclick="nav('feed')"><i class="fa-solid fa-rss"></i> آخر الأخبار</div>
-            <div class="nav-link" onclick="nav('write')"><i class="fa-solid fa-pen-fancy"></i> أنشئ مقالاً</div>
-            <div class="nav-link" onclick="nav('settings')"><i class="fa-solid fa-sliders"></i> الإعدادات</div>
-            <div class="nav-link" onclick="nav('contact')"><i class="fa-solid fa-headset"></i> تواصل معنا</div>
+            <div class="nav-link active" onclick="nav('dash', event)"><i class="fa-solid fa-chart-pie"></i> لوحة التحكم</div>
+            <div class="nav-link" onclick="nav('feed', event)"><i class="fa-solid fa-rss"></i> آخر الأخبار</div>
+            <div id="nav-admin-only" class="nav-link" onclick="nav('write', event)"><i class="fa-solid fa-pen-fancy"></i> أنشئ مقالاً</div>
+            <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-sliders"></i> الإعدادات</div>
+            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-headset"></i> تواصل معنا</div>
         </nav>
         <div style="padding:20px; font-size:0.7rem; text-align:center; opacity:0.5;">حقوق النشر © 2025 براء عمر</div>
     </aside>
 
-    <main>
+    <main id="app-main">
         <header> 
-<script src="https://accounts.google.com/gsi/client" async></script>
-<div id="g_id_onload"
-     data-client_id="891317685860-k731dsdbp24p87iirkahnptf23opj7hn.apps.googleusercontent.com"
-     data-context="signin"
-     data-ux_mode="popup"
-     data-callback="Logincallback"
-     data-auto_prompt="false">
-</div>
-
-<div class="g_id_signin"
-     data-type="standard"
-     data-shape="rectangular"
-     data-theme="outline"
-     data-text="signin_with"
-     data-size="large"
-     data-logo_alignment="left">
-</div>
-            
             <div id="section-name">الرئيسية</div>
             <div style="display:flex; gap:15px; align-items:center;">
                 <span id="live-clock" style="font-family:'JetBrains Mono'; color:var(--p)">00:00:00</span>
-                <div class="author-img">B</div>
+                <div class="author-img" id="user-initial">?</div>
             </div>
         </header>
 
         <section id="sec-dash" class="section active">
             <div class="grid">
-                <div class="stat-card"><h4>زيارات الشهر (زمرد)</h4><div class="val">1,245,890</div></div>
-                <div class="stat-card"><h4>أرباح المنصة الكلية</h4><div class="val">$45,200.50</div></div>
-                <div class="stat-card"><h4>عدد المشتركين</h4><div class="val">8,420</div></div>
+                <div class="stat-card"><h4>زيارات الشهر</h4><div class="val">1,245,890</div></div>
+                <div class="stat-card"><h4>أرباح المنصة</h4><div class="val">$45,200.50</div></div>
+                <div class="stat-card"><h4>المشتركين</h4><div class="val">8,420</div></div>
             </div>
             <br>
             <div class="stat-card" style="text-align: right;">
-                <h3>مرحباً بك في زمرد نت</h3>
-                <p style="color:var(--dim); margin-top:10px;">نحن نجمع بين التكنولوجيا والإنشاءات. هذه المنصة تهدف لتسهيل التواصل والعمل الحر للمقاولين والمبرمجين.</p>
+                <h3 id="welcome-msg">مرحباً بك</h3>
+                <p style="color:var(--dim); margin-top:10px;">أنت الآن داخل لوحة تحكم زمرد نت المتكاملة.</p>
+            </div>
+        </section>
+
+        <section id="sec-settings" class="section">
+            <div class="stat-card" style="text-align:right;">
+                <h3>⚙️ إعدادات الحساب والمظهر</h3><br>
+                
+                <label>رقم الهاتف:</label>
+                <input type="text" id="set-phone" class="settings-input" placeholder="01xxxxxxxxx">
+                
+                <label><i class="fab fa-facebook"></i> رابط الفيسبوك:</label>
+                <input type="text" id="set-fb" class="settings-input" placeholder="https://facebook.com/...">
+
+                <label><i class="fab fa-instagram"></i> رابط إنستجرام:</label>
+                <input type="text" id="set-ig" class="settings-input" placeholder="https://instagram.com/...">
+
+                <label><i class="fab fa-tiktok"></i> رابط تيك توك:</label>
+                <input type="text" id="set-tk" class="settings-input" placeholder="https://tiktok.com/@...">
+
+                <button class="btn" onclick="saveUserSettings()" style="background:var(--p); color:black; padding:10px 20px; border:none; border-radius:8px; width:100%; font-weight:bold; cursor:pointer;">حفظ البيانات</button>
+                
+                <hr style="margin:20px 0; opacity:0.1;">
+                
+                <h4>تغيير المظهر:</h4><br>
+                <div style="display:flex; gap:10px; margin-bottom:20px;">
+                    <button class="btn" onclick="changeTheme('dark')" style="background:#0b0f19; color:white; border:1px solid white; padding:5px 10px;">ليلي</button>
+                    <button class="btn" onclick="changeTheme('light')" style="background:#f8fafc; color:#1e293b; border:1px solid black; padding:5px 10px;">نهاري</button>
+                    <button class="btn" onclick="changeTheme('gold')" style="background:#fbbf24; color:black; padding:5px 10px;">ملكي</button>
+                </div>
+
+                <button class="btn-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
             </div>
         </section>
 
         <section id="sec-write" class="section">
             <div class="editor-wrap">
-                <h2>✍️ محرر المقالات الاحترافي</h2><br>
-                <input type="text" id="p-title" placeholder="أدخل عنوان المقال...">
-                
-                <div class="toolbar">
-                    <button class="tool-btn" onclick="exec('bold')"><b>B</b></button>
-                    <button class="tool-btn" onclick="exec('italic')"><i>I</i></button>
-                    <button class="tool-btn" onclick="exec('foreColor', '#00d2ff')">لون زمردي</button>
-                    <button class="tool-btn" onclick="addLink()">رابط</button>
-                    <button class="tool-btn" onclick="addImg()">صورة</button>
-                    <button class="tool-btn" onclick="exec('formatBlock', 'PRE')">كود برمجي</button>
-                </div>
-
-                <div id="post-body" contenteditable="true" oninput="updateWordCount()"></div>
-                <span class="word-count" id="wc">عدد الكلمات: 0 (يلزم 400 كلمة للنشر)</span>
-                
+                <h2>✍️ محرر المقالات (الأدمن فقط)</h2><br>
+                <input type="text" id="p-title" placeholder="أدخل عنوان المقال..." style="width:100%; padding:10px; margin-bottom:10px;">
+                <div id="post-body" contenteditable="true"></div>
                 <br>
-                <input type="text" id="p-author" placeholder="اسمك ككاتب..." style="margin-bottom:15px;">
-                <button class="btn" onclick="publishPost()" id="pub-btn" style="background:var(--p); color:#000; padding:15px 30px; border-radius:12px; font-weight:900; border:none; width:100%; cursor:pointer;">نشر المقال فوراً</button>
+                <button onclick="publishPost()" id="pub-btn" style="background:var(--p); color:#000; padding:15px; border-radius:12px; font-weight:900; border:none; width:100%; cursor:pointer;">نشر المقال الآن</button>
             </div>
         </section>
 
-        <section id="sec-feed" class="section">
-            <div id="feed-container">
-                </div>
-        </section>
-
-        <section id="sec-settings" class="section">
-            <div class="stat-card" style="text-align:right;">
-                <h3>⚙️ إعدادات المظهر</h3><br>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn" onclick="changeTheme('dark')" style="background:#0b0f19; color:white; border:1px solid white;">الوضع الليلي</button>
-                    <button class="btn" onclick="changeTheme('light')" style="background:#f8fafc; color:#1e293b; border:1px solid black;">الوضع النهاري</button>
-                    <button class="btn" onclick="changeTheme('gold')" style="background:#fbbf24; color:black;">الوضع الملكي</button>
-                </div>
-            </div>
-        </section>
-
+        <section id="sec-feed" class="section"><div id="feed-container"></div></section>
+        
         <section id="sec-contact" class="section">
             <div class="contact-card">
-                <div class="author-img" style="width:80px; height:80px; font-size:2rem; margin:0 auto 20px;">B</div>
                 <h2>براء عمر - Baraa Omar</h2>
-                <p style="color:var(--dim)">المدير التنفيذي لشركة زمرد نت</p>
-                <br>
-                <div style="display:flex; flex-direction:column; gap:15px; align-items:center;">
-                    <div class="stat-card" style="width:100%"><i class="fa-solid fa-phone"></i> 01273740256</div>
-                    <div class="stat-card" style="width:100%"><i class="fa-solid fa-envelope"></i> admin@zomerd.net</div>
-                    <div class="stat-card" style="width:100%"><i class="fa-solid fa-location-dot"></i> مصر - المحلة الكبرى</div>
-                </div>
+                <p>مدير زمرد نت</p>
+                <p>admin@zomerd.net</p>
             </div>
         </section>
-
     </main>
 
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-        const API = "https://zomerd-api.bo2584668-cca.workers.dev";
+        const ADMIN_EMAIL = "bo2584668@gmail.com";
+        let currentUser = null;
         let posts = [];
 
-        // 1. التنقل بين الأقسام
-        function nav(id) {
+        // 1. معالجة تسجيل الدخول
+        function onGoogleLogin(response) {
+            const payload = parseJwt(response.credential);
+            currentUser = payload;
+            
+            // حفظ المستخدم في المتصفح
+            localStorage.setItem('zomerd_user', JSON.stringify(payload));
+            
+            initApp();
+        }
+
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            return JSON.parse(window.atob(base64));
+        }
+
+        function initApp() {
+            if (!currentUser) return;
+
+            // إخفاء شاشة الدخول وإظهار الموقع
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('app-sidebar').style.display = 'flex';
+            document.getElementById('app-main').style.display = 'block';
+
+            // تخصيص الواجهة
+            document.getElementById('welcome-msg').innerText = `مرحباً، ${currentUser.name}`;
+            document.getElementById('user-initial').innerText = currentUser.given_name[0];
+
+            // صلاحيات الأدمن
+            if (currentUser.email === ADMIN_EMAIL) {
+                document.getElementById('nav-admin-only').style.display = 'flex';
+            } else {
+                document.getElementById('nav-admin-only').style.display = 'none';
+            }
+
+            loadSettings();
+            renderFeed();
+        }
+
+        // 2. التحقق من الدخول عند فتح الصفحة
+        window.onload = () => {
+            const savedUser = localStorage.getItem('zomerd_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                initApp();
+            }
+
+            // تحميل المقالات التجريبية
+            posts = JSON.parse(localStorage.getItem('zomerd_posts')) || [{
+                title: "مستقبل الاتصالات في مصر 2025",
+                content: "محتوى تجريبي لمنصة زمرد نت...",
+                author: "براء عمر",
+                date: "17/12/2025",
+                comments: []
+            }];
+            renderFeed();
+        }
+
+        // 3. الإعدادات وحفظ البيانات
+        function saveUserSettings() {
+            const data = {
+                phone: document.getElementById('set-phone').value,
+                fb: document.getElementById('set-fb').value,
+                ig: document.getElementById('set-ig').value,
+                tk: document.getElementById('set-tk').value
+            };
+            localStorage.setItem('settings_' + currentUser.email, JSON.stringify(data));
+            alert("✅ تم حفظ إعداداتك بنجاح!");
+        }
+
+        function loadSettings() {
+            const data = JSON.parse(localStorage.getItem('settings_' + currentUser.email));
+            if (data) {
+                document.getElementById('set-phone').value = data.phone || '';
+                document.getElementById('set-fb').value = data.fb || '';
+                document.getElementById('set-ig').value = data.ig || '';
+                document.getElementById('set-tk').value = data.tk || '';
+            }
+        }
+
+        // 4. تسجيل الخروج
+        function logout() {
+            localStorage.removeItem('zomerd_user');
+            location.reload(); // إعادة تحميل الصفحة للعودة لشاشة الدخول
+        }
+
+        // --- الدوال الأساسية (من الكود الأصلي) ---
+        function nav(id, event) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
-            event.currentTarget?.classList.add('active');
-            document.getElementById('section-name').innerText = event.currentTarget?.innerText || "الرئيسية";
+            if(event) event.currentTarget.classList.add('active');
+            document.getElementById('section-name').innerText = event?.currentTarget?.innerText || "الرئيسية";
         }
 
-        // 2. محرر النصوص
-        function exec(cmd, val = null) { document.execCommand(cmd, false, val); }
-        function addLink() { const url = prompt("أدخل الرابط:"); if(url) exec('createLink', url); }
-        function addImg() { const url = prompt("رابط الصورة:"); if(url) exec('insertImage', url); }
-
-        function updateWordCount() {
-            const text = document.getElementById('post-body').innerText.trim();
-            const count = text === "" ? 0 : text.split(/\s+/).length;
-            document.getElementById('wc').innerText = `عدد الكلمات: ${count} (يلزم 400 كلمة للنشر)`;
-            document.getElementById('pub-btn').style.opacity = count >= 400 ? "1" : "0.5";
-        }
-
-        // 3. النشر الفعلي
-        async function publishPost() {
-            const title = document.getElementById('p-title').value;
-            const content = document.getElementById('post-body').innerHTML;
-            const author = document.getElementById('p-author').value || "زائر مجهول";
-            const text = document.getElementById('post-body').innerText.trim();
-            const count = text.split(/\s+/).length;
-
-            if(!title || count < 400) {
-                alert("تأكد من كتابة العنوان وأكثر من 400 كلمة!");
-                return;
-            }
-
-            const newPost = {
-                title, content, author, 
-                date: new Date().toLocaleString('ar-EG'),
-                comments: []
-            };
-
-            // إرسال لـ Cloudflare (محاكاة التخزين هنا للعرض الفوري)
-            posts.unshift(newPost);
-            renderFeed();
-            alert("✅ تم نشر مقالك في زمرد نت بنجاح!");
-            nav('feed');
-        }
-
-        // 4. عرض المنشورات
-        function renderFeed() {
-            const container = document.getElementById('feed-container');
-            container.innerHTML = posts.map((p, i) => `
-                <div class="post-card">
-                    <div class="post-header">
-                        <div class="author-info">
-                            <div class="author-img">${p.author[0].toUpperCase()}</div>
-                            <div>
-                                <strong>${p.author}</strong><br>
-                                <small style="color:var(--dim)">${p.date}</small>
-                            </div>
-                        </div>
-                        <span style="color:var(--p); font-weight:900;">#مقال_جديد</span>
-                    </div>
-                    <h2 style="margin-bottom:15px;">${p.title}</h2>
-                    <div style="line-height:1.8">${p.content}</div>
-                    
-                    <div class="comment-section">
-                        <h4>التعليقات (${p.comments.length})</h4>
-                        <div id="cmts-${i}">
-                            ${p.comments.map(c => `<div class="comment-box"><b>${c.user}:</b> ${c.text}</div>`).join('')}
-                        </div>
-                        <div style="display:flex; gap:10px; margin-top:10px;">
-                            <input type="text" id="inp-${i}" placeholder="أضف تعليقك..." style="margin:0; padding:8px;">
-                            <button onclick="addComment(${i})" style="background:var(--p); border:none; border-radius:8px; padding:0 15px;">رد</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function addComment(idx) {
-            const inp = document.getElementById(`inp-${idx}`);
-            if(!inp.value) return;
-            posts[idx].comments.push({ user: "مستخدم", text: inp.value });
-            inp.value = '';
-            renderFeed();
-        }
-
-        // 5. تغيير السيم
         function changeTheme(type) {
             document.body.className = '';
             if(type !== 'dark') document.body.classList.add('theme-' + type);
         }
 
-        // ساعة حية
+        async function publishPost() {
+            const title = document.getElementById('p-title').value;
+            const content = document.getElementById('post-body').innerHTML;
+            const newPost = {
+                title, content, author: currentUser.name, 
+                date: new Date().toLocaleString('ar-EG'),
+                comments: []
+            };
+            posts.unshift(newPost);
+            localStorage.setItem('zomerd_posts', JSON.stringify(posts));
+            renderFeed();
+            alert("تم النشر!");
+            nav('feed');
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('feed-container');
+            if(!container) return;
+            container.innerHTML = posts.map((p, i) => `
+                <div class="stat-card" style="text-align:right; margin-bottom:20px;">
+                    <h3>${p.title}</h3>
+                    <small>${p.author} - ${p.date}</small>
+                    <div style="margin-top:10px;">${p.content}</div>
+                </div>
+            `).join('');
+        }
+
         setInterval(() => {
             document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG');
         }, 1000);
-
-        // جلب المقالات عند البدء
-        window.onload = () => {
-            // بيانات تجريبية لزمرد نت
-            posts = [{
-                title: "مستقبل الاتصالات في مصر 2025",
-                content: "شركة زمرد نت تقود التحول الرقمي في قطاع المقالات والاتصالات عبر بنية تحتية سحابية متطورة...",
-                author: "براء عمر",
-                date: "17/12/2025",
-                comments: [{user: "أحمد", text: "موضوع رائع!"}]
-            }];
-            renderFeed();
-        }
     </script>
 </body>
 </html>
