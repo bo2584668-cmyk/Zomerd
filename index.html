@@ -126,7 +126,6 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
-        // الـ Config الجديد بتاعك
         const firebaseConfig = {
           apiKey: "AIzaSyAt16kYfN4cNHfTwbdr3KOGbcQJlmE45tg",
           authDomain: "zomerd-new.firebaseapp.com",
@@ -142,7 +141,6 @@
         const ADMIN_EMAIL = "bo2584668@gmail.com";
         let user = null;
 
-        // Login Logic
         function onGoogleLogin(res) {
             user = JSON.parse(atob(res.credential.split('.')[1]));
             localStorage.setItem('zomerd_user', JSON.stringify(user));
@@ -164,7 +162,6 @@
             if(saved) { user = JSON.parse(saved); startApp(); }
         }
 
-        // Navigation
         function nav(id, e) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -172,7 +169,6 @@
             if(e) e.currentTarget.classList.add('active');
         }
 
-        // Firebase: Publish Post
         async function publishPost() {
             const title = document.getElementById('p-title').value;
             const content = document.getElementById('p-body').innerHTML;
@@ -200,31 +196,38 @@
             nav('feed');
         }
 
-        // Firebase: Real-time Feed
+        // --- الدالة الجديدة المعدلة ---
         function listenToPosts() {
-            db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
+            db.collection("posts").onSnapshot((snap) => {
                 const container = document.getElementById('feed-container');
+                if (snap.empty) {
+                    container.innerHTML = "📭 لا توجد منشورات حتى الآن.. كن أول من ينشر!";
+                    return;
+                }
                 container.innerHTML = "";
-                snap.forEach(doc => {
+                snap.forEach((doc) => {
                     const p = doc.data();
                     const id = doc.id;
                     container.innerHTML += `
                         <div class="post-card">
-                            <h2 style="color:var(--p)">${p.title}</h2>
-                            <div style="margin:15px 0">${p.content}</div>
+                            <h2 style="color:var(--p)">${p.title || 'بدون عنوان'}</h2>
+                            <div style="margin:15px 0">${p.content || ''}</div>
                             ${p.image ? `<img src="${p.image}" class="post-img">` : ""}
-                            <div style="font-size:0.7rem; opacity:0.4">نشر بواسطة: ${p.author}</div>
+                            <div style="font-size:0.7rem; opacity:0.4">نشر بواسطة: ${p.author || 'براء عمر'}</div>
                             <hr style="opacity:0.1; margin:15px 0">
                             <div id="comments-${id}">
                                 ${(p.comments || []).map(c => `<div class="comment-item"><b>${c.u}:</b> ${c.t}</div>`).join('')}
                             </div>
                             <div class="comment-input-wrap">
                                 <input type="text" id="in-${id}" placeholder="اكتب تعليقاً...">
-                                <button onclick="addComment('${id}')" style="background:var(--p); border:none; padding:5px 15px; border-radius:8px; cursor:pointer;">رد</button>
+                                <button onclick="addComment('${id}')" style="background:var(--p); border:none; padding:5px 15px; border-radius:8px; cursor:pointer; color:black;">رد</button>
                             </div>
                         </div>
                     `;
                 });
+            }, (error) => {
+                console.error("خطأ في جلب البيانات:", error);
+                document.getElementById('feed-container').innerHTML = "❌ خطأ في السيرفر: " + error.message;
             });
         }
 
