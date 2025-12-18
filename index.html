@@ -260,7 +260,14 @@
                     <button onclick="saveDraft()" style="flex:1; background:#334155; color:white; padding:15px; border-radius:12px; border:none; cursor:pointer;">حفظ مسودة</button>
                 </div>
                 <div id="draft-status" style="font-size:0.8rem; margin-top:10px; color:var(--dim);"></div>
+       <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+            
+            
+            
             </div>
+            
         </section>
 
         <section id="sec-feed" class="section">
@@ -572,9 +579,99 @@
                     <div class="content-view" style="line-height:1.8;">${p.content}</div>
                     <div style="margin-top:20px; font-size:0.7rem; opacity:0.5;">نشر بواسطة: ${p.author} | ${p.date}</div>
                 </div>
+           
             `).join('');
+
+            // بياناتك اللي انت بعتها
+const firebaseConfig = {
+  apiKey: "AIzaSyDqC_x1tA0kAqgwR9uy0nI8hZo_Eaq04tg",
+  authDomain: "zomerd-d7791.firebaseapp.com",
+  projectId: "zomerd-d7791",
+  storageBucket: "zomerd-d7791.firebasestorage.app",
+  messagingSenderId: "564938368672",
+  appId: "1:564938368672:web:10ecdd24bf8df282418bc5"
+};
+
+// تشغيل الخدمات
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+// --- 1. دالة النشر (منشور + صورة) ---
+async function publishPost() {
+    const title = document.getElementById('p-title').value;
+    const content = document.getElementById('post-body').innerHTML;
+    const imageFile = document.getElementById('image-input').files[0]; // تأكد إن عندك input للصور بالـ ID ده
+    let imageUrl = "";
+
+    if(!title || !content) return alert("اكتب العنوان والمحتوى الأول!");
+
+    // لو فيه صورة، نرفعها الأول للسيرفر
+    if(imageFile) {
+        const storageRef = storage.ref('posts/' + Date.now() + "_" + imageFile.name);
+        await storageRef.put(imageFile);
+        imageUrl = await storageRef.getDownloadURL();
+    }
+
+    // حفظ البيانات في Firestore
+    await db.collection("posts").add({
+        title: title,
+        content: content,
+        image: imageUrl,
+        author: "براء عمر",
+        date: new Date().toLocaleString('ar-EG'),
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        comments: []
+    });
+
+    alert("تم النشر بنجاح على سيرفر جوجل!");
+    location.reload(); 
+}
+
+// --- 2. دالة عرض المنشورات (بشكل لحظي) ---
+function loadPosts() {
+    db.collection("posts").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+        const container = document.getElementById('feed-container');
+        container.innerHTML = "";
+        snapshot.forEach((doc) => {
+            const post = doc.data();
+            const postId = doc.id;
+            container.innerHTML += `
+                <div class="post-card">
+                    <h3>${post.title}</h3>
+                    <p>${post.content}</p>
+                    ${post.image ? `<img src="${post.image}" style="width:100%; border-radius:10px;">` : ''}
+                    <hr>
+                    <div class="comments" id="comments-${postId}">
+                        ${post.comments.map(c => `<div class="comment"><b>${c.author}:</b> ${c.text}</div>`).join('')}
+                    </div>
+                    <input type="text" id="input-${postId}" placeholder="اكتب تعليق...">
+                    <button onclick="addComment('${postId}')">تعليق</button>
+                </div>
+            `;
+        });
+    });
+}
+
+// --- 3. دالة إضافة تعليق ---
+async function addComment(postId) {
+    const text = document.getElementById(`input-${postId}`).value;
+    if(!text) return;
+
+    await db.collection("posts").doc(postId).update({
+        comments: firebase.firestore.FieldValue.arrayUnion({
+            author: "زائر",
+            text: text,
+            date: new Date().toLocaleString()
+        })
+    });
+}
+
+// تشغيل جلب البيانات عند فتح الموقع
+loadPosts();
         }
 
+        
         setInterval(() => {
             document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG');
         }, 1000);
