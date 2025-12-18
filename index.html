@@ -119,228 +119,125 @@
             <p>Email: bo2584668@gmail.com</p>
                 <style>
         
+    
     <style>
-    /* حاوية الشات بالكامل */
-    #zomerd-chat-container {
-        position: fixed;
-        bottom: 25px;
-        left: 25px;
-        z-index: 999999;
-        direction: rtl;
-        font-family: 'Cairo', sans-serif;
+    #zomerd-chat-system { position: fixed; bottom: 30px; left: 30px; z-index: 99999; direction: rtl; }
+    
+    /* الزر العائم بتصميم متوهج */
+    #chat-open-btn {
+        width: 60px; height: 60px; background: linear-gradient(135deg, #00d2ff, #0080ff);
+        border-radius: 50%; border: none; cursor: pointer; color: #000; font-size: 24px;
+        box-shadow: 0 0 20px rgba(0, 210, 255, 0.5); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
+    #chat-open-btn:hover { transform: scale(1.1) rotate(10deg); box-shadow: 0 0 30px rgba(0, 210, 255, 0.8); }
 
-    /* زر الفقاعة العائم */
-    #chat-trigger {
-        width: 65px;
-        height: 65px;
-        background: #00d2ff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 8px 25px rgba(0, 210, 255, 0.4);
-        border: none;
-        transition: all 0.3s ease;
+    /* نافذة الدردشة الزجاجية */
+    #chat-window-v2 {
+        width: 360px; height: 550px; background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(15px); border: 1px solid rgba(0, 210, 255, 0.3);
+        border-radius: 25px; position: absolute; bottom: 80px; left: 0;
+        display: none; flex-direction: column; overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.8); animation: fastIn 0.3s ease;
     }
-    #chat-trigger:hover { transform: scale(1.1) rotate(10deg); }
-    #chat-trigger i { font-size: 28px; color: #000; }
+    @keyframes fastIn { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* نافذة الدردشة */
-    #chat-box-window {
-        width: 350px;
-        height: 500px;
-        background: #0f172a;
-        border: 1px solid rgba(0, 210, 255, 0.2);
-        border-radius: 20px;
-        position: absolute;
-        bottom: 85px;
-        left: 0;
-        display: none; /* مخفي افتراضياً */
-        flex-direction: column;
-        overflow: hidden;
-        box-shadow: 0 15px 50px rgba(0,0,0,0.8);
-        animation: chatOpen 0.4s ease-out;
-    }
+    .chat-top { background: rgba(0, 210, 255, 0.1); padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+    .chat-top span { color: #00d2ff; font-weight: 900; font-size: 1rem; }
 
-    @keyframes chatOpen {
-        from { opacity: 0; transform: translateY(30px) scale(0.9); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
-    }
+    #msg-stream { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scrollbar-width: thin; }
+    
+    /* ستايل الرسائل */
+    .b-msg, .u-msg { padding: 12px 16px; border-radius: 18px; font-size: 14px; max-width: 85%; line-height: 1.6; }
+    .b-msg { background: rgba(30, 41, 59, 0.8); color: #fff; align-self: flex-start; border-bottom-right-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
+    .u-msg { background: #00d2ff; color: #000; align-self: flex-end; border-bottom-left-radius: 4px; font-weight: 600; }
 
-    /* رأس الشات */
-    .chat-header {
-        background: #00d2ff;
-        color: #000;
-        padding: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-weight: 900;
-    }
-
-    /* منطقة الرسائل */
-    #chat-messages-area {
-        flex: 1;
-        padding: 15px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        background: rgba(0,0,0,0.2);
-    }
-
-    .msg {
-        padding: 10px 15px;
-        border-radius: 15px;
-        max-width: 80%;
-        font-size: 14px;
-        line-height: 1.5;
-        position: relative;
-    }
-    .msg-bot {
-        background: #1e293b;
-        color: #fff;
-        align-self: flex-start;
-        border-bottom-right-radius: 2px;
-    }
-    .msg-user {
-        background: #00d2ff;
-        color: #000;
-        align-self: flex-end;
-        border-bottom-left-radius: 2px;
-        font-weight: bold;
-    }
-
-    /* منطقة الإدخال */
-    .chat-input-box {
-        padding: 15px;
-        background: #0f172a;
-        border-top: 1px solid rgba(0, 210, 255, 0.1);
-        display: flex;
-        gap: 8px;
-    }
-    .chat-input-box input {
-        flex: 1;
-        background: #05080a;
-        border: 1px solid rgba(0, 210, 255, 0.2);
-        color: #fff;
-        padding: 10px;
-        border-radius: 10px;
-        outline: none;
-    }
-    .chat-input-box button {
-        background: #00d2ff;
-        border: none;
-        padding: 0 15px;
-        border-radius: 10px;
-        cursor: pointer;
-        color: #000;
-    }
-
-    /* تأثير جاري الكتابة */
-    .typing { font-style: italic; color: #00d2ff; font-size: 12px; }
+    .chat-bottom { padding: 15px; background: rgba(0,0,0,0.3); display: flex; gap: 10px; }
+    #chat-input-v2 { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(0, 210, 255, 0.2); color: #fff; padding: 12px; border-radius: 15px; outline: none; }
+    #chat-input-v2:focus { border-color: #00d2ff; }
 </style>
 
-<div id="zomerd-chat-container">
-    <audio id="pop-sound-chat" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
-    <audio id="send-sound-chat" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
-
-    <div id="chat-box-window">
-        <div class="chat-header">
-            <span><i class="fa-solid fa-robot"></i> مساعد زمرد الذكي</span>
-            <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="toggleChatWindow()"></i>
+<div id="zomerd-chat-system">
+    <div id="chat-window-v2">
+        <div class="chat-top">
+            <span><i class="fa-solid fa-bolt"></i> زمرد AI الذكي</span>
+            <i class="fa-solid fa-times" onclick="toggleV2()" style="cursor:pointer; color:rgba(255,255,255,0.5)"></i>
         </div>
-        <div id="chat-messages-area">
-            <div class="msg msg-bot">مرحباً بك! أنا مساعد براء عمر الذكي. كيف يمكنني خدمتك اليوم؟</div>
+        <div id="msg-stream">
+            <div class="b-msg">أهلاً يا براء! أنا مساعدك الصاروخي، اسألني عن أي شيء وسأجيبك في لمح البصر. ⚡</div>
         </div>
-        <div class="chat-input-box">
-            <input type="text" id="user-chat-input" placeholder="اسأل أي شيء..." onkeypress="if(event.key==='Enter') processChat()">
-            <button onclick="processChat()"><i class="fa-solid fa-paper-plane"></i></button>
+        <div class="chat-bottom">
+            <input type="text" id="chat-input-v2" placeholder="اكتب سؤالك هنا..." onkeypress="if(event.key==='Enter') quickTalk()">
+            <button onclick="quickTalk()" style="background:#00d2ff; border:none; width:45px; border-radius:12px; cursor:pointer"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
-
-    <button id="chat-trigger" onclick="toggleChatWindow()">
-        <i class="fa-solid fa-comment-dots"></i>
-    </button>
+    <button id="chat-open-btn" onclick="toggleV2()"><i class="fa-solid fa-headset"></i></button>
 </div>
 
 <script>
-    // الإعدادات
-    const GEMINI_KEY = "AIzaSyBLqyC33QHqrpIzKDv36SNrI6_z8r8hVEI"; // مفتاحك يا براء
+    const KEY_V2 = "AIzaSyBLqyC33QHqrpIzKDv36SNrI6_z8r8hVEI";
 
-    function toggleChatWindow() {
-        const win = document.getElementById('chat-box-window');
-        const isOpen = win.style.display === 'flex';
-        win.style.display = isOpen ? 'none' : 'flex';
-        if(!isOpen) document.getElementById('pop-sound-chat').play();
+    function toggleV2() {
+        const w = document.getElementById('chat-window-v2');
+        w.style.display = (w.style.display === 'flex') ? 'none' : 'flex';
     }
 
-    async function processChat() {
-        const input = document.getElementById('user-chat-input');
+    async function quickTalk() {
+        const input = document.getElementById('chat-input-v2');
         const text = input.value.trim();
         if(!text) return;
 
-        // 1. إضافة رسالة المستخدم
-        addMsgToUI(text, 'msg-user');
-        document.getElementById('send-sound-chat').play();
+        // إضافة رسالة المستخدم فوراً
+        appendV2(text, 'u-msg');
         input.value = '';
 
-        // 2. إضافة علامة "جاري التفكير"
-        const msgArea = document.getElementById('chat-messages-area');
-        const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'msg msg-bot typing';
-        loadingDiv.id = 'temp-loading';
-        loadingDiv.innerText = "جاري التفكير...";
-        msgArea.appendChild(loadingDiv);
-        msgArea.scrollTop = msgArea.scrollHeight;
+        // إنشاء مكان لرد البوت
+        const streamDiv = document.getElementById('msg-stream');
+        const botMsgDiv = document.createElement('div');
+        botMsgDiv.className = 'b-msg';
+        botMsgDiv.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحليل...';
+        streamDiv.appendChild(botMsgDiv);
+        streamDiv.scrollTop = streamDiv.scrollHeight;
 
         try {
-            // 3. حفظ في Firebase (لو موجودة)
-            if(window.db) {
-                db.collection("zomerd_chat_logs").add({
-                    user: (window.user) ? user.name : "زائر مجهول",
-                    message: text,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            }
-
-            // 4. استدعاء الذكاء الاصطناعي
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
+            // الطلب الصاروخي (استخدام Flash 1.5 للأداء العالي)
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY_V2}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    contents: [{
-                        parts: [{ text: `أنت المساعد الذكي لموقع زمرد نت المتخصص في المقاولات والاتصالات. صاحب الموقع هو براء عمر. أجب باختصار واحترافية باللغة العربية: ${text}` }]
-                    }]
+                    contents: [{ parts: [{ text: `أنت مساعد ذكي فائق السرعة لموقع زمرد نت. أجب باحتصار شديد ومفيد جداً: ${text}` }] }]
                 })
             });
 
             const data = await response.json();
-            const botResponse = data.candidates[0].content.parts[0].text;
+            const reply = data.candidates[0].content.parts[0].text;
 
-            // 5. مسح علامة التحميل وإضافة رد البوت
-            document.getElementById('temp-loading').remove();
-            addMsgToUI(botResponse, 'msg-bot');
-            document.getElementById('pop-sound-chat').play();
+            // تحديث الرد فوراً
+            botMsgDiv.innerText = reply;
+            streamDiv.scrollTop = streamDiv.scrollHeight;
 
-        } catch (error) {
-            console.error("AI Error:", error);
-            document.getElementById('temp-loading').innerText = "حدث خطأ في الاتصال بالسيرفر. حاول مرة أخرى.";
+            // حفظ الرسالة في الخلفية (بدون انتظار لضمان السرعة)
+            if(window.db) {
+                db.collection("chat_logs").add({ 
+                    user: (window.user) ? user.name : "زائر", 
+                    msg: text, 
+                    time: firebase.firestore.FieldValue.serverTimestamp() 
+                });
+            }
+
+        } catch (err) {
+            botMsgDiv.innerText = "حدث خطأ بسيط، جرب مرة تانية يا بطل.";
         }
     }
 
-    function addMsgToUI(text, className) {
-        const area = document.getElementById('chat-messages-area');
-        const div = document.createElement('div');
-        div.className = 'msg ' + className;
-        div.innerText = text;
-        area.appendChild(div);
-        area.scrollTop = area.scrollHeight;
+    function appendV2(t, c) {
+        const s = document.getElementById('msg-stream');
+        const d = document.createElement('div');
+        d.className = c;
+        d.innerText = t;
+        s.appendChild(d);
+        s.scrollTop = s.scrollHeight;
     }
 </script>
-    
 
 
             </div>
