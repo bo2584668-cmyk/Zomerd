@@ -21,10 +21,8 @@
 
         #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; background: var(--bg); }
 
-        /* Login Overlay */
         #login-overlay { position: fixed; inset: 0; background: #0b0f19; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 
-        /* Sidebar */
         aside { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: none; flex-direction: column; z-index: 100; }
         @media (max-width: 768px) {
             body { flex-direction: column; height: auto; overflow-y: auto; }
@@ -45,19 +43,16 @@
         .section { padding: 20px; display: none; max-width: 1000px; margin: 0 auto; }
         .section.active { display: block; animation: fadeIn 0.5s ease; }
 
-        /* Hero Design */
         .hero { height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         .hero h1 { font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900; background: linear-gradient(to bottom, #fff, var(--p)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 100%; margin-top: 40px; }
         .stat-card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
         .stat-card h2 { font-size: 3rem; color: #fff; }
 
-        /* Posts */
         .post-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; }
         .post-img { width: 100%; border-radius: 15px; margin: 15px 0; max-height: 400px; object-fit: cover; }
         .inp-field { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: #000; color: white; margin-bottom: 10px; outline: none; }
         
-        /* Chatbot */
         #zomerd-chat-wrapper { position: fixed; bottom: 80px; left: 20px; z-index: 1000; }
         #chat-window-box { width: 300px; height: 400px; background: var(--card); border: 1px solid var(--p); border-radius: 15px; display: none; flex-direction: column; margin-bottom: 10px; overflow: hidden; }
         #chat-btn-main { width: 60px; height: 60px; background: var(--p); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border:none; box-shadow: 0 0 20px var(--main-glow); }
@@ -66,8 +61,7 @@
     </style>
 </head>
 <body>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5562460683071642"
-     crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5562460683071642" crossorigin="anonymous"></script>
     <div id="particles-js"></div>
 
     <div id="login-overlay">
@@ -117,105 +111,20 @@
             <div class="post-card">
                 <h3>✍️ استوديو براء عمر للنشر</h3><br>
                 <input type="text" id="p-title" class="inp-field" placeholder="عنوان المنشور...">
-                <input type="file" id="img-upload" class="inp-field">
+                
+                <div style="margin-bottom: 15px;">
+                    <input type="file" id="img-upload" class="inp-field" onchange="uploadImageHandler(this)">
+                    <div id="upload-status-container" style="display:none; margin-top:10px;">
+                        <div style="height:8px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
+                            <div id="upload-progress-bar" style="width:0%; height:100%; background:#00d2ff; transition:0.3s;"></div>
+                        </div>
+                        <p id="upload-text" style="font-size:0.8rem; margin-top:5px; color:#00d2ff;">جاري رفع الصورة: 0%</p>
+                    </div>
+                </div>
+
                 <div id="p-body" class="editor-box" contenteditable="true" style="background:rgba(0,0,0,0.2); border:1px solid var(--border); padding:15px; border-radius:10px; min-height:150px; outline:none;" placeholder="اكتب المقال هنا..."></div>
+                <br>
                 <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:12px; font-weight:bold; cursor:pointer; color:black;">نشر الآن بسحابة Firebase</button>
-       <div style="margin-bottom: 15px;">
-    <input type="file" id="img-upload" class="inp-field" onchange="uploadImageHandler(this)">
-    
-    <div id="upload-status-container" style="display:none; margin-top:10px;">
-        <div style="height:8px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
-            <div id="upload-progress-bar" style="width:0%; height:100%; background:#00d2ff; transition:0.3s;"></div>
-        </div>
-  
-        <p id="upload-text" style="font-size:0.8rem; margin-top:5px; color:#00d2ff;">جاري رفع الصورة: 0%</p>
-
-    // 1. المتغير الأساسي (تأكد أنه في أعلى السكريبت)
-let uploadedImageUrl = ""; 
-
-// 2. دالة الرفع (تحديث شريط التحميل وحفظ الرابط)
-async function uploadImageHandler(input) {
-    const file = input.files[0];
-    if (!file) return;
-
-    const container = document.getElementById('upload-status-container');
-    const progressBar = document.getElementById('upload-progress-bar');
-    const progressText = document.getElementById('upload-text');
-
-    container.style.display = 'block';
-    progressBar.style.width = '30%';
-    progressBar.style.background = '#00d2ff';
-    progressText.innerText = "جاري الرفع إلى السيرفر...";
-
-    const formData = new FormData();
-    formData.append("image", file);
-    
-    // مفتاحك الذي أرسلته
-    const myApiKey = "22d566497cb5778087e8dd132dc8116d"; 
-
-    try {
-        const response = await fetch(`https://api.imgbb.com/1/upload?key=${myApiKey}`, {
-            method: "POST",
-            body: formData
-        });
-        const data = await response.json();
-
-        if (data.success) {
-            // هنا السر: حفظ الرابط في المتغير العام
-            uploadedImageUrl = data.data.url; 
-            progressBar.style.width = "100%";
-            progressBar.style.background = "#25d366";
-            progressText.innerHTML = "✅ تم تجهيز الصورة للنشر!";
-            console.log("Image Ready: " + uploadedImageUrl);
-        } else {
-            alert("فشل الرفع، حاول مرة أخرى");
-        }
-    } catch (error) {
-        progressText.innerText = "❌ خطأ في الاتصال";
-        console.error(error);
-    }
-}
-
-// 3. دالة النشر النهائية (تأخذ الرابط من المتغير وتضعه في Firebase)
-async function publishPost() {
-    const title = document.getElementById('p-title').value;
-    const content = document.getElementById('p-body').innerHTML;
-
-    if (!title || !content) {
-        return alert("اكتب العنوان والمحتوى أولاً!");
-    }
-
-    if (!uploadedImageUrl) {
-        return alert("انتظر حتى ينتهي رفع الصورة (يجب أن يصبح الشريط أخضر)!");
-    }
-
-    try {
-        // إرسال البيانات لـ Firestore
-        await db.collection("posts").add({
-            title: title,
-            content: content,
-            image: uploadedImageUrl, // الرابط الذي جاء من ImgBB
-            author: user.name,
-            time: firebase.firestore.FieldValue.serverTimestamp(),
-            comments: []
-        });
-
-        alert("🚀 تم نشر المقال بالصورة بنجاح!");
-        
-        // تنظيف الحقول
-        document.getElementById('p-title').value = "";
-        document.getElementById('p-body').innerHTML = "";
-        document.getElementById('upload-status-container').style.display = 'none';
-        uploadedImageUrl = ""; // تصفير الرابط للمنشور القادم
-        
-        nav('feed'); // اذهب لمشاهدة منشورك
-    } catch (error) {
-        alert("حدث خطأ في قاعدة البيانات: " + error.message);
-    }
-}
-    
-    </div>
-       </div> 
             </div>
         </section>
 
@@ -261,6 +170,7 @@ async function publishPost() {
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
+        // تكوين Firebase
         const firebaseConfig = {
           apiKey: "AIzaSyAt16kYfN4cNHfTwbdr3KOGbcQJlmE45tg",
           authDomain: "zomerd-new.firebaseapp.com",
@@ -273,7 +183,9 @@ async function publishPost() {
         const db = firebase.firestore();
         const storage = firebase.storage();
         const ADMIN_EMAIL = "bo2584668@gmail.com";
+        
         let user = null;
+        let uploadedImageUrl = ""; // المتغير العالمي لحفظ رابط الصورة من ImgBB
 
         function onGoogleLogin(res) {
             user = JSON.parse(atob(res.credential.split('.')[1]));
@@ -306,23 +218,80 @@ async function publishPost() {
             if(e) e.currentTarget.classList.add('active');
         }
 
+        // دالة رفع الصور لـ ImgBB
+        async function uploadImageHandler(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const container = document.getElementById('upload-status-container');
+            const progressBar = document.getElementById('upload-progress-bar');
+            const progressText = document.getElementById('upload-text');
+
+            container.style.display = 'block';
+            progressBar.style.width = '30%';
+            progressBar.style.background = '#00d2ff';
+            progressText.innerText = "جاري الرفع إلى السيرفر...";
+
+            const formData = new FormData();
+            formData.append("image", file);
+            const myApiKey = "22d566497cb5778087e8dd132dc8116d"; 
+
+            try {
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${myApiKey}`, {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    uploadedImageUrl = data.data.url; 
+                    progressBar.style.width = "100%";
+                    progressBar.style.background = "#25d366";
+                    progressText.innerHTML = "✅ تم تجهيز الصورة للنشر!";
+                } else {
+                    alert("فشل الرفع، حاول مرة أخرى");
+                }
+            } catch (error) {
+                progressText.innerText = "❌ خطأ في الاتصال";
+                console.error(error);
+            }
+        }
+
+        // دالة النشر النهائية
         async function publishPost() {
             const title = document.getElementById('p-title').value;
             const content = document.getElementById('p-body').innerHTML;
-            const file = document.getElementById('img-upload').files[0];
-            if(!title || !content) return alert("اكمل البيانات!");
-            let url = "";
-            if(file) {
-                const ref = storage.ref('posts/' + Date.now());
-                await ref.put(file);
-                url = await ref.getDownloadURL();
+
+            if (!title || !content || content.trim() === "") {
+                return alert("اكتب العنوان والمحتوى أولاً!");
             }
-            await db.collection("posts").add({
-                title, content, image: url, author: user.name,
-                time: firebase.firestore.FieldValue.serverTimestamp(), comments: []
-            });
-            alert("تم النشر!");
-            nav('feed');
+
+            if (!uploadedImageUrl) {
+                return alert("انتظر حتى ينتهي رفع الصورة (يجب أن يصبح الشريط أخضر)!");
+            }
+
+            try {
+                await db.collection("posts").add({
+                    title: title,
+                    content: content,
+                    image: uploadedImageUrl,
+                    author: user.name,
+                    time: firebase.firestore.FieldValue.serverTimestamp(),
+                    comments: []
+                });
+
+                alert("🚀 تم نشر المقال بنجاح!");
+                
+                // تنظيف الحقول
+                document.getElementById('p-title').value = "";
+                document.getElementById('p-body').innerHTML = "";
+                document.getElementById('upload-status-container').style.display = 'none';
+                uploadedImageUrl = ""; 
+                
+                nav('feed');
+            } catch (error) {
+                alert("حدث خطأ في قاعدة البيانات: " + error.message);
+            }
         }
 
         function listenToPosts() {
@@ -398,9 +367,7 @@ async function publishPost() {
         window.onload = () => {
             const saved = localStorage.getItem('zomerd_user');
             if(saved) { user = JSON.parse(saved); startApp(); }
-  
-    }
-  // 1. المتغير الأساسي (تأكد أنه في أعلى السكريبت)
-            
+        }
+    </script>
 </body>
 </html>
