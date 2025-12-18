@@ -127,7 +127,93 @@
         <div style="height:8px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
             <div id="upload-progress-bar" style="width:0%; height:100%; background:#00d2ff; transition:0.3s;"></div>
         </div>
+  
         <p id="upload-text" style="font-size:0.8rem; margin-top:5px; color:#00d2ff;">جاري رفع الصورة: 0%</p>
+
+    // 1. المتغير الأساسي (تأكد أنه في أعلى السكريبت)
+let uploadedImageUrl = ""; 
+
+// 2. دالة الرفع (تحديث شريط التحميل وحفظ الرابط)
+async function uploadImageHandler(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const container = document.getElementById('upload-status-container');
+    const progressBar = document.getElementById('upload-progress-bar');
+    const progressText = document.getElementById('upload-text');
+
+    container.style.display = 'block';
+    progressBar.style.width = '30%';
+    progressBar.style.background = '#00d2ff';
+    progressText.innerText = "جاري الرفع إلى السيرفر...";
+
+    const formData = new FormData();
+    formData.append("image", file);
+    
+    // مفتاحك الذي أرسلته
+    const myApiKey = "22d566497cb5778087e8dd132dc8116d"; 
+
+    try {
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${myApiKey}`, {
+            method: "POST",
+            body: formData
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            // هنا السر: حفظ الرابط في المتغير العام
+            uploadedImageUrl = data.data.url; 
+            progressBar.style.width = "100%";
+            progressBar.style.background = "#25d366";
+            progressText.innerHTML = "✅ تم تجهيز الصورة للنشر!";
+            console.log("Image Ready: " + uploadedImageUrl);
+        } else {
+            alert("فشل الرفع، حاول مرة أخرى");
+        }
+    } catch (error) {
+        progressText.innerText = "❌ خطأ في الاتصال";
+        console.error(error);
+    }
+}
+
+// 3. دالة النشر النهائية (تأخذ الرابط من المتغير وتضعه في Firebase)
+async function publishPost() {
+    const title = document.getElementById('p-title').value;
+    const content = document.getElementById('p-body').innerHTML;
+
+    if (!title || !content) {
+        return alert("اكتب العنوان والمحتوى أولاً!");
+    }
+
+    if (!uploadedImageUrl) {
+        return alert("انتظر حتى ينتهي رفع الصورة (يجب أن يصبح الشريط أخضر)!");
+    }
+
+    try {
+        // إرسال البيانات لـ Firestore
+        await db.collection("posts").add({
+            title: title,
+            content: content,
+            image: uploadedImageUrl, // الرابط الذي جاء من ImgBB
+            author: user.name,
+            time: firebase.firestore.FieldValue.serverTimestamp(),
+            comments: []
+        });
+
+        alert("🚀 تم نشر المقال بالصورة بنجاح!");
+        
+        // تنظيف الحقول
+        document.getElementById('p-title').value = "";
+        document.getElementById('p-body').innerHTML = "";
+        document.getElementById('upload-status-container').style.display = 'none';
+        uploadedImageUrl = ""; // تصفير الرابط للمنشور القادم
+        
+        nav('feed'); // اذهب لمشاهدة منشورك
+    } catch (error) {
+        alert("حدث خطأ في قاعدة البيانات: " + error.message);
+    }
+}
+    
     </div>
        </div> 
             </div>
@@ -315,89 +401,6 @@
   
     }
   // 1. المتغير الأساسي (تأكد أنه في أعلى السكريبت)
-let uploadedImageUrl = ""; 
-
-// 2. دالة الرفع (تحديث شريط التحميل وحفظ الرابط)
-async function uploadImageHandler(input) {
-    const file = input.files[0];
-    if (!file) return;
-
-    const container = document.getElementById('upload-status-container');
-    const progressBar = document.getElementById('upload-progress-bar');
-    const progressText = document.getElementById('upload-text');
-
-    container.style.display = 'block';
-    progressBar.style.width = '30%';
-    progressBar.style.background = '#00d2ff';
-    progressText.innerText = "جاري الرفع إلى السيرفر...";
-
-    const formData = new FormData();
-    formData.append("image", file);
-    
-    // مفتاحك الذي أرسلته
-    const myApiKey = "22d566497cb5778087e8dd132dc8116d"; 
-
-    try {
-        const response = await fetch(`https://api.imgbb.com/1/upload?key=${myApiKey}`, {
-            method: "POST",
-            body: formData
-        });
-        const data = await response.json();
-
-        if (data.success) {
-            // هنا السر: حفظ الرابط في المتغير العام
-            uploadedImageUrl = data.data.url; 
-            progressBar.style.width = "100%";
-            progressBar.style.background = "#25d366";
-            progressText.innerHTML = "✅ تم تجهيز الصورة للنشر!";
-            console.log("Image Ready: " + uploadedImageUrl);
-        } else {
-            alert("فشل الرفع، حاول مرة أخرى");
-        }
-    } catch (error) {
-        progressText.innerText = "❌ خطأ في الاتصال";
-        console.error(error);
-    }
-}
-
-// 3. دالة النشر النهائية (تأخذ الرابط من المتغير وتضعه في Firebase)
-async function publishPost() {
-    const title = document.getElementById('p-title').value;
-    const content = document.getElementById('p-body').innerHTML;
-
-    if (!title || !content) {
-        return alert("اكتب العنوان والمحتوى أولاً!");
-    }
-
-    if (!uploadedImageUrl) {
-        return alert("انتظر حتى ينتهي رفع الصورة (يجب أن يصبح الشريط أخضر)!");
-    }
-
-    try {
-        // إرسال البيانات لـ Firestore
-        await db.collection("posts").add({
-            title: title,
-            content: content,
-            image: uploadedImageUrl, // الرابط الذي جاء من ImgBB
-            author: user.name,
-            time: firebase.firestore.FieldValue.serverTimestamp(),
-            comments: []
-        });
-
-        alert("🚀 تم نشر المقال بالصورة بنجاح!");
-        
-        // تنظيف الحقول
-        document.getElementById('p-title').value = "";
-        document.getElementById('p-body').innerHTML = "";
-        document.getElementById('upload-status-container').style.display = 'none';
-        uploadedImageUrl = ""; // تصفير الرابط للمنشور القادم
-        
-        nav('feed'); // اذهب لمشاهدة منشورك
-    } catch (error) {
-        alert("حدث خطأ في قاعدة البيانات: " + error.message);
-    }
-}   
-     }   
-    </script>
+            
 </body>
 </html>
