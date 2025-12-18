@@ -203,80 +203,37 @@ aside {
         </section>
 
         <section id="sec-settings" class="section">
-            
-                <h3>⚙️ الإعدادات</h3><br>
-                
-    
-        <h3 style="color: var(--p);"><i class="fa-solid fa-gears"></i> إعدادات المنصة</h3>
+    <div class="post-card">
+        <h3 style="color: var(--p);"><i class="fa-solid fa-user-gear"></i> إعدادات حسابك</h3>
         <br>
 
-        <div id="admin-links-settings" style="display:none; background: rgba(0, 210, 255, 0.05); border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-            <p style="font-size: 0.85rem; color: var(--p); margin-bottom: 15px;">⚙️ لوحة تحكم براء (تحديث الروابط):</p>
+        <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+            <p style="font-size: 0.85rem; color: var(--p); margin-bottom: 10px;">👤 البيانات الأساسية:</p>
+            <input type="text" id="user-display-name" class="inp-field" placeholder="الاسم الظاهر..." readonly style="opacity:0.6">
+            <input type="text" id="user-display-email" class="inp-field" placeholder="البريد الإلكتروني..." readonly style="opacity:0.6">
             
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <input type="text" id="set-fb" class="inp-field" placeholder="رابط الفيسبوك الجديد..." style="margin-bottom:0">
-                <input type="text" id="set-insta" class="inp-field" placeholder="رابط الإنستجرام الجديد..." style="margin-bottom:0">
-                <input type="text" id="set-tiktok" class="inp-field" placeholder="رابط التيك توك الجديد..." style="margin-bottom:0">
-                
-                <button onclick="updateSocialLinks()" style="background: var(--p); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                    <i class="fa-solid fa-floppy-disk"></i> حفظ الروابط في السحابة
-                </button>
+            <p style="font-size: 0.85rem; color: var(--p); margin-top: 10px; margin-bottom: 10px;">📞 بيانات التواصل:</p>
+            <input type="text" id="user-phone" class="inp-field" placeholder="رابط واتساب أو رقم الهاتف...">
+            <input type="text" id="user-link" class="inp-field" placeholder="رابط حسابك الشخصي (فيسبوك/تليجرام)...">
             
+            <button onclick="saveUserProfile()" style="background: var(--p); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%;">
+                <i class="fa-solid fa-floppy-disk"></i> حفظ التعديلات
+            </button>
         </div>
 
-        <p style="font-size: 0.8rem; color: var(--dim); margin-bottom: 10px;">تغيير المظهر العام:</p>
+        <p style="font-size: 0.8rem; color: var(--dim); margin-bottom: 10px;">🎨 مظهر الموقع:</p>
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
             <button onclick="changeTheme('light')" class="inp-field" style="flex:1; margin-bottom:0">☀️ نهار</button>
             <button onclick="changeTheme('dark')" class="inp-field" style="flex:1; margin-bottom:0">🌙 ليل</button>
         </div>
 
-        <p style="font-size: 0.8rem; color: var(--dim); margin-bottom: 10px;">الجلسة الحالية:</p>
         <button onclick="logout()" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; width: 100%;" class="inp-field">
             <i class="fa-solid fa-power-off"></i> تسجيل الخروج
         </button>
     </div>
 </section>
-
-<script>
-    // هذه الدالة تضمن ظهور لوحة التحكم لك فقط وتحميل البيانات القديمة
-    async function initAdminSettings() {
-        if (user && user.email === ADMIN_EMAIL) {
-            document.getElementById('admin-links-settings').style.display = 'block';
             
-            // جلب الروابط الحالية من Firestore
-            const doc = await db.collection("settings").doc("social_links").get();
-            if (doc.exists) {
-                const data = doc.data();
-                document.getElementById('set-fb').value = data.facebook || "";
-                document.getElementById('set-insta').value = data.instagram || "";
-                document.getElementById('set-tiktok').value = data.tiktok || "";
-            }
-        }
-    }
-
-    // دالة الحفظ في Firebase
-    async function updateSocialLinks() {
-        const fb = document.getElementById('set-fb').value;
-        const insta = document.getElementById('set-insta').value;
-        const tiktok = document.getElementById('set-tiktok').value;
-
-        try {
-            await db.collection("settings").doc("social_links").set({
-                facebook: fb,
-                instagram: insta,
-                tiktok: tiktok,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            alert("تم الحفظ بنجاح يا براء! الروابط اتحدثت في صفحة التواصل.");
-        } catch (error) {
-            alert("حدث خطأ أثناء الحفظ: " + error.message);
-        }
-    }
-
-    // لكي يعمل الكود، يجب استدعاء initAdminSettings() داخل دالة startApp() الأصلية عندك
-</script>
-            </div>
-        </section>
+                        </section>
 
         <section id="sec-contact" class="section">
             <div class="post-card" style="text-align:center;">
