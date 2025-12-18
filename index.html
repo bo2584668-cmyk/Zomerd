@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
-<meta name="google-site-verification=l9QWU9EfN7iGme5VjBMjdLUvQlOYRBitRQMJ6pBvJQE" />
+    <meta name="google-site-verification" content="l9QWU9EfN7iGme5VjBMjdLUvQlOYRBitRQMJ6pBvJQE" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>زمرد نت | للاخبار </title>
+    <title>زمرد نت | براء عمر</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
@@ -12,51 +12,62 @@
     <style>
         :root {
             --p: #00d2ff; --bg: #0b0f19; --card: #151c2c; --txt: #f1f5f9; --dim: #94a3b8; --border: rgba(255,255,255,0.05);
+            --main-glow: rgba(0, 210, 255, 0.6);
         }
         .theme-light { --bg: #f8fafc; --card: #ffffff; --txt: #1e293b; --dim: #64748b; --border: rgba(0,0,0,0.1); }
         
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; transition: 0.3s; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; transition: 0.3s; scroll-behavior: smooth; }
         body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; }
+
+        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; background: var(--bg); }
 
         /* Login Overlay */
         #login-overlay { position: fixed; inset: 0; background: #0b0f19; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 
-        /* Responsive Sidebar */
+        /* Sidebar */
         aside { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: none; flex-direction: column; z-index: 100; }
         @media (max-width: 768px) {
             body { flex-direction: column; height: auto; overflow-y: auto; }
-            aside { width: 100% !important; height: 65px !important; position: fixed; bottom: 0; flex-direction: row !important; display: flex !important; justify-content: space-around; }
+            aside { width: 100% !important; height: 65px !important; position: fixed; bottom: 0; flex-direction: row !important; display: flex !important; justify-content: space-around; border-top: 1px solid var(--border); }
             main { padding-bottom: 70px; width: 100% !important; }
-            .nav-link { flex-direction: column; font-size: 0.6rem !important; flex: 1; }
-            .logo, header { display: none !important; }
+            .nav-link { flex-direction: column; font-size: 0.6rem !important; flex: 1; justify-content: center; margin-bottom: 0 !important; }
+            .logo-side, header { display: none !important; }
         }
 
-        .logo { padding: 30px; text-align: center; color: var(--p); border-bottom: 1px solid var(--border); }
+        .logo-side { padding: 30px; text-align: center; color: var(--p); border-bottom: 1px solid var(--border); }
         nav { flex: 1; padding: 20px 10px; }
-        .nav-link { padding: 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--dim); margin-bottom: 5px; }
+        .nav-link { padding: 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--dim); margin-bottom: 5px; text-decoration: none; }
         .nav-link.active { background: var(--p); color: black; font-weight: bold; }
 
-        main { flex: 1; overflow-y: auto; background: var(--bg); display: none; }
-        header { height: 70px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--card); sticky; top: 0; z-index: 10; }
+        main { flex: 1; overflow-y: auto; background: transparent; display: none; }
+        header { height: 70px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--card); position: sticky; top: 0; z-index: 10; }
 
-        .section { padding: 20px; display: none; max-width: 900px; margin: 0 auto; }
+        .section { padding: 20px; display: none; max-width: 1000px; margin: 0 auto; }
         .section.active { display: block; animation: fadeIn 0.5s ease; }
 
-        /* Post Design */
-        .post-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; text-align: right; }
-        .post-img { width: 100%; border-radius: 15px; margin: 15px 0; max-height: 400px; object-fit: cover; }
-        
-        .comment-item { background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 10px; margin-top: 8px; font-size: 0.85rem; }
-        .comment-input-wrap { display: flex; gap: 8px; margin-top: 15px; }
-        .comment-input-wrap input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 10px; outline: none; }
+        /* Hero Design */
+        .hero { height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .hero h1 { font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900; background: linear-gradient(to bottom, #fff, var(--p)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 100%; margin-top: 40px; }
+        .stat-card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
+        .stat-card h2 { font-size: 3rem; color: #fff; }
 
-        .editor-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 20px; border-radius: 15px; margin-top: 10px; min-height: 200px; outline: none; }
-        .inp-field { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: #000; color: white; margin-bottom: 10px; }
+        /* Posts */
+        .post-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .post-img { width: 100%; border-radius: 15px; margin: 15px 0; max-height: 400px; object-fit: cover; }
+        .inp-field { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: #000; color: white; margin-bottom: 10px; outline: none; }
         
+        /* Chatbot */
+        #zomerd-chat-wrapper { position: fixed; bottom: 80px; left: 20px; z-index: 1000; }
+        #chat-window-box { width: 300px; height: 400px; background: var(--card); border: 1px solid var(--p); border-radius: 15px; display: none; flex-direction: column; margin-bottom: 10px; overflow: hidden; }
+        #chat-btn-main { width: 60px; height: 60px; background: var(--p); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border:none; box-shadow: 0 0 20px var(--main-glow); }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
+
+    <div id="particles-js"></div>
 
     <div id="login-overlay">
         <h1 style="color:var(--p); font-size: 2.5rem; margin-bottom: 10px;">زمرد نت</h1>
@@ -66,254 +77,47 @@
     </div>
 
     <aside id="app-sidebar">
-        <div class="logo"><h2>زمرد نت</h2></div>
+        <div class="logo-side"><h2>زمرد نت</h2></div>
         <nav>
-   <div class="nav-link active" onclick="nav('feed', event)"><i class="fa-solid fa-house"></i> الرئيسيه</div>
-            <div class="nav-link" onclick="nav('news', event)"><i class="fa-solid fa-house"></i> الأخبار</div>
-            <div id="nav-admin-only" class="nav-link" onclick="nav('write', event)"><i class="fa-solid fa-pen"></i> نشر مقال</div>
+            <div class="nav-link active" onclick="nav('home', event)"><i class="fa-solid fa-house"></i> الرئيسية</div>
+            <div class="nav-link" onclick="nav('feed', event)"><i class="fa-solid fa-newspaper"></i> الأخبار</div>
+            <div id="nav-admin-only" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa-solid fa-pen"></i> نشر مقال</div>
             <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-gear"></i> الإعدادات</div>
             <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-phone"></i> تواصل معنا</div>
         </nav>
     </aside>
 
-
     <main id="app-main">
         <header>
-            <div id="sec-title">الرئيسيه</div>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <span id="live-clock" style="color:var(--p); font-family:monospace;">00:00</span>
-                <div id="user-avatar" style="width:35px; height:35px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">?</div>
-      <style>
-        :root {
-            --emerald: #00d2ff;
-            --main-glow: rgba(0, 210, 255, 0.6);
-            --bg-dark: #020617;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; scroll-behavior: smooth; }
-
-        body { background-color: var(--bg-dark); color: #fff; overflow-x: hidden; }
-
-        /* --- تأثير الخلفية المتحركة --- */
-        #particles-js {
-            position: fixed; width: 100%; height: 100%; z-index: -1;
-            background-image: radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
-        }
-
-        /* --- الهيدر الأسطوري --- */
-        header {
-            padding: 20px 8%; display: flex; justify-content: space-between; align-items: center;
-            position: fixed; width: 100%; top: 0; z-index: 1000;
-            backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border);
-        }
-        .logo { font-size: 28px; font-weight: 900; color: var(--emerald); text-shadow: 0 0 15px var(--main-glow); }
-        .nav-links a { color: #fff; text-decoration: none; margin-right: 25px; font-weight: bold; transition: 0.3s; }
-        .nav-links a:hover { color: var(--emerald); }
-
-        /* --- قسم الهيرو (العالمي) --- */
-        .hero {
-            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; padding: 0 20px;
-        }
-        .hero h1 {
-            font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; line-height: 1.1;
-            background: linear-gradient(to bottom, #fff, var(--emerald));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 30px rgba(0, 210, 255, 0.3));
-        }
-        .hero p { font-size: 1.4rem; color: #94a3b8; max-width: 800px; margin: 20px 0; }
-        
-        .cta-btn {
-            padding: 15px 40px; font-size: 1.2rem; font-weight: 900; color: #000;
-            background: var(--emerald); border: none; border-radius: 50px;
-            cursor: pointer; box-shadow: 0 0 30px var(--main-glow); transition: 0.4s;
-            text-decoration: none; display: inline-block;
-        }
-        .cta-btn:hover { transform: scale(1.1) rotate(-2deg); box-shadow: 0 0 50px var(--emerald); }
-
-        /* --- المستودع الذكي --- */
-        .repo-status {
-            margin-top: 40px; padding: 10px 25px; border-radius: 100px;
-            background: var(--glass); border: 1px solid var(--glass-border);
-            display: flex; align-items: center; gap: 15px; animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(0, 210, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0); } }
-
-        /* --- قسم الإحصائيات الضخم --- */
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px; padding: 100px 8%;
-        }
-        .stat-card {
-            background: var(--glass); border: 1px solid var(--glass-border); padding: 50px;
-            border-radius: 30px; text-align: center; backdrop-filter: blur(10px);
-            transition: 0.5s; position: relative; overflow: hidden;
-        }
-        .stat-card:hover { border-color: var(--emerald); transform: translateY(-15px); background: rgba(0, 210, 255, 0.05); }
-        .stat-card h2 { font-size: 4rem; font-weight: 900; color: #fff; margin-bottom: 5px; }
-        .stat-card p { color: var(--emerald); font-weight: bold; font-size: 1.2rem; text-transform: uppercase; }
-
-        /* --- قسم الميزات الأسطوري --- */
-        .section-title { text-align: center; font-size: 3rem; font-weight: 900; margin-bottom: 50px; color: #fff; }
-        .features { padding: 100px 8%; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
-        .f-box {
-            padding: 40px; border-radius: 40px; background: var(--glass);
-            border: 1px solid var(--glass-border); transition: 0.4s; text-align: center;
-        }
-        .f-box:hover { background: #fff; color: #000; }
-        .f-box i { font-size: 50px; color: var(--emerald); margin-bottom: 25px; }
-        .f-box h3 { font-size: 2rem; margin-bottom: 15px; }
-
-        /* --- الفوتر --- */
-        footer { padding: 80px 8% 40px; text-align: center; background: rgba(0,0,0,0.5); }
-        .social-links { margin-bottom: 30px; }
-        .social-links a { color: #fff; font-size: 24px; margin: 0 15px; transition: 0.3s; }
-        .social-links a:hover { color: var(--emerald); }
-
-    </style>
-</head>
-<body>
-
-    <div id="particles-js"></div>
-
-    <header>
-        <div class="logo">ZOMERD.NET</div>
-        <nav class="nav-links">
-            <a href="#hero">الرئيسية</a>
-            <a href="#stats">الإحصائيات</a>
-            <a href="#features">الميزات</a>
-            <a href="https://wa.me/201273740256 class="cta-btn" style="padding: 10px 25px; font-size: 0.9rem;">تواصل معي</a>
-        </nav>
-    </header>
-
-    <section class="hero" id="hero">
-        <h1>مستقبل التقنية<br>بين يديك</h1>
-        <p>مرحباً بك في عالم براء عمر الأسطوري. زمرد نت ليس مجرد موقع، بل هو مستودع للإبداع الرقمي وحلول المستقبل.</p>
-        
-        <a href="#features" class="cta-btn">اكتشف المستودع</a>
-
-        <div class="repo-status">
-            <i class="fa-solid fa-circle-check" style="color: var(--emerald);"></i>
-            <span>مستودع زمرد نت (Vercel) يعمل بكفاءة 100%</span>
-        </div>
-    </section>
-
-    <section class="stats-grid" id="stats">
-        <div class="stat-card">
-            <h2 id="clients">0</h2>
-            <p>عميل يثق بنا</p>
-        </div>
-        <div class="stat-card">
-            <h2 id="projects">0</h2>
-            <p>مشروع مكتمل</p>
-        </div>
-        <div class="stat-card">
-            <h2 id="experience">0</h2>
-            <p>ساعة برمجة</p>
-        </div>
-    </section>
-
-    <h2 class="section-title">لماذا زمرد نت؟</h2>
-    <section class="features" id="features">
-        <div class="f-box">
-            <i class="fa-solid fa-microchip"></i>
-            <h3>ذكاء اصطناعي</h3>
-            <p>نستخدم أحدث تقنيات الـ AI لتطوير حلول برمجية ذكية.</p>
-        </div>
-        <div class="f-box">
-            <i class="fa-solid fa-code"></i>
-            <h3>كود نظيف</h3>
-            <p>برمجياتنا مبنية على أسس عالمية تضمن السرعة والاستقرار.</p>
-        </div>
-        <div class="f-box">
-            <i class="fa-solid fa-rocket"></i>
-            <h3>أداء صاروخي</h3>
-            <p>موقعك سيفتح في لمح البصر بفضل تقنيات التحسين الخاصة بنا.</p>
-        </div>
-    </section>
-
-    <footer>
-        <div class="social-links">
-            <a href="#"><i class="fa-brands fa-facebook"></i></a>
-            <a href="#"><i class="fa-brands fa-twitter"></i></a>
-            <a href="#"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#"><i class="fa-brands fa-github"></i></a>
-        </div>
-        <p>تم التطوير بكل شغف بواسطة الأسطورة براء عمر &copy; 2025</p>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script>
-        // إعداد الجزيئات الخلفية
-        particlesJS('particles-js', {
-            "particles": {
-                "number": { "value": 80 },
-                "color": { "value": "#00d2ff" },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.5 },
-                "size": { "value": 3 },
-                "line_linked": { "enable": true, "distance": 150, "color": "#00d2ff", "opacity": 0.4, "width": 1 },
-                "move": { "enable": true, "speed": 2 }
-            }
-        });
-
-        // العداد التفاعلي الأسطوري
-        function animateValue(id, start, end, duration) {
-            let range = end - start;
-            let current = start;
-            let increment = end > start ? 1 : -1;
-            let stepTime = Math.abs(Math.floor(duration / range));
-            let obj = document.getElementById(id);
-            let timer = setInterval(function() {
-                current += increment;
-                obj.innerHTML = current + (id === 'experience' ? 'H+' : '+');
-                if (current == end) {
-                    clearInterval(timer);
-                }
-            }, stepTime);
-        }
-
-        window.onload = function() {
-            animateValue("clients", 0, 1500, 2000);
-            animateValue("projects", 0, 320, 2000);
-            animateValue("experience", 0, 5000, 2000);
-        };
-    </script>
-</body>
-
-            
-            
-            </div>
-        </header>
-    
-    
-    
-    <main id="app-mews">
-
-        <header>
-            <div id="sec-title">آخر الأخبار</div>
-            <div style="display:flex; align-items:center; gap:10px;">
+            <div id="sec-title">الرئيسية</div>
+            <div style="display:flex; align-items:center; gap:15px;">
                 <span id="live-clock" style="color:var(--p); font-family:monospace;">00:00</span>
                 <div id="user-avatar" style="width:35px; height:35px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">?</div>
             </div>
         </header>
 
-        <section id="sec-feed" class="section active">
-            <div id="feed-container">جاري جلب المنشورات من السحابة...</div>
+        <section id="sec-home" class="section active">
+            <div class="hero">
+                <h1>مستقبل التقنية بين يديك</h1>
+                <p>مرحباً بك في عالم براء عمر الأسطوري. زمرد نت هو مستودع للإبداع الرقمي.</p>
+                <div class="stats-grid">
+                    <div class="stat-card"><h2 id="clients">0</h2><p>عميل يثق بنا</p></div>
+                    <div class="stat-card"><h2 id="projects">0</h2><p>مشروع مكتمل</p></div>
+                    <div class="stat-card"><h2 id="experience">0</h2><p>ساعة برمجة</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-feed" class="section">
+            <div id="feed-container">جاري جلب المنشورات...</div>
         </section>
 
         <section id="sec-write" class="section">
             <div class="post-card">
                 <h3>✍️ استوديو براء عمر للنشر</h3><br>
                 <input type="text" id="p-title" class="inp-field" placeholder="عنوان المنشور...">
-                <div style="display:flex; gap:10px; margin-bottom:10px;">
-                    <button class="nav-link" onclick="document.getElementById('img-upload').click()" style="margin:0; background:rgba(255,255,255,0.05);"><i class="fa-image"></i> إضافة صورة</button>
-                    <input type="file" id="img-upload" hidden accept="image/*">
-                </div>
-                <div id="p-body" class="editor-box" contenteditable="true" placeholder="اكتب محتوى المقال هنا..."></div>
-                <br>
+                <input type="file" id="img-upload" class="inp-field">
+                <div id="p-body" class="editor-box" contenteditable="true" style="background:rgba(0,0,0,0.2); border:1px solid var(--border); padding:15px; border-radius:10px; min-height:150px; outline:none;" placeholder="اكتب المقال هنا..."></div>
                 <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:12px; font-weight:bold; cursor:pointer; color:black;">نشر الآن بسحابة Firebase</button>
             </div>
         </section>
@@ -326,146 +130,37 @@
                 <button onclick="logout()" style="background:#ef4444; color:white;" class="inp-field">تسجيل خروج</button>
             </div>
         </section>
-        
+
         <section id="sec-contact" class="section">
             <div class="post-card" style="text-align:center;">
                 <h2>براء عمر - Baraa Omar</h2>
-                <p>للمقاولات والاتصالات</p>
-                <br>
-           
-            <p>Email: bo2584668@gmail.com</p>
-                <style>
-     <style>
-    :root { --p-color: #00d2ff; --bg-dark: #0f172a; }
-
-    #zomerd-chat-wrapper { position: fixed; bottom: 30px; left: 30px; z-index: 1000000; direction: rtl; font-family: 'Cairo', sans-serif; }
-
-    /* النص المتحرك فوق الزر */
-    .chat-label {
-        position: absolute; bottom: 80px; left: 0; background: var(--p-color); color: #000;
-        padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: bold;
-        white-space: nowrap; box-shadow: 0 5px 15px rgba(0,210,255,0.3);
-        animation: floatLabel 2s infinite ease-in-out;
-    }
-    @keyframes floatLabel { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-    /* الزر العائم */
-    #chat-btn-main {
-        width: 70px; height: 70px; background: var(--p-color); border-radius: 50%;
-        display: flex; align-items: center; justify-content: center; cursor: pointer;
-        border: none; box-shadow: 0 10px 30px rgba(0,210,255,0.4); transition: 0.4s;
-    }
-    #chat-btn-main:hover { transform: scale(1.1) rotate(15deg); background: #fff; }
-    #chat-btn-main i { font-size: 32px; color: #000; }
-
-    /* نافذة الدردشة */
-    #chat-window-box {
-        width: 350px; height: 500px; background: var(--bg-dark); border-radius: 25px;
-        border: 1px solid rgba(0,210,255,0.2); display: none; flex-direction: column;
-        overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.7);
-        position: absolute; bottom: 90px; left: 0; animation: slideUp 0.3s ease;
-    }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-    .chat-header { background: var(--p-color); color: #000; padding: 15px; font-weight: 900; display: flex; justify-content: space-between; }
-    #chat-logs { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.2); }
-    
-    .m { padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 14px; line-height: 1.5; }
-    .m-bot { background: #1e293b; color: #fff; align-self: flex-start; border-bottom-right-radius: 2px; }
-    .m-user { background: var(--p-color); color: #000; align-self: flex-end; border-bottom-left-radius: 2px; font-weight: bold; }
-
-    .chat-input { padding: 15px; background: #151c2c; display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
-    .chat-input input { flex: 1; background: #000; border: 1px solid #1e293b; color: #fff; padding: 10px; border-radius: 10px; outline: none; }
-    .chat-input button { background: var(--p-color); border: none; padding: 10px 15px; border-radius: 10px; cursor: pointer; color: #000; }
-</style>
-
-<div id="zomerd-chat-wrapper">
-    <audio id="sound-pop" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
-
-    <div class="chat-label">تواصل مع مساعد براء الذكي ✨</div>
-
-    <div id="chat-window-box">
-        <div class="chat-header">
-            <span>🤖 مساعد براء</span>
-            <i class="fa-solid fa-times" style="cursor:pointer" onclick="toggleChat()"></i>
-        </div>
-        <div id="chat-logs">
-            <div class="m m-bot">أهلاً بك يا بطل! أنا مساعدك الشخصي في موقع زمرد نت. كيف أقدر أساعدك؟</div>
-        </div>
-        <div class="chat-input">
-            <input type="text" id="chat-query" placeholder="اكتب سؤالك هنا..." onkeypress="if(event.key==='Enter') startChat()">
-            <button onclick="startChat()"><i class="fa-solid fa-paper-plane"></i></button>
-        </div>
-    </div>
-
-    <div id="chat-btn-main" onclick="toggleChat()">
-        <i class="fa-solid fa-headset"></i>
-    </div>
-</div>
-
-<script>
-    // قاعدة بيانات الردود (الـ 1000 رسالة تبدأ من هنا)
-    const responses = {
-        "ازيك": "الحمد لله يا بطل! أنا في أفضل حال طول ما إنت منور موقع زمرد نت. إزاي أقدر أساعدك؟",
-        "مقال": "عشان تعمل مقال، ادخل على قسم 'النشر' من القائمة الجانبية (لو إنت المدير)، واكتب العنوان وارفع الصورة ودوس نشر. سهلة جداً!",
-        "كيف انشر مقال": "بسيطة! لو معاك صلاحية المدير، روح لصفحة 'النشر'، حط عنوانك الجذاب، ارفع الصورة، واكتب محتوى المقال، وهينزل فوراً للكل.",
-        "ربح": "الربح في زمرد نت بيعتمد على عدد الزيارات والتفاعلات. كل ما زاد زوارك، زادت أرباحك في لوحة التحكم!",
-        "كيف اربح": "تقدر تربح من خلال نشر مقالات مفيدة تجذب الزوار، ومتابعة إحصائياتك يومياً من الصفحة الرئيسية.",
-        "براء عمر": "براء عمر هو المبرمج العبقري اللي صمم الموقع ده وبنى نظام زمرد نت بالكامل.",
-        "سلام": "وعليكم السلام ورحمة الله وبركاته! نورتنا.",
-        "شكرا": "العفو يا حبيبي، أنا هنا دائماً لخدمتك!",
-        "default": "سؤال ممتاز! لكن الأفضل تسأل براء عمر مباشرة أو تبحث في قسم الأخبار للمزيد من التفاصيل."
-    };
-
-    function toggleChat() {
-        const box = document.getElementById('chat-window-box');
-        const isOpen = box.style.display === 'flex';
-        box.style.display = isOpen ? 'none' : 'flex';
-        if(!isOpen) document.getElementById('sound-pop').play();
-    }
-
-    function startChat() {
-        const input = document.getElementById('chat-query');
-        const text = input.value.trim();
-        if(!text) return;
-
-        addMsg(text, 'm-user');
-        input.value = '';
-
-        // رد آلي فوري بدون انتظار سيرفر
-        setTimeout(() => {
-            let reply = responses["default"];
-            
-            // البحث عن الكلمة المفتاحية في قاعدة البيانات
-            for (let key in responses) {
-                if (text.includes(key)) {
-                    reply = responses[key];
-                    break;
-                }
-            }
-
-            addMsg(reply, 'm-bot');
-            document.getElementById('sound-pop').play();
-        }, 300); // تأخير بسيط 0.3 ثانية عشان يبان إنه بيفكر
-    }
-
-    function addMsg(text, type) {
-        const logs = document.getElementById('chat-logs');
-        const div = document.createElement('div');
-        div.className = 'm ' + type;
-        div.innerText = text;
-        logs.appendChild(div);
-        logs.scrollTop = logs.scrollHeight;
-    }
-</script>   
-    
-                </div>
+                <p>للمقاولات والاتصالات</p><br>
+                <p>Email: bo2584668@gmail.com</p><br>
+                <a href="https://wa.me/201273740256" target="_blank" class="nav-link" style="justify-content:center; background:#25d366; color:white;"><i class="fa-brands fa-whatsapp"></i> واتساب مباشر</a>
+            </div>
         </section>
     </main>
+
+    <div id="zomerd-chat-wrapper">
+        <audio id="sound-pop" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
+        <div id="chat-window-box">
+            <div style="background:var(--p); color:black; padding:10px; font-weight:bold; display:flex; justify-content:space-between;">
+                <span>🤖 مساعد براء الذكي</span>
+                <i class="fa-solid fa-times" onclick="toggleChat()" style="cursor:pointer"></i>
+            </div>
+            <div id="chat-logs" style="flex:1; padding:10px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
+            <div style="padding:10px; display:flex; gap:5px;">
+                <input type="text" id="chat-query" placeholder="اسألني..." style="flex:1; padding:8px; border-radius:5px; border:1px solid var(--border); background:#000; color:#fff;">
+                <button onclick="startChat()" style="background:var(--p); border:none; padding:8px; border-radius:5px;"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <div id="chat-btn-main" onclick="toggleChat()"><i class="fa-solid fa-headset"></i></div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
@@ -477,7 +172,6 @@
           messagingSenderId: "52188666382",
           appId: "1:52188666382:web:7879a8c671af9329f67a5f"
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const storage = firebase.storage();
@@ -497,18 +191,21 @@
             document.getElementById('app-main').style.display = 'block';
             document.getElementById('user-avatar').innerText = user.given_name[0];
             if(user.email === ADMIN_EMAIL) document.getElementById('nav-admin-only').style.display = 'flex';
+            
+            particlesJS('particles-js', {
+                "particles": { "number": { "value": 50 }, "color": { "value": "#00d2ff" }, "line_linked": { "enable": true, "color": "#00d2ff" }, "move": { "speed": 2 } }
+            });
+            animateValue("clients", 0, 1500, 2000);
+            animateValue("projects", 0, 320, 2000);
+            animateValue("experience", 0, 5000, 2000);
             listenToPosts();
-        }
-
-        window.onload = () => {
-            const saved = localStorage.getItem('zomerd_user');
-            if(saved) { user = JSON.parse(saved); startApp(); }
         }
 
         function nav(id, e) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
+            document.getElementById('sec-title').innerText = (id === 'feed' ? 'الأخبار' : id === 'home' ? 'الرئيسية' : 'زمرد نت');
             if(e) e.currentTarget.classList.add('active');
         }
 
@@ -516,61 +213,43 @@
             const title = document.getElementById('p-title').value;
             const content = document.getElementById('p-body').innerHTML;
             const file = document.getElementById('img-upload').files[0];
+            if(!title || !content) return alert("اكمل البيانات!");
             let url = "";
-
-            if(!title || !content) return alert("اكتب المقال يا براء!");
-
             if(file) {
                 const ref = storage.ref('posts/' + Date.now());
                 await ref.put(file);
                 url = await ref.getDownloadURL();
             }
-
             await db.collection("posts").add({
-                title, content, image: url,
-                author: user.name,
-                time: firebase.firestore.FieldValue.serverTimestamp(),
-                comments: []
+                title, content, image: url, author: user.name,
+                time: firebase.firestore.FieldValue.serverTimestamp(), comments: []
             });
-
-            alert("✅ نُشر في السحابة بنجاح!");
-            document.getElementById('p-title').value = "";
-            document.getElementById('p-body').innerHTML = "";
+            alert("تم النشر!");
             nav('feed');
         }
 
-        // --- الدالة الجديدة المعدلة ---
         function listenToPosts() {
-            db.collection("posts").onSnapshot((snap) => {
+            db.collection("posts").orderBy("time", "desc").onSnapshot((snap) => {
                 const container = document.getElementById('feed-container');
-                if (snap.empty) {
-                    container.innerHTML = "📭 لا توجد منشورات حتى الآن.. كن أول من ينشر!";
-                    return;
-                }
                 container.innerHTML = "";
                 snap.forEach((doc) => {
                     const p = doc.data();
                     const id = doc.id;
                     container.innerHTML += `
                         <div class="post-card">
-                            <h2 style="color:var(--p)">${p.title || 'بدون عنوان'}</h2>
-                            <div style="margin:15px 0">${p.content || ''}</div>
+                            <h2 style="color:var(--p)">${p.title}</h2>
+                            <div style="margin:15px 0">${p.content}</div>
                             ${p.image ? `<img src="${p.image}" class="post-img">` : ""}
-                            <div style="font-size:0.7rem; opacity:0.4">نشر بواسطة: ${p.author || 'براء عمر'}</div>
-                            <hr style="opacity:0.1; margin:15px 0">
-                            <div id="comments-${id}">
-                                ${(p.comments || []).map(c => `<div class="comment-item"><b>${c.u}:</b> ${c.t}</div>`).join('')}
+                            <div style="font-size:0.7rem; opacity:0.5">بواسطة: ${p.author}</div>
+                            <div id="comments-${id}" style="margin-top:15px;">
+                                ${(p.comments || []).map(c => `<div style="background:rgba(255,255,255,0.05); padding:5px; border-radius:5px; margin-top:5px; font-size:0.8rem;"><b>${c.u}:</b> ${c.t}</div>`).join('')}
                             </div>
-                            <div class="comment-input-wrap">
-                                <input type="text" id="in-${id}" placeholder="اكتب تعليقاً...">
-                                <button onclick="addComment('${id}')" style="background:var(--p); border:none; padding:5px 15px; border-radius:8px; cursor:pointer; color:black;">رد</button>
+                            <div style="display:flex; gap:5px; margin-top:10px;">
+                                <input type="text" id="in-${id}" placeholder="تعليق..." style="flex:1; background:#000; color:#fff; border:1px solid var(--border); padding:5px; border-radius:5px;">
+                                <button onclick="addComment('${id}')" style="background:var(--p); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">رد</button>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 });
-            }, (error) => {
-                console.error("خطأ في جلب البيانات:", error);
-                document.getElementById('feed-container').innerHTML = "❌ خطأ في السيرفر: " + error.message;
             });
         }
 
@@ -583,9 +262,46 @@
             inp.value = "";
         }
 
-        function changeTheme(t) { document.body.className = t === 'light' ? 'theme-light' : ''; }
+        // Chatbot Logic
+        const responses = { "ازيك": "بخير يا بطل!", "براء عمر": "هو مؤسس زمرد نت العبقري.", "default": "سؤال جميل! تواصل مع براء للمزيد." };
+        function toggleChat() { 
+            const box = document.getElementById('chat-window-box');
+            box.style.display = (box.style.display === 'flex' ? 'none' : 'flex');
+        }
+        function startChat() {
+            const inp = document.getElementById('chat-query');
+            const logs = document.getElementById('chat-logs');
+            if(!inp.value) return;
+            logs.innerHTML += `<div style="align-self:flex-end; background:var(--p); color:black; padding:8px; border-radius:10px;">${inp.value}</div>`;
+            let reply = responses[inp.value] || responses["default"];
+            setTimeout(() => {
+                logs.innerHTML += `<div style="align-self:flex-start; background:rgba(255,255,255,0.1); padding:8px; border-radius:10px;">${reply}</div>`;
+                logs.scrollTop = logs.scrollHeight;
+            }, 500);
+            inp.value = "";
+        }
+
+        function animateValue(id, start, end, duration) {
+            let obj = document.getElementById(id);
+            let range = end - start;
+            let current = start;
+            let increment = end > start ? 1 : -1;
+            let stepTime = Math.abs(Math.floor(duration / range));
+            let timer = setInterval(() => {
+                current += increment;
+                obj.innerHTML = current + "+";
+                if (current == end) clearInterval(timer);
+            }, stepTime);
+        }
+
+        function changeTheme(t) { document.body.className = (t === 'light' ? 'theme-light' : ''); }
         function logout() { localStorage.removeItem('zomerd_user'); location.reload(); }
         setInterval(() => document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG'), 1000);
+
+        window.onload = () => {
+            const saved = localStorage.getItem('zomerd_user');
+            if(saved) { user = JSON.parse(saved); startApp(); }
+        }
     </script>
 </body>
 </html>
