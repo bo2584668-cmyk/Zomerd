@@ -115,7 +115,162 @@
                 <h2>براء عمر - Baraa Omar</h2>
                 <p>للمقاولات والاتصالات</p>
                 <br>
-                <p>Email: bo2584668@gmail.com</p>
+           
+            <p>Email: bo2584668@gmail.com</p>
+                <style>
+    /* بوت الدردشة العائم */
+    #chat-bot-container { position: fixed; bottom: 30px; left: 20px; z-index: 10000; direction: rtl; }
+    
+    #chat-bubble { 
+        width: 65px; height: 65px; background: var(--p); border-radius: 50%; 
+        display: flex; align-items: center; justify-content: center; cursor: pointer; 
+        box-shadow: 0 10px 30px rgba(0,210,255,0.4); border: none; transition: 0.3s;
+    }
+    #chat-bubble:hover { transform: scale(1.1) rotate(10deg); }
+    #chat-bubble i { font-size: 1.8rem; color: #000; }
+
+    #chat-window { 
+        width: 350px; height: 500px; background: var(--card); border: 1px solid var(--border); 
+        border-radius: 25px; display: none; flex-direction: column; overflow: hidden; 
+        box-shadow: 0 20px 50px rgba(0,0,0,0.6); position: absolute; bottom: 80px; left: 0;
+        animation: slideIn 0.4s ease-out;
+    }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    #chat-header { background: var(--p); color: #000; padding: 18px; font-weight: 900; display: flex; justify-content: space-between; align-items: center; }
+    
+    #chat-messages { 
+        flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; 
+        gap: 12px; background: rgba(0,0,0,0.3); scroll-behavior: smooth;
+    }
+
+    .bot-msg, .user-msg { 
+        padding: 12px 16px; border-radius: 18px; max-width: 85%; font-size: 0.95rem; 
+        line-height: 1.5; position: relative; word-wrap: break-word;
+    }
+    .bot-msg { background: #1e293b; color: #fff; align-self: flex-start; border-bottom-right-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
+    .user-msg { background: var(--p); color: #000; align-self: flex-end; border-bottom-left-radius: 4px; font-weight: 600; }
+
+    #chat-input-area { padding: 15px; background: var(--card); border-top: 1px solid var(--border); display: flex; gap: 10px; }
+    #chat-input-area input { 
+        flex: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--border); 
+        color: #fff; padding: 10px 15px; border-radius: 12px; outline: none; font-size: 0.9rem;
+    }
+    #chat-input-area button { 
+        background: var(--p); border: none; width: 45px; height: 40px; 
+        border-radius: 10px; cursor: pointer; color: #000; transition: 0.2s;
+    }
+    #chat-input-area button:hover { background: #fff; }
+
+    /* نقاط التفكير */
+    .typing-dots { display: flex; gap: 4px; padding: 5px; }
+    .typing-dots div { width: 6px; height: 6px; background: var(--p); border-radius: 50%; animation: pulse 1s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+</style>
+
+<div id="chat-bot-container">
+    <audio id="pop-sound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
+    <audio id="send-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
+    <div id="chat-window">
+        <div id="chat-header">
+            <span><i class="fa-solid fa-robot"></i> مساعد زمرد الذكي</span>
+            <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="toggleChat()"></i>
+        </div>
+        <div id="chat-messages">
+            <div class="bot-msg">مرحباً بك في زمرد نت! أنا مساعدك الذكي المدعوم بـ AI. كيف يمكنني مساعدتك اليوم يا بطل؟</div>
+        </div>
+        <div id="chat-input-area">
+            <input type="text" id="bot-input" placeholder="اسأل أي شيء..." onkeypress="if(event.key==='Enter') botReply()">
+            <button onclick="botReply()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+    
+    <button id="chat-bubble" onclick="toggleChat()">
+        <i class="fa-solid fa-comment-dots"></i>
+    </button>
+</div>
+
+<script>
+const GEMINI_API_KEY = "AIzaSyBLqyC33QHqrpIzKDv36SNrI6_z8r8hVEI"; // مفتاحك يا براء
+
+function toggleChat() {
+    const win = document.getElementById('chat-window');
+    const isVisible = win.style.display === 'flex';
+    win.style.display = isVisible ? 'none' : 'flex';
+    if(!isVisible) {
+        document.getElementById('pop-sound').play();
+        // تمرير لآخر رسالة عند الفتح
+        const msgs = document.getElementById('chat-messages');
+        msgs.scrollTop = msgs.scrollHeight;
+    }
+}
+
+async function botReply() {
+    const input = document.getElementById('bot-input');
+    const msg = input.value.trim();
+    if(!msg) return;
+
+    // 1. عرض رسالة المستخدم وصوت الإرسال
+    appendMsg(msg, 'user-msg');
+    document.getElementById('send-sound').play();
+    input.value = '';
+
+    // 2. إظهار فقاعة التفكير
+    const chatBox = document.getElementById('chat-messages');
+    const loadingId = "load-" + Date.now();
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'bot-msg';
+    loadingDiv.id = loadingId;
+    loadingDiv.innerHTML = `<div class="typing-dots"><div></div><div></div><div></div></div> جاري التفكير...`;
+    chatBox.appendChild(loadingDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    try {
+        // 3. حفظ الرسالة في السيرفر (Firestore) لتراها أنت
+        if(typeof db !== 'undefined') {
+            db.collection("visitor_messages").add({
+                sender: (typeof user !== 'undefined' && user) ? user.name : "زائر مجهول",
+                email: (typeof user !== 'undefined' && user) ? user.email : "غير معروف",
+                text: msg,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+
+        // 4. طلب الرد من الذكاء الاصطناعي Gemini
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ 
+                    parts: [{ text: `أنت المساعد الذكي الرسمي لموقع "زمرد نت" (Zomerd Net). الموقع متخصص في المقاولات والاتصالات. صاحب الموقع والمطور هو "براء عمر". أجب على الأسئلة بأسلوب احترافي، مهذب، ومختصر باللغة العربية. السؤال هو: ${msg}` }] 
+                }]
+            })
+        });
+
+        const data = await response.json();
+        const aiReply = data.candidates[0].content.parts[0].text;
+
+        // 5. مسح فقاعة التحميل وعرض الرد
+        document.getElementById(loadingId).remove();
+        appendMsg(aiReply, 'bot-msg');
+        document.getElementById('pop-sound').play();
+
+    } catch (error) {
+        console.error("Chat Error:", error);
+        document.getElementById(loadingId).innerText = "عذراً، واجهت مشكلة في الاتصال بعقلي الاصطناعي. حاول مجدداً!";
+    }
+}
+
+function appendMsg(text, type) {
+    const chatBox = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = type;
+    div.innerText = text;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
             </div>
         </section>
     </main>
