@@ -9,672 +9,237 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 
     <style>
-        /* نظام الثيمات المتغير */
         :root {
-            --p: #00d2ff; --p-h: #00a8cc; --bg: #0b0f19;
-            --card: #151c2c; --txt: #f1f5f9; --dim: #94a3b8;
-            --border: rgba(255,255,255,0.05);
+            --p: #00d2ff; --bg: #0b0f19; --card: #151c2c; --txt: #f1f5f9; --dim: #94a3b8; --border: rgba(255,255,255,0.05);
         }
-
-        .theme-light {
-            --bg: #f8fafc; --card: #ffffff; --txt: #1e293b; --dim: #64748b; --border: rgba(0,0,0,0.1);
-        }
-
-        .theme-gold {
-            --p: #fbbf24; --bg: #1c1917; --card: #292524; --txt: #f5f5f4; --dim: #a8a29e;
-        }
-
+        .theme-light { --bg: #f8fafc; --card: #ffffff; --txt: #1e293b; --dim: #64748b; --border: rgba(0,0,0,0.1); }
+        
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; transition: 0.3s; }
         body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; }
 
-        /* شاشة تسجيل الدخول الإجبارية */
-        #login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0b0f19; z-index: 9999; display: flex;
-            flex-direction: column; align-items: center; justify-content: center;
-            text-align: center;
-        }
-/* --- إعدادات التجاوب مع الموبايل (Responsive Design) --- */
+        /* Login Overlay */
+        #login-overlay { position: fixed; inset: 0; background: #0b0f19; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 
-/* للشاشات الصغيرة (أقل من 768px) */
-@media (max-width: 768px) {
-    body {
-        flex-direction: column; /* ترتيب العناصر طولياً */
-        height: auto;
-        overflow-y: auto;
-    }
-
-    /* إخفاء السايد بار التقليدي وتحويله لشريط سفلي */
-    aside {
-        width: 100% !important;
-        height: 65px !important;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        flex-direction: row !important;
-        background: var(--card);
-        border-top: 1px solid var(--border);
-        border-left: none !important;
-        display: flex !important;
-        padding: 0;
-        justify-content: space-around;
-        z-index: 1000;
-    }
-
-    .logo {
-        display: none; /* إخفاء اللوجو من الشريط السفلي لتوفير مساحة */
-    }
-
-    nav {
-        display: flex;
-        flex-direction: row !important;
-        width: 100%;
-        padding: 0 !important;
-        justify-content: space-around;
-    }
-
-    .nav-link {
-        flex-direction: column; /* الأيقونة فوق النص */
-        gap: 4px !important;
-        padding: 8px 0 !important;
-        font-size: 0.65rem !important; /* تصغير الخط ليناسب الجوال */
-        flex: 1;
-        border-radius: 0 !important;
-        margin: 0 !important;
-        justify-content: center;
-    }
-
-    .nav-link i {
-        font-size: 1.2rem;
-    }
-
-    /* تعديل منطقة المحتوى الرئيسية */
-    main {
-        padding-bottom: 70px; /* مساحة فارغة في الأسفل لكي لا يغطي الشريط السفلي على المحتوى */
-        width: 100% !important;
-    }
-
-    header {
-        padding: 0 20px !important;
-        height: 60px;
-    }
-
-    .section {
-        padding: 15px !important; /* تقليل الحواف الجانبية في الموبايل */
-    }
-
-    .grid {
-        grid-template-columns: 1fr !important; /* جعل البطاقات تأخذ العرض الكامل */
-    }
-
-    /* تعديل المحرر في الموبايل */
-    .toolbar {
-        position: sticky;
-        top: 60px;
-        padding: 5px;
-        overflow-x: auto; /* السماح بالتمرير الجانبي للأدوات */
-        white-space: nowrap;
-        display: flex;
-    }
-    
-    .editor-wrap {
-        padding: 15px !important;
-    }
-}
-        /* Sidebar */
+        /* Responsive Sidebar */
         aside { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: none; flex-direction: column; z-index: 100; }
-        .logo { padding: 30px; text-align: center; border-bottom: 1px solid var(--border); }
-        .logo h1 { font-weight: 900; color: var(--p); font-size: 1.6rem; }
+        @media (max-width: 768px) {
+            body { flex-direction: column; height: auto; overflow-y: auto; }
+            aside { width: 100% !important; height: 65px !important; position: fixed; bottom: 0; flex-direction: row !important; display: flex !important; justify-content: space-around; }
+            main { padding-bottom: 70px; width: 100% !important; }
+            .nav-link { flex-direction: column; font-size: 0.6rem !important; flex: 1; }
+            .logo, header { display: none !important; }
+        }
 
+        .logo { padding: 30px; text-align: center; color: var(--p); border-bottom: 1px solid var(--border); }
         nav { flex: 1; padding: 20px 10px; }
-        .nav-link { padding: 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--dim); margin-bottom: 5px; font-weight: 700; }
-        .nav-link:hover, .nav-link.active { background: var(--p); color: white; }
-        #nav-admin-only { display: none; } 
+        .nav-link { padding: 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--dim); margin-bottom: 5px; }
+        .nav-link.active { background: var(--p); color: black; font-weight: bold; }
 
-        /* Content Area */
-        main { flex: 1; overflow-y: auto; background: var(--bg); position: relative; display: none; }
-        header { height: 70px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--card); z-index: 10; }
+        main { flex: 1; overflow-y: auto; background: var(--bg); display: none; }
+        header { height: 70px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--card); sticky; top: 0; z-index: 10; }
 
-        .section { padding: 40px; display: none; max-width: 1100px; margin: 0 auto; }
-        .section.active { display: block; animation: fadeInUp 0.5s ease; }
+        .section { padding: 20px; display: none; max-width: 900px; margin: 0 auto; }
+        .section.active { display: block; animation: fadeIn 0.5s ease; }
 
-        /* Editor Toolbar Styles */
-        .toolbar { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; border: 1px solid var(--border); }
-        .tool-btn { background: #334155; color: white; border: none; width: 35px; height: 35px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .tool-btn:hover { background: var(--p); color: black; }
-        #post-body { min-height: 400px; padding: 20px; border: 1px solid var(--border); border-radius: 12px; background: rgba(0,0,0,0.2); overflow-y: auto; outline: none; line-height: 1.8; }
-        .ad-placeholder-box { background: rgba(0,210,255,0.1); border: 2px dashed var(--p); padding: 15px; text-align: center; margin: 10px 0; border-radius: 10px; color: var(--p); font-weight: bold; }
+        /* Post Design */
+        .post-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; text-align: right; }
+        .post-img { width: 100%; border-radius: 15px; margin: 15px 0; max-height: 400px; object-fit: cover; }
+        
+        .comment-item { background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 10px; margin-top: 8px; font-size: 0.85rem; }
+        .comment-input-wrap { display: flex; gap: 8px; margin-top: 15px; }
+        .comment-input-wrap input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 10px; outline: none; }
 
-        /* Cards and Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-        .stat-card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); text-align: center; margin-bottom: 20px; }
-        .stat-card .val { font-size: 2rem; font-weight: 900; color: var(--p); }
-
-        .settings-input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: white; margin-bottom: 15px; font-family: 'Cairo'; }
-        .btn-logout { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-top: 20px; font-weight: bold; }
-
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .editor-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 20px; border-radius: 15px; margin-top: 10px; min-height: 200px; outline: none; }
+        .inp-field { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: #000; color: white; margin-bottom: 10px; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body id="main-body">
+<body>
 
     <div id="login-overlay">
-        <h1 style="color:var(--p); font-size: 3rem; margin-bottom: 20px;">زمرد نت</h1>
-        <p style="color:white; margin-bottom: 30px;">يرجى تسجيل الدخول للمتابعة</p>
-        <div id="g_id_onload"
-             data-client_id="891317685860-k731dsdbp24p87iirkahnptf23opj7hn.apps.googleusercontent.com"
-             data-context="signin"
-             data-ux_mode="popup"
-             data-callback="onGoogleLogin"
-             data-auto_prompt="false">
-        </div>
-        <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_blue" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
+        <h1 style="color:var(--p); font-size: 2.5rem; margin-bottom: 10px;">زمرد نت</h1>
+        <p style="color:white; opacity: 0.7; margin-bottom: 30px;">بوابة براء عمر للمقاولات والاتصالات</p>
+        <div id="g_id_onload" data-client_id="891317685860-k731dsdbp24p87iirkahnptf23opj7hn.apps.googleusercontent.com" data-callback="onGoogleLogin"></div>
+        <div class="g_id_signin" data-type="standard" data-theme="filled_blue"></div>
     </div>
 
     <aside id="app-sidebar">
-        <div class="logo"><h1>زمرد نت</h1></div>
+        <div class="logo"><h2>زمرد نت</h2></div>
         <nav>
-            <div class="nav-link active" onclick="nav('dash', event)"><i class="fa-solid fa-chart-pie"></i> لوحة التحكم</div>
-            <div class="nav-link" onclick="nav('feed', event)"><i class="fa-solid fa-rss"></i> آخر الأخبار</div>
-            <div id="nav-admin-only" class="nav-link" onclick="nav('write', event)"><i class="fa-solid fa-pen-fancy"></i> أنشئ مقالاً</div>
-            <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-sliders"></i> الإعدادات</div>
-            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-headset"></i> تواصل معنا</div>
+            <div class="nav-link active" onclick="nav('feed', event)"><i class="fa-solid fa-house"></i> الأخبار</div>
+            <div id="nav-admin-only" class="nav-link" onclick="nav('write', event)"><i class="fa-solid fa-pen"></i> نشر مقال</div>
+            <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-gear"></i> الإعدادات</div>
+            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-phone"></i> تواصل معنا</div>
         </nav>
-        <div style="padding:20px; font-size:0.7rem; text-align:center; opacity:0.5;">حقوق النشر © 2025 براء عمر</div>
     </aside>
 
     <main id="app-main">
-        <header> 
-            <div id="section-name">الرئيسية</div>
-            <div style="display:flex; gap:15px; align-items:center;">
-                <span id="live-clock" style="font-family:'JetBrains Mono'; color:var(--p)">00:00:00</span>
-                <div id="user-initial" style="background:var(--p); color:black; width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">?</div>
+        <header>
+            <div id="sec-title">آخر الأخبار</div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span id="live-clock" style="color:var(--p); font-family:monospace;">00:00</span>
+                <div id="user-avatar" style="width:35px; height:35px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">?</div>
             </div>
         </header>
 
-        <section id="sec-dash" class="section active">
-            <div class="grid">
-                <div class="stat-card"><h4>زيارات الشهر</h4><div class="val">1,245,890</div></div>
-                <div class="stat-card"><h4>أرباح المنصة</h4><div class="val">$45,200.50</div></div>
-                <div class="stat-card"><h4>المشتركين</h4><div class="val">8,420</div></div>
-            </div>
-            <br>
-            <div class="stat-card" style="text-align: right;">
-                <h3 id="welcome-msg">مرحباً بك</h3>
-                <p style="color:var(--dim); margin-top:10px;">أنت الآن داخل لوحة تحكم زمرد نت المتكاملة.</p>
+        <section id="sec-feed" class="section active">
+            <div id="feed-container">جاري جلب المنشورات من السحابة...</div>
+        </section>
+
+        <section id="sec-write" class="section">
+            <div class="post-card">
+                <h3>✍️ استوديو براء عمر للنشر</h3><br>
+                <input type="text" id="p-title" class="inp-field" placeholder="عنوان المنشور...">
+                <div style="display:flex; gap:10px; margin-bottom:10px;">
+                    <button class="nav-link" onclick="document.getElementById('img-upload').click()" style="margin:0; background:rgba(255,255,255,0.05);"><i class="fa-image"></i> إضافة صورة</button>
+                    <input type="file" id="img-upload" hidden accept="image/*">
+                </div>
+                <div id="p-body" class="editor-box" contenteditable="true" placeholder="اكتب محتوى المقال هنا..."></div>
+                <br>
+                <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:12px; font-weight:bold; cursor:pointer; color:black;">نشر الآن بسحابة Firebase</button>
             </div>
         </section>
 
         <section id="sec-settings" class="section">
-            <div class="stat-card" style="text-align:right;">
-                <h3>⚙️ إعدادات الحساب والمظهر</h3><br>
-                <label>رقم الهاتف:</label>
-                <input type="text" id="set-phone" class="settings-input" placeholder="01xxxxxxxxx">
-                <label><i class="fab fa-facebook"></i> رابط الفيسبوك:</label>
-                <input type="text" id="set-fb" class="settings-input">
-                <label><i class="fab fa-instagram"></i> رابط إنستجرام:</label>
-                <input type="text" id="set-ig" class="settings-input">
-                <label><i class="fab fa-tiktok"></i> رابط تيك توك:</label>
-                <input type="text" id="set-tk" class="settings-input">
-                <button onclick="saveUserSettings()" style="background:var(--p); color:black; padding:12px; border:none; border-radius:8px; width:100%; font-weight:bold; cursor:pointer;">حفظ البيانات</button>
-                <hr style="margin:20px 0; opacity:0.1;">
-                <h4>تغيير المظهر:</h4><br>
-                <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    <button onclick="changeTheme('dark')" style="background:#0b0f19; color:white; border:1px solid white; padding:8px 15px; border-radius:8px;">ليلي</button>
-                    <button onclick="changeTheme('light')" style="background:#f8fafc; color:#1e293b; border:1px solid black; padding:8px 15px; border-radius:8px;">نهاري</button>
-                    <button onclick="changeTheme('gold')" style="background:#fbbf24; color:black; padding:8px 15px; border-radius:8px;">ملكي</button>
-                </div>
-                <button class="btn-logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
+            <div class="post-card">
+                <h3>⚙️ الإعدادات</h3><br>
+                <button onclick="changeTheme('light')" class="inp-field">الوضع النهاري</button>
+                <button onclick="changeTheme('dark')" class="inp-field">الوضع الليلي</button>
+                <button onclick="logout()" style="background:#ef4444; color:white;" class="inp-field">تسجيل خروج</button>
             </div>
-        </section>
-
-        <section id="sec-write" class="section">
-            <div class="stat-card" style="text-align:right;">
-                <h2>✍️ استوديو النشر (براء عمر)</h2><br>
-                <input type="text" id="p-title" class="settings-input" placeholder="عنوان المقال..." style="font-size: 1.2rem; font-weight: bold;">
-                <textarea id="p-desc" class="settings-input" placeholder="وصف مختصر للمنشور..." style="height:60px;"></textarea>
-                
-                <div class="toolbar">
-                    <button class="tool-btn" onclick="formatDoc('bold')"><i class="fa-bold"></i></button>
-                    <button class="tool-btn" onclick="formatDoc('italic')"><i class="fa-italic"></i></button>
-                    <button class="tool-btn" onclick="formatDoc('justifyRight')"><i class="fa-align-right"></i></button>
-                    <button class="tool-btn" onclick="formatDoc('justifyCenter')"><i class="fa-align-center"></i></button>
-                    <button class="tool-btn" onclick="addLink()"><i class="fa-link"></i></button>
-                    <button class="tool-btn" onclick="addImage()"><i class="fa-image"></i></button>
-                    <select onchange="formatDoc('foreColor', this.value)" style="background:#334155; color:white; border:none; border-radius:5px; padding:5px;">
-                        <option value="#f1f5f9">اللون</option>
-                        <option value="#00d2ff">زمردي</option>
-                        <option value="#fbbf24">ذهبي</option>
-                        <option value="#ef4444">أحمر</option>
-                    </select>
-                    <button class="tool-btn" onclick="insertAdPlaceholder()" style="width:auto; padding:0 10px; background:var(--p); color:black;">إعلان</button>
-                </div>
-
-                <div id="post-body" contenteditable="true"></div>
-                <br>
-                <label>كود الإعلان (اختياري):</label>
-                <textarea id="p-ad-code" class="settings-input" placeholder="ألصق كود السكريبت هنا..." style="height:50px; font-family:monospace;"></textarea>
-
-                <div style="display:flex; gap:10px;">
-                    <button onclick="publishPost()" style="flex:2; background:var(--p); color:black; padding:15px; border-radius:12px; font-weight:900; border:none; cursor:pointer;">نشر المقال</button>
-                    <button onclick="saveDraft()" style="flex:1; background:#334155; color:white; padding:15px; border-radius:12px; border:none; cursor:pointer;">حفظ مسودة</button>
-                </div>
-                <div id="draft-status" style="font-size:0.8rem; margin-top:10px; color:var(--dim);"></div>
-       <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
-            
-            
-            
-            </div>
-            
-        </section>
-
-        <section id="sec-feed" class="section">
-            <div id="feed-container"></div>
         </section>
         
         <section id="sec-contact" class="section">
-            <div class="stat-card">
+            <div class="post-card" style="text-align:center;">
                 <h2>براء عمر - Baraa Omar</h2>
-                <p>المدير التنفيذي لزمرد نت</p><br>
-                <p><i class="fa-solid fa-envelope"></i> bo2584668@gmail.com</p>
-
-
-                <div id="chat-widget">
-    <button id="chat-toggle" onclick="toggleChat()">
-        <i class="fa-solid fa-comments"></i>
-        <span id="chat-badge">1</span>
-    </button>
-
-    <div id="chat-window">
-        <div id="chat-header">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e;"></div>
-                <span>مساعد زمرد الذكي</span>
-            </div>
-            <button onclick="toggleChat()" style="background:none; border:none; color:white; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div id="chat-body">
-            <div class="msg bot">مرحباً بك في زمرد نت! أنا مساعدك الذكي، كيف يمكنني مساعدتك اليوم؟</div>
-        </div>
-        <div id="chat-footer">
-            <input type="text" id="chat-input" placeholder="اكتب سؤالك هنا..." onkeypress="handleChatKey(event)">
-            <button onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-        </div>
-    </div>
-</div>
-
-<style>
-    /* تنسيقات الـ Live Chat */
-    #chat-widget { position: fixed; bottom: 20px; left: 20px; z-index: 10000; font-family: 'Cairo', sans-serif; }
-    
-    #chat-toggle { 
-        width: 60px; height: 60px; border-radius: 50%; background: #00d2ff; border: none; 
-        color: #000; font-size: 1.5rem; cursor: pointer; box-shadow: 0 10px 25px rgba(0,210,255,0.4);
-        position: relative; transition: 0.3s;
-    }
-    #chat-toggle:hover { transform: scale(1.1); }
-    
-    #chat-badge {
-        position: absolute; top: 0; right: 0; background: #ef4444; color: white;
-        font-size: 0.7rem; width: 20px; height: 20px; border-radius: 50%; display: flex;
-        align-items: center; justify-content: center; border: 2px solid #0b0f19;
-    }
-
-    #chat-window {
-        position: absolute; bottom: 80px; left: 0; width: 320px; height: 450px;
-        background: #151c2c; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
-        display: none; flex-direction: column; overflow: hidden; box-shadow: 0 15px 50px rgba(0,0,0,0.5);
-    }
-
-    #chat-header { background: #1e293b; padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 0.9rem; }
-
-    #chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.2); }
-
-    .msg { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 0.85rem; line-height: 1.5; }
-    .msg.bot { background: #1e293b; color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; }
-    .msg.user { background: #00d2ff; color: #000; align-self: flex-end; border-bottom-right-radius: 2px; font-weight: bold; }
-
-    #chat-footer { padding: 10px; display: flex; gap: 5px; background: #1e293b; }
-    #chat-footer input { flex: 1; background: #0b0f19; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 10px; color: white; outline: none; font-size: 0.8rem; }
-    #chat-footer button { background: #00d2ff; border: none; width: 35px; border-radius: 10px; cursor: pointer; color: black; }
-
-    /* تحسين شريط التمرير */
-    #chat-body::-webkit-scrollbar { width: 4px; }
-    #chat-body::-webkit-scrollbar-thumb { background: rgba(0,210,255,0.2); border-radius: 10px; }
-</style>
-
-<script>
-    // قاعدة بيانات الأسئلة والأجوبة (100+ احتمال)
-    const chatKnowledge = {
-        // التحيات
-        "هلا": "أهلاً بك يا غالي! كيف أقدر أساعدك اليوم في زمرد نت؟",
-        "مرحبا": "مرحباً بك! نورت منصة براء عمر للاتصالات والمقاولات.",
-        "السلام عليكم": "وعليكم السلام ورحمة الله وبركاته! نورتنا.",
-        "ازيك": "بخير والحمد لله، أتمنى أن تكون أنت بخير أيضاً!",
-        "صباح الخير": "صباح النور والسرور! يومك جميل إن شاء الله.",
-        "مساء الخير": "مساء الورد! كيف حالك اليوم؟",
-        
-        // معلومات عن براء والمنصة
-        "من انت": "أنا المساعد الذكي لمنصة زمرد نت، صممت لخدمتك.",
-        "من هو براء": "براء عمر هو مدير ومؤسس منصة زمرد نت للمقاولات والاتصالات.",
-        "براء عمر": "بشمهندس براء هو صاحب هذا العمل الاحترافي.",
-        "صاحب الموقع": "المالك هو الأستاذ براء عمر.",
-
-        // الخدمات
-        "خدماتكم": "نقدم خدمات المقاولات المتكاملة، حلول الاتصالات، وتوريد المواد الهندسية.",
-        "مقاولات": "لدينا خبرة واسعة في المقاولات العامة والتشطيبات الاحترافية.",
-        "اتصالات": "نوفر حلول شبكات وأنظمة اتصالات متطورة.",
-        "برمجة": "هذا الموقع تم تطويره بأحدث التقنيات لخدمة عملاء براء عمر.",
-        "اسعار": "الأسعار تختلف حسب المشروع، لكننا نعدك بأفضل سعر مقابل أعلى جودة.",
-
-        // أسئلة عامة
-        "موقعكم فين": "مركزنا الرئيسي في مصر، ونخدم عملاءنا في كل مكان.",
-        "تواصل": "يمكنك التواصل مع براء عمر مباشرة عبر قسم 'تواصل معنا' أو الإيميل admin@zomerd.net",
-        "شكرا": "العفو! نحن دائماً في خدمتك يا غالي.",
-        "وداعا": "مع السلامة! نتمنى رؤيتك مرة أخرى في زمرد نت.",
-        "شات": "نعم، أنا أرد عليك الآن بشكل آلي وذكي!"
-    };
-
-    function toggleChat() {
-        const win = document.getElementById('chat-window');
-        const badge = document.getElementById('chat-badge');
-        if(win.style.display === 'flex') {
-            win.style.display = 'none';
-        } else {
-            win.style.display = 'flex';
-            badge.style.display = 'none';
-        }
-    }
-
-    function handleChatKey(e) { if(e.key === 'Enter') sendChatMessage(); }
-
-    function sendChatMessage() {
-        const input = document.getElementById('chat-input');
-        const text = input.value.trim();
-        if(!text) return;
-
-        addMessage(text, 'user');
-        input.value = '';
-
-        // ذكاء اصطناعي بسيط للرد
-        setTimeout(() => {
-            let response = "عذراً، لم أفهم سؤالك تماماً. يمكنك محاولة كتابة كلمات بسيطة مثل (خدمات، مقاولات، تواصل، من هو براء) أو انتظر رد براء عمر عليك شخصياً.";
-            
-            // البحث في قاعدة البيانات
-            for (let key in chatKnowledge) {
-                if (text.includes(key)) {
-                    response = chatKnowledge[key];
-                    break;
-                }
-            }
-            addMessage(response, 'bot');
-        }, 600);
-    }
-
-    function addMessage(text, type) {
-        const body = document.getElementById('chat-body');
-        const div = document.createElement('div');
-        div.className = `msg ${type}`;
-        div.innerText = text;
-        body.appendChild(div);
-        body.scrollTop = body.scrollHeight;
-    }
-</script>
+                <p>للمقاولات والاتصالات</p>
+                <br>
+                <p>Email: bo2584668@gmail.com</p>
             </div>
         </section>
     </main>
 
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <script>
+        // الـ Config الجديد بتاعك
+        const firebaseConfig = {
+          apiKey: "AIzaSyAt16kYfN4cNHfTwbdr3KOGbcQJlmE45tg",
+          authDomain: "zomerd-new.firebaseapp.com",
+          projectId: "zomerd-new",
+          storageBucket: "zomerd-new.firebasestorage.app",
+          messagingSenderId: "52188666382",
+          appId: "1:52188666382:web:7879a8c671af9329f67a5f"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
         const ADMIN_EMAIL = "bo2584668@gmail.com";
-        let currentUser = null;
-        let posts = JSON.parse(localStorage.getItem('zomerd_posts')) || [];
+        let user = null;
 
-        // 1. Google Login
-        function onGoogleLogin(response) {
-            const payload = parseJwt(response.credential);
-            currentUser = payload;
-            localStorage.setItem('zomerd_user', JSON.stringify(payload));
-            initApp();
+        // Login Logic
+        function onGoogleLogin(res) {
+            user = JSON.parse(atob(res.credential.split('.')[1]));
+            localStorage.setItem('zomerd_user', JSON.stringify(user));
+            startApp();
         }
 
-        function parseJwt(token) {
-            var base64Url = token.split('.')[1];
-            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            return JSON.parse(window.atob(base64));
-        }
-
-        function initApp() {
-            if (!currentUser) return;
+        function startApp() {
+            if(!user) return;
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('app-sidebar').style.display = 'flex';
             document.getElementById('app-main').style.display = 'block';
-            document.getElementById('welcome-msg').innerText = `مرحباً بك يا ${currentUser.given_name}`;
-            document.getElementById('user-initial').innerText = currentUser.given_name[0];
-
-            if (currentUser.email === ADMIN_EMAIL) {
-                document.getElementById('nav-admin-only').style.display = 'flex';
-                loadDraft();
-            }
-            loadSettings();
-            renderFeed();
+            document.getElementById('user-avatar').innerText = user.given_name[0];
+            if(user.email === ADMIN_EMAIL) document.getElementById('nav-admin-only').style.display = 'flex';
+            listenToPosts();
         }
 
         window.onload = () => {
-            const savedUser = localStorage.getItem('zomerd_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                initApp();
-            }
+            const saved = localStorage.getItem('zomerd_user');
+            if(saved) { user = JSON.parse(saved); startApp(); }
         }
 
-        // 2. Navigation
-        function nav(id, event) {
+        // Navigation
+        function nav(id, e) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
-            if(event) event.currentTarget.classList.add('active');
-            document.getElementById('section-name').innerText = event?.currentTarget?.innerText || "الرئيسية";
+            if(e) e.currentTarget.classList.add('active');
         }
 
-        // 3. Settings & Theme
-        function saveUserSettings() {
-            const data = {
-                phone: document.getElementById('set-phone').value,
-                fb: document.getElementById('set-fb').value,
-                ig: document.getElementById('set-ig').value,
-                tk: document.getElementById('set-tk').value
-            };
-            localStorage.setItem('settings_' + currentUser.email, JSON.stringify(data));
-            alert("تم حفظ بياناتك بنجاح!");
-        }
-
-        function loadSettings() {
-            const data = JSON.parse(localStorage.getItem('settings_' + currentUser.email));
-            if (data) {
-                document.getElementById('set-phone').value = data.phone || '';
-                document.getElementById('set-fb').value = data.fb || '';
-                document.getElementById('set-ig').value = data.ig || '';
-                document.getElementById('set-tk').value = data.tk || '';
-            }
-        }
-
-        function changeTheme(type) {
-            document.body.className = (type === 'dark') ? '' : 'theme-' + type;
-        }
-
-        function logout() {
-            localStorage.removeItem('zomerd_user');
-            location.reload();
-        }
-
-        // 4. Editor Logic
-        function formatDoc(cmd, val = null) { document.execCommand(cmd, false, val); }
-        function addLink() { const url = prompt("أدخل الرابط:"); if(url) formatDoc('createLink', url); }
-        function addImage() { const url = prompt("أدخل رابط الصورة:"); if(url) formatDoc('insertImage', url); }
-        function insertAdPlaceholder() { formatDoc('insertHTML', '<div class="ad-placeholder-box">[إعلان]</div><p><br></p>'); }
-
-        function saveDraft() {
-            const draft = {
-                title: document.getElementById('p-title').value,
-                desc: document.getElementById('p-desc').value,
-                body: document.getElementById('post-body').innerHTML,
-                adCode: document.getElementById('p-ad-code').value
-            };
-            localStorage.setItem('zomerd_draft', JSON.stringify(draft));
-            document.getElementById('draft-status').innerText = "تم حفظ المسودة تلقائياً في " + new Date().toLocaleTimeString();
-        }
-
-        function loadDraft() {
-            const saved = localStorage.getItem('zomerd_draft');
-            if(saved) {
-                const d = JSON.parse(saved);
-                document.getElementById('p-title').value = d.title || '';
-                document.getElementById('p-desc').value = d.desc || '';
-                document.getElementById('post-body').innerHTML = d.body || '';
-                document.getElementById('p-ad-code').value = d.adCode || '';
-            }
-        }
-
+        // Firebase: Publish Post
         async function publishPost() {
             const title = document.getElementById('p-title').value;
-            const content = document.getElementById('post-body').innerHTML;
-            const adCode = document.getElementById('p-ad-code').value;
+            const content = document.getElementById('p-body').innerHTML;
+            const file = document.getElementById('img-upload').files[0];
+            let url = "";
 
-            if(!title || !content) return alert("أكمل المقال أولاً!");
+            if(!title || !content) return alert("اكتب المقال يا براء!");
 
-            const newPost = {
-                title,
-                desc: document.getElementById('p-desc').value,
-                content: content.replace('[إعلان]', `<div class='ad-render'>${adCode}</div>`),
-                author: currentUser.name, 
-                date: new Date().toLocaleString('ar-EG')
-            };
+            if(file) {
+                const ref = storage.ref('posts/' + Date.now());
+                await ref.put(file);
+                url = await ref.getDownloadURL();
+            }
 
-            posts.unshift(newPost);
-            localStorage.setItem('zomerd_posts', JSON.stringify(posts));
-            localStorage.removeItem('zomerd_draft');
-            
-            // Clear inputs
-            document.getElementById('p-title').value = '';
-            document.getElementById('p-desc').value = '';
-            document.getElementById('post-body').innerHTML = '';
-            document.getElementById('p-ad-code').value = '';
+            await db.collection("posts").add({
+                title, content, image: url,
+                author: user.name,
+                time: firebase.firestore.FieldValue.serverTimestamp(),
+                comments: []
+            });
 
-            renderFeed();
-            alert("تم النشر بنجاح!");
+            alert("✅ نُشر في السحابة بنجاح!");
+            document.getElementById('p-title').value = "";
+            document.getElementById('p-body').innerHTML = "";
             nav('feed');
         }
 
-        function renderFeed() {
-            const container = document.getElementById('feed-container');
-            if(!container) return;
-            container.innerHTML = posts.map(p => `
-                <div class="stat-card" style="text-align:right;">
-                    <h2 style="color:var(--p);">${p.title}</h2>
-                    <p style="color:var(--dim); font-size:0.9rem; margin-bottom:15px;">${p.desc || ''}</p>
-                    <hr style="opacity:0.1; margin-bottom:15px;">
-                    <div class="content-view" style="line-height:1.8;">${p.content}</div>
-                    <div style="margin-top:20px; font-size:0.7rem; opacity:0.5;">نشر بواسطة: ${p.author} | ${p.date}</div>
-                </div>
-           
-            `).join('');
-
-            // بياناتك اللي انت بعتها
-const firebaseConfig = {
-  apiKey: "AIzaSyDqC_x1tA0kAqgwR9uy0nI8hZo_Eaq04tg",
-  authDomain: "zomerd-d7791.firebaseapp.com",
-  projectId: "zomerd-d7791",
-  storageBucket: "zomerd-d7791.firebasestorage.app",
-  messagingSenderId: "564938368672",
-  appId: "1:564938368672:web:10ecdd24bf8df282418bc5"
-};
-
-// تشغيل الخدمات
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const storage = firebase.storage();
-
-// --- 1. دالة النشر (منشور + صورة) ---
-async function publishPost() {
-    const title = document.getElementById('p-title').value;
-    const content = document.getElementById('post-body').innerHTML;
-    const imageFile = document.getElementById('image-input').files[0]; // تأكد إن عندك input للصور بالـ ID ده
-    let imageUrl = "";
-
-    if(!title || !content) return alert("اكتب العنوان والمحتوى الأول!");
-
-    // لو فيه صورة، نرفعها الأول للسيرفر
-    if(imageFile) {
-        const storageRef = storage.ref('posts/' + Date.now() + "_" + imageFile.name);
-        await storageRef.put(imageFile);
-        imageUrl = await storageRef.getDownloadURL();
-    }
-
-    // حفظ البيانات في Firestore
-    await db.collection("posts").add({
-        title: title,
-        content: content,
-        image: imageUrl,
-        author: "براء عمر",
-        date: new Date().toLocaleString('ar-EG'),
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        comments: []
-    });
-
-    alert("تم النشر بنجاح على سيرفر جوجل!");
-    location.reload(); 
-}
-
-// --- 2. دالة عرض المنشورات (بشكل لحظي) ---
-function loadPosts() {
-    db.collection("posts").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-        const container = document.getElementById('feed-container');
-        container.innerHTML = "";
-        snapshot.forEach((doc) => {
-            const post = doc.data();
-            const postId = doc.id;
-            container.innerHTML += `
-                <div class="post-card">
-                    <h3>${post.title}</h3>
-                    <p>${post.content}</p>
-                    ${post.image ? `<img src="${post.image}" style="width:100%; border-radius:10px;">` : ''}
-                    <hr>
-                    <div class="comments" id="comments-${postId}">
-                        ${post.comments.map(c => `<div class="comment"><b>${c.author}:</b> ${c.text}</div>`).join('')}
-                    </div>
-                    <input type="text" id="input-${postId}" placeholder="اكتب تعليق...">
-                    <button onclick="addComment('${postId}')">تعليق</button>
-                </div>
-            `;
-        });
-    });
-}
-
-// --- 3. دالة إضافة تعليق ---
-async function addComment(postId) {
-    const text = document.getElementById(`input-${postId}`).value;
-    if(!text) return;
-
-    await db.collection("posts").doc(postId).update({
-        comments: firebase.firestore.FieldValue.arrayUnion({
-            author: "زائر",
-            text: text,
-            date: new Date().toLocaleString()
-        })
-    });
-}
-
-// تشغيل جلب البيانات عند فتح الموقع
-loadPosts();
+        // Firebase: Real-time Feed
+        function listenToPosts() {
+            db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
+                const container = document.getElementById('feed-container');
+                container.innerHTML = "";
+                snap.forEach(doc => {
+                    const p = doc.data();
+                    const id = doc.id;
+                    container.innerHTML += `
+                        <div class="post-card">
+                            <h2 style="color:var(--p)">${p.title}</h2>
+                            <div style="margin:15px 0">${p.content}</div>
+                            ${p.image ? `<img src="${p.image}" class="post-img">` : ""}
+                            <div style="font-size:0.7rem; opacity:0.4">نشر بواسطة: ${p.author}</div>
+                            <hr style="opacity:0.1; margin:15px 0">
+                            <div id="comments-${id}">
+                                ${(p.comments || []).map(c => `<div class="comment-item"><b>${c.u}:</b> ${c.t}</div>`).join('')}
+                            </div>
+                            <div class="comment-input-wrap">
+                                <input type="text" id="in-${id}" placeholder="اكتب تعليقاً...">
+                                <button onclick="addComment('${id}')" style="background:var(--p); border:none; padding:5px 15px; border-radius:8px; cursor:pointer;">رد</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
         }
 
-        
-        setInterval(() => {
-            document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG');
-        }, 1000);
+        async function addComment(id) {
+            const inp = document.getElementById('in-' + id);
+            if(!inp.value) return;
+            await db.collection("posts").doc(id).update({
+                comments: firebase.firestore.FieldValue.arrayUnion({ u: user.name, t: inp.value })
+            });
+            inp.value = "";
+        }
+
+        function changeTheme(t) { document.body.className = t === 'light' ? 'theme-light' : ''; }
+        function logout() { localStorage.removeItem('zomerd_user'); location.reload(); }
+        setInterval(() => document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG'), 1000);
     </script>
 </body>
 </html>
