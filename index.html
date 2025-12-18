@@ -109,7 +109,83 @@ aside {
 @media (min-width: 769px) and (max-width: 1024px) {
     aside { width: 220px !important; }
 }
-    
+/* تصميم البطاقة الاحترافي */
+.feed-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    padding: 20px;
+}
+
+.post-card {
+    background: var(--card);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.post-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 210, 255, 0.2);
+    border-color: var(--p);
+}
+
+.post-img-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: #000;
+}
+
+.post-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.post-card:hover .post-img-container img {
+    transform: scale(1.1);
+}
+
+.post-info {
+    padding: 20px;
+}
+
+.post-info h2 {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.post-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--dim);
+}
+
+/* زر "اقرأ المزيد" العائم */
+.read-more-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: var(--p);
+    color: #000;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    z-index: 2;
+}    
+  
     </style>
     
 </head>
@@ -548,6 +624,78 @@ async function saveUserProfile() {
 // استدعاء الدالة عند تشغيل التطبيق
 // ضيف السطر ده جوه دالة startApp()
 // loadUserSettings(); 
+function listenToPosts() {
+    db.collection("posts").orderBy("time", "desc").onSnapshot((snap) => {
+        const container = document.getElementById('feed-container');
+        // نغير الحاوية لتستخدم الـ Grid
+        container.innerHTML = '<div class="feed-grid" id="posts-wrapper"></div>';
+        const wrapper = document.getElementById('posts-wrapper');
+
+        snap.forEach((doc) => {
+            const p = doc.data();
+            const id = doc.id;
+            const time = p.time ? new Date(p.time.seconds * 1000).toLocaleDateString('ar-EG') : "الآن";
+
+            wrapper.innerHTML += `
+                <div class="post-card" onclick="openFullPost('${id}')">
+                    <span class="read-more-badge">عرض التفاصيل</span>
+                    <div class="post-img-container">
+                        <img src="${p.image || 'https://via.placeholder.com/400x200'}" alt="${p.title}">
+                    </div>
+                    <div class="post-info">
+                        <h2>${p.title}</h2>
+                        <div class="post-meta">
+                            <span><i class="fa-solid fa-user"></i> ${p.author}</span>
+                            <span><i class="fa-solid fa-calendar-days"></i> ${time}</span>
+                        </div>
+                    </div>
+                </div>`;
+        });
+    });
+}
+
+// دالة لفتح المنشور بشكل كامل (احترافي)
+async function openFullPost(postId) {
+    const doc = await db.collection("posts").doc(postId).get();
+    if (doc.exists) {
+        const p = doc.data();
+        
+        // سنستخدم الـ Section الخاص بالـ Feed لعرض المقال المفتوح
+        const container = document.getElementById('feed-container');
+        container.innerHTML = `
+            <div style="max-width: 800px; margin: 0 auto; padding: 20px; animation: fadeIn 0.5s ease;">
+                <button onclick="listenToPosts()" style="background:none; border:none; color:var(--p); cursor:pointer; font-size:1.1rem; margin-bottom:20px;">
+                    <i class="fa-solid fa-arrow-right"></i> العودة للأخبار
+                </button>
+                
+                <img src="${p.image}" style="width:100%; border-radius:25px; margin-bottom:25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                
+                <h1 style="font-size: 2.5rem; color: #fff; margin-bottom: 15px;">${p.title}</h1>
+                
+                <div style="display:flex; gap:20px; color:var(--dim); margin-bottom:30px; border-bottom:1px solid var(--border); padding-bottom:15px;">
+                    <span><i class="fa-solid fa-user"></i> الناشر: ${p.author}</span>
+                </div>
+
+                <div class="post-content" style="line-height: 1.8; font-size: 1.1rem; color: #e2e8f0;">
+                    ${p.content}
+                </div>
+                
+                <hr style="border:0; border-top:1px solid var(--border); margin:40px 0;">
+                <h3>التعليقات</h3>
+                <div id="comments-${postId}">
+                    ${(p.comments || []).map(c => `
+                        <div style="background:var(--card); padding:15px; border-radius:12px; margin-top:10px; border:1px solid var(--border)">
+                            <b style="color:var(--p)">${c.u}:</b> ${c.t}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        
+        // سحب الصفحة للأعلى لمشاهدة المقال
+        document.getElementById('app-main').scrollTop = 0;
+    }
+}
     </script>
 </body>
 </html>
