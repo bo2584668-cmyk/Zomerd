@@ -125,6 +125,29 @@
                 <div id="p-body" class="editor-box" contenteditable="true" style="background:rgba(0,0,0,0.2); border:1px solid var(--border); padding:15px; border-radius:10px; min-height:150px; outline:none;" placeholder="اكتب المقال هنا..."></div>
                 <br>
                 <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:12px; font-weight:bold; cursor:pointer; color:black;">نشر الآن بسحابة Firebase</button>
+           <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px 10px 0 0; display: flex; gap: 10px; border: 1px solid var(--border); border-bottom: none; align-items: center; flex-wrap: wrap;">
+    
+    <select onchange="document.execCommand('foreColor', false, this.value); this.selectedIndex=0;" style="background:#333; color:#fff; border:1px solid var(--border); padding:5px; border-radius:5px; cursor:pointer;">
+        <option value="" disabled selected>🎨 اختر لون النص</option>
+        <option value="#ff0000" style="color:red;">أحمر</option>
+        <option value="#00ff00" style="color:green;">أخضر</option>
+        <option value="#0000ff" style="color:blue;">أزرق</option>
+        <option value="#ffff00" style="color:yellow;">أصفر</option>
+        <option value="#ff00ff" style="color:magenta;">فوشيا</option>
+        <option value="#00ffff" style="color:cyan;">سماوي</option>
+        <option value="#ffa500" style="color:orange;">برتقالي</option>
+        <option value="#ffffff" style="color:white;">أبيض</option>
+        <option value="#808080" style="color:gray;">رمادي</option>
+        <option value="#00d2ff" style="color:#00d2ff;">زمردي</option>
+    </select>
+    
+    <button onclick="addLink()" type="button" style="background:#333; color:#fff; border:1px solid var(--border); padding:5px 10px; border-radius:5px; cursor:pointer;"><i class="fa-solid fa-link"></i> رابط</button>
+    <button onclick="addInlineImg()" type="button" style="background:#333; color:#fff; border:1px solid var(--border); padding:5px 10px; border-radius:5px; cursor:pointer;"><i class="fa-solid fa-image"></i> صورة</button>
+
+    <div style="margin-right: auto; color: var(--p); font-size: 0.8rem;">
+        الكلمات: <span id="word-count">0</span> / 400
+    </div>
+           </div>
             </div>
         </section>
 
@@ -361,7 +384,55 @@
         window.onload = () => {
             const saved = localStorage.getItem('zomerd_user');
             if(saved) { user = JSON.parse(saved); startApp(); }
+       
         }
+        // إضافة رابط والتأكد من أنه يفتح في صفحة جديدة ويعمل فعلياً
+function addLink() {
+    const url = prompt("أدخل الرابط (مثال: https://google.com):");
+    if (url) {
+        // نستخدم execCommand لإنشاء الرابط أولاً
+        document.execCommand('createLink', false, url);
+        
+        // لجعل الرابط يفتح في صفحة جديدة (Target _blank)
+        const selection = window.getSelection().anchorNode.parentNode;
+        if (selection.tagName === 'A') {
+            selection.setAttribute('target', '_blank');
+            selection.style.color = "var(--p)"; // تمييز الرابط بلون الموقع
+            selection.style.textDecoration = "underline";
+        }
+    }
+}
+
+function addInlineImg() {
+    const imgUrl = prompt("أدخل رابط الصورة:");
+    if (imgUrl) {
+        const imgHtml = `<img src="${imgUrl}" style="max-width:100%; border-radius:10px; margin:10px 0;">`;
+        document.execCommand('insertHTML', false, imgHtml);
+    }
+}
+
+// دالة حساب الكلمات والتحكم في زر النشر
+function checkWords() {
+    const text = document.getElementById('p-body').innerText.trim();
+    const wordsCount = text ? text.split(/\s+/).filter(w => w.length > 0).length : 0;
+    
+    document.getElementById('word-count').innerText = wordsCount;
+
+    const btn = document.querySelector('button[onclick="publishPost()"]'); 
+    if (btn) {
+        if (wordsCount < 400) {
+            btn.disabled = true;
+            btn.style.opacity = "0.5";
+            btn.style.cursor = "not-allowed";
+            btn.innerText = `باقي ${400 - wordsCount} كلمة`;
+        } else {
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            btn.style.cursor = "pointer";
+            btn.innerText = "نشر الآن بسحابة Firebase";
+        }
+    }
+}
     </script>
 </body>
 </html>
