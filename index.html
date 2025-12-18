@@ -105,46 +105,9 @@
 
         <section id="sec-feed" class="section">
             <div id="feed-container">جاري جلب المنشورات...</div>
-    function listenToPosts() {
-    db.collection("posts").orderBy("time", "desc").onSnapshot((snap) => {
-        const container = document.getElementById('feed-container');
-        container.innerHTML = "";
-        snap.forEach((doc) => {
-            const p = doc.data();
-            const id = doc.id;
+ 
+            
 
-            // شرط إظهار زر الحذف للآدمن فقط
-            const isAdmin = (user && user.email === ADMIN_EMAIL);
-            const deleteBtn = isAdmin ? `<button onclick="deletePost('${id}')" style="background:#ef4444; color:white; border:none; padding:5px 12px; border-radius:8px; cursor:pointer; font-size:0.75rem; float:left; margin-bottom:10px;"><i class="fa-solid fa-trash-can"></i> حذف المنشور</button>` : "";
-
-            container.innerHTML += `
-                <div class="post-card">
-                    ${deleteBtn}
-                    <h2 style="color:var(--p); clear:both;">${p.title}</h2>
-                    <div style="margin:15px 0">${p.content}</div>
-                    ${p.image ? `<img src="${p.image}" class="post-img">` : ""}
-                    <div style="font-size:0.7rem; opacity:0.5">بواسطة: ${p.author}</div>
-                    <div id="comments-${id}" style="margin-top:15px;">
-                        ${(p.comments || []).map(c => `<div style="background:rgba(255,255,255,0.05); padding:5px; border-radius:5px; margin-top:5px; font-size:0.8rem;"><b>${c.u}:</b> ${c.t}</div>`).join('')}
-                    </div>
-                    <div style="display:flex; gap:5px; margin-top:10px;">
-                        <input type="text" id="in-${id}" placeholder="تعليق..." style="flex:1; background:#000; color:#fff; border:1px solid var(--border); padding:5px; border-radius:5px;">
-                        <button onclick="addComment('${id}')" style="background:var(--p); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">رد</button>
-                    </div>
-                </div>`;
-        });
-    });
-}
-            async function deletePost(postId) {
-    if (confirm("يا براء، هل أنت متأكد من حذف هذا المنشور؟")) {
-        try {
-            await db.collection("posts").doc(postId).delete();
-            alert("تم الحذف بنجاح!");
-        } catch (error) {
-            alert("حدث خطأ أثناء الحذف: " + error.message);
-        }
-    }
-}
         
         </section>
 
@@ -409,6 +372,45 @@
             const saved = localStorage.getItem('zomerd_user');
             if(saved) { user = JSON.parse(saved); startApp(); }
         }
+        function listenToPosts() {
+    db.collection("posts").orderBy("time", "desc").onSnapshot((snap) => {
+        const container = document.getElementById('feed-container');
+        container.innerHTML = "";
+        snap.forEach((doc) => {
+            const p = doc.data();
+            const id = doc.id;
+
+            // شرط إظهار زر الحذف للآدمن فقط
+            const isAdmin = (user && user.email === ADMIN_EMAIL);
+            const deleteBtn = isAdmin ? `<button onclick="deletePost('${id}')" style="background:#ef4444; color:white; border:none; padding:5px 12px; border-radius:8px; cursor:pointer; font-size:0.75rem; float:left; margin-bottom:10px;"><i class="fa-solid fa-trash-can"></i> حذف المنشور</button>` : "";
+
+            container.innerHTML += `
+                <div class="post-card">
+                    ${deleteBtn}
+                    <h2 style="color:var(--p); clear:both;">${p.title}</h2>
+                    <div style="margin:15px 0">${p.content}</div>
+                    ${p.image ? `<img src="${p.image}" class="post-img">` : ""}
+                    <div style="font-size:0.7rem; opacity:0.5">بواسطة: ${p.author}</div>
+                    <div id="comments-${id}" style="margin-top:15px;">
+                        ${(p.comments || []).map(c => `<div style="background:rgba(255,255,255,0.05); padding:5px; border-radius:5px; margin-top:5px; font-size:0.8rem;"><b>${c.u}:</b> ${c.t}</div>`).join('')}
+                    </div>
+                    <div style="display:flex; gap:5px; margin-top:10px;">
+                        <input type="text" id="in-${id}" placeholder="تعليق..." style="flex:1; background:#000; color:#fff; border:1px solid var(--border); padding:5px; border-radius:5px;">
+                        <button onclick="addComment('${id}')" style="background:var(--p); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">رد</button>
+                    </div>
+                </div>`;
+        });
+    });
+}
+            async function deletePost(postId) {
+    if (confirm("يا براء، هل أنت متأكد من حذف هذا المنشور؟")) {
+        try {
+            await db.collection("posts").doc(postId).delete();
+            alert("تم الحذف بنجاح!");
+        } catch (error) {
+            alert("حدث خطأ أثناء الحذف: " + error.message);
+        }
+    }
     </script>
 </body>
 </html>
