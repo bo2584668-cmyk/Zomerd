@@ -508,6 +508,46 @@ function checkWords() {
         }
     }
 }
+// دالة لجلب بيانات المستخدم وتعبئة الخانات
+async function loadUserSettings() {
+    if (!user) return;
+    
+    // وضع البيانات الجاية من جوجل تلقائياً
+    document.getElementById('user-display-name').value = user.name;
+    document.getElementById('user-display-email').value = user.email;
+
+    // جلب البيانات الإضافية من Firestore (لو موجودة)
+    const doc = await db.collection("users").doc(user.email).get();
+    if (doc.exists) {
+        const data = doc.data();
+        document.getElementById('user-phone').value = data.phone || "";
+        document.getElementById('user-link').value = data.personalLink || "";
+    }
+}
+
+// دالة لحفظ بيانات المستخدم في Firestore
+async function saveUserProfile() {
+    const phone = document.getElementById('user-phone').value;
+    const personalLink = document.getElementById('user-link').value;
+
+    try {
+        await db.collection("users").doc(user.email).set({
+            name: user.name,
+            email: user.email,
+            phone: phone,
+            personalLink: personalLink,
+            lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        
+        alert("تم حفظ بياناتك بنجاح!");
+    } catch (error) {
+        alert("حدث خطأ أثناء الحفظ: " + error.message);
+    }
+}
+
+// استدعاء الدالة عند تشغيل التطبيق
+// ضيف السطر ده جوه دالة startApp()
+// loadUserSettings(); 
     </script>
 </body>
 </html>
