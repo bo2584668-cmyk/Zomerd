@@ -120,6 +120,16 @@
                 <input type="file" id="img-upload" class="inp-field">
                 <div id="p-body" class="editor-box" contenteditable="true" style="background:rgba(0,0,0,0.2); border:1px solid var(--border); padding:15px; border-radius:10px; min-height:150px; outline:none;" placeholder="اكتب المقال هنا..."></div>
                 <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:12px; font-weight:bold; cursor:pointer; color:black;">نشر الآن بسحابة Firebase</button>
+       <div style="margin-bottom: 15px;">
+    <input type="file" id="img-upload" class="inp-field" onchange="uploadImageHandler(this)">
+    
+    <div id="upload-status-container" style="display:none; margin-top:10px;">
+        <div style="height:8px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
+            <div id="upload-progress-bar" style="width:0%; height:100%; background:#00d2ff; transition:0.3s;"></div>
+        </div>
+        <p id="upload-text" style="font-size:0.8rem; margin-top:5px; color:#00d2ff;">جاري رفع الصورة: 0%</p>
+    </div>
+       </div> 
             </div>
         </section>
 
@@ -302,7 +312,43 @@
         window.onload = () => {
             const saved = localStorage.getItem('zomerd_user');
             if(saved) { user = JSON.parse(saved); startApp(); }
+  
+    }
+        let uploadedImageUrl = ""; // لتخزين رابط الصورة المرفوعة
+
+function uploadImageHandler(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const container = document.getElementById('upload-status-container');
+    const progressBar = document.getElementById('upload-progress-bar');
+    const progressText = document.getElementById('upload-text');
+
+    // إظهار الشريط
+    container.style.display = 'block';
+
+    // إعداد مرجع الرفع في Firebase
+    const storageRef = firebase.storage().ref('posts/' + Date.now() + "_" + file.name);
+    const uploadTask = storageRef.put(file);
+
+    // مراقبة عملية الرفع
+    uploadTask.on('state_changed', 
+        (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            progressBar.style.width = progress + '%';
+            progressText.innerText = "جاري رفع الصورة: " + Math.round(progress) + "%";
+        }, 
+        (error) => {
+            alert("فشل الرفع: " + error.message);
+        }, 
+        async () => {
+            // عند النجاح
+            uploadedImageUrl = await uploadTask.snapshot.ref.getDownloadURL();
+            progressText.innerHTML = "✅ تم الرفع بنجاح!";
+            progressBar.style.background = "#25d366"; // تحويل اللون للأخضر
         }
+    );
+}
     </script>
 </body>
 </html>
