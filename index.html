@@ -314,9 +314,11 @@
             if(saved) { user = JSON.parse(saved); startApp(); }
   
     }
-        let uploadedImageUrl = ""; // لتخزين رابط الصورة المرفوعة
+        // 1. تأكد أن هذا المتغير موجود في أول السكريبت
+let uploadedImageUrl = ""; 
 
-function uploadImageHandler(input) {
+// 2. دالة الرفع باستخدام مفتاحك الجديد
+async function uploadImageHandler(input) {
     const file = input.files[0];
     if (!file) return;
 
@@ -324,30 +326,41 @@ function uploadImageHandler(input) {
     const progressBar = document.getElementById('upload-progress-bar');
     const progressText = document.getElementById('upload-text');
 
-    // إظهار الشريط
+    // إظهار شريط التحميل
     container.style.display = 'block';
+    progressBar.style.width = '20%'; 
+    progressBar.style.background = 'var(--p)';
+    progressText.innerText = "جاري رفع الصورة إلى زمرد نت...";
 
-    // إعداد مرجع الرفع في Firebase
-    const storageRef = firebase.storage().ref('posts/' + Date.now() + "_" + file.name);
-    const uploadTask = storageRef.put(file);
+    const formData = new FormData();
+    formData.append("image", file);
+    
+    // مفتاحك الخاص الذي أرسلته
+    const myApiKey = "22d566497cb5778087e8dd132dc8116d"; 
 
-    // مراقبة عملية الرفع
-    uploadTask.on('state_changed', 
-        (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            progressBar.style.width = progress + '%';
-            progressText.innerText = "جاري رفع الصورة: " + Math.round(progress) + "%";
-        }, 
-        (error) => {
-            alert("فشل الرفع: " + error.message);
-        }, 
-        async () => {
-            // عند النجاح
-            uploadedImageUrl = await uploadTask.snapshot.ref.getDownloadURL();
-            progressText.innerHTML = "✅ تم الرفع بنجاح!";
-            progressBar.style.background = "#25d366"; // تحويل اللون للأخضر
+    try {
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${myApiKey}`, {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            uploadedImageUrl = data.data.url; // الرابط المباشر للصورة
+            progressBar.style.width = "100%";
+            progressBar.style.background = "#25d366"; // أخضر عند النجاح
+            progressText.innerHTML = "✅ تم التحميل بنجاح! يمكنك النشر الآن.";
+            console.log("تم الرفع: ", uploadedImageUrl);
+        } else {
+            throw new Error("فشل الرفع");
         }
-    );
+    } catch (error) {
+        progressText.innerHTML = "❌ خطأ في الرفع، حاول مرة أخرى.";
+        progressBar.style.background = "#ef4444";
+        console.error("Error:", error);
+    }
+}
 }
     </script>
 </body>
