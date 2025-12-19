@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>ZOMERD OS | PRO MANAGEMENT</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
@@ -13,131 +13,133 @@
             --txt: #e6edf3; --border: rgba(48, 54, 61, 0.8);
             --success: #238636; --danger: #da3633; --warning: #d29922;
         }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; }
         body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; }
         #particles-js { position: fixed; inset: 0; z-index: -1; }
 
-        /* شاشة تسجيل الدخول الإجبارية */
+        /* Login Overlay */
         #login-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; }
 
         aside { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1001; backdrop-filter: blur(10px); }
         @media (max-width: 768px) { aside { position: fixed; right: -280px; height: 100%; top: 0; } aside.open { right: 0; } }
-        .nav-link { padding: 12px 20px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: #8b949e; margin: 5px 15px; }
-        .nav-link.active { background: var(--p); color: #000; font-weight: bold; box-shadow: 0 0 15px var(--p); }
+        
+        .nav-link { padding: 12px 20px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: #8b949e; margin: 5px 15px; text-decoration: none; }
+        .nav-link.active { background: var(--p); color: #000; font-weight: bold; }
         
         main { flex: 1; overflow-y: auto; position: relative; }
-        header { height: 60px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: rgba(1, 4, 9, 0.8); backdrop-filter: blur(5px); position: sticky; top: 0; z-index: 100; }
+        header { height: 60px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: rgba(1, 4, 9, 0.8); position: sticky; top: 0; z-index: 100; }
         
         .section { padding: 20px; display: none; max-width: 1200px; margin: 0 auto; width: 100%; }
-        .section.active { display: block; animation: fadeIn 0.5s; }
+        .section.active { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: var(--card); border-radius: 15px; border: 1px solid var(--border); overflow: hidden; position: relative; }
-        .card:hover { border-color: var(--p); transform: translateY(-5px); }
 
-        .inp-field { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #0d1117; color: #fff; margin-bottom: 15px; outline: none; font-size: 1rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: var(--card); border-radius: 15px; border: 1px solid var(--border); overflow: hidden; position: relative; padding: 15px; }
+        .card:hover { border-color: var(--p); }
+
+        .inp-field { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #0d1117; color: #fff; margin-bottom: 15px; outline: none; }
         .btn-p { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; background: var(--p); color: #000; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
+        /* Game XO */
         #xo-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 300px; margin: 20px auto; }
-        .cell { aspect-ratio: 1; background: #161b22; border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; color: var(--p); }
+        .cell { aspect-ratio: 1; background: #161b22; border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; color: var(--p); height: 80px; }
 
         #article-modal { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 20px; }
-        .comm-box { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; }
-
         .ticker { background: #000; height: 35px; border-bottom: 1px solid var(--border); display: flex; align-items: center; overflow: hidden; }
-        .ticker-move { display: inline-block; white-space: nowrap; animation: tick 30s linear infinite; color: var(--p); font-size: 0.8rem; }
+        .ticker-move { display: inline-block; white-space: nowrap; animation: tick 25s linear infinite; color: var(--p); font-size: 0.8rem; }
         @keyframes tick { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        
+        .notif-dot { position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: red; border-radius: 50%; display: none; }
     </style>
 </head>
-<body id="body">
+<body>
 
     <div id="login-overlay">
-        <h1 style="color:var(--p); font-weight:900;">ZOMERD OS</h1>
-        <p style="margin: 15px 0 30px; opacity: 0.7;">برجاء تسجيل الدخول للمتابعة</p>
-        <div id="g_id_onload"
-             data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com"
-             data-callback="handleCredentialResponse"
-             data-auto_prompt="false">
-        </div>
-        <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue"></div>
+        <h1 style="color:var(--p)">ZOMERD OS</h1>
+        <p style="margin-bottom: 20px; opacity:0.8;">تسجيل دخول آمن بواسطة جوجل</p>
+        <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="handleLogin"></div>
+        <div class="g_id_signin" data-type="standard"></div>
     </div>
 
-    <div id="particles-js"></div>
-    <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
-
     <aside id="sidebar">
-        <div style="padding: 30px; text-align: center;"><h2 style="color:var(--p)">ZOMERD</h2></div>
+        <div style="padding: 25px; text-align: center; color:var(--p)"><h2>ZOMERD</h2></div>
         <nav>
             <div class="nav-link active" onclick="nav('home', event)"><i class="fa fa-home"></i> الرئيسية</div>
-            <div id="pub-btn" class="nav-link" style="display:none;" onclick="nav('publish', event)"><i class="fa fa-paper-plane"></i> نشر مقال</div>
-            <div id="adm-btn" class="nav-link" style="display:none; color:var(--warning);" onclick="nav('admin', event)"><i class="fa fa-shield-cat"></i> لوحة الإدارة</div>
-            <div class="nav-link" onclick="nav('game', event)"><i class="fa fa-gamepad"></i> العب مع AI</div>
+            <div id="pub-btn" class="nav-link" style="display:none" onclick="nav('publish', event)"><i class="fa fa-paper-plane"></i> نشر</div>
+            <div id="adm-btn" class="nav-link" style="display:none; color:var(--warning)" onclick="nav('admin', event)"><i class="fa fa-shield"></i> الإدارة</div>
+            <div class="nav-link" onclick="nav('game', event)"><i class="fa fa-gamepad"></i> XO العب</div>
             <div class="nav-link" onclick="nav('settings', event)"><i class="fa fa-cog"></i> الإعدادات</div>
         </nav>
     </aside>
 
     <main>
-        <div class="ticker"><div class="ticker-move" id="ticker-text">تحميل الأخبار...</div></div>
+        <div class="ticker"><div class="ticker-move" id="ticker-text">...جاري تحميل آخر الأخبار</div></div>
         <header>
             <i class="fa fa-bars" onclick="document.getElementById('sidebar').classList.toggle('open')"></i>
-            <div id="user-info" style="display:flex; align-items:center; gap:10px;">
-                <img id="u-img" style="width:35px; border-radius:50%;">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div style="position:relative; cursor:pointer;" onclick="clearNotif()">
+                    <i class="fa fa-bell" style="font-size:1.2rem;"></i>
+                    <div id="notif-dot" class="notif-dot"></div>
+                </div>
+                <img id="u-img" style="width:35px; border-radius:50%; border:1px solid var(--p)">
             </div>
         </header>
 
         <section id="sec-home" class="section active">
-            <input type="text" id="search" oninput="renderPosts()" placeholder="ابحث عن المقالات المعتمدة..." class="inp-field" style="border-width: 2px;">
+            <input type="text" id="search" oninput="renderPosts()" placeholder="ابحث عن المقالات..." class="inp-field">
             <div id="post-grid" class="grid"></div>
         </section>
 
         <section id="sec-publish" class="section">
-            <div class="card" style="padding:20px;">
-                <h3>إنشاء مقال جديد</h3><br>
-                <input type="text" id="p-title" class="inp-field" placeholder="عنوان المقال">
+            <div class="card">
+                <h3>نشر مقال جديد</h3><br>
+                <input type="text" id="p-title" class="inp-field" placeholder="العنوان">
                 <input type="file" onchange="uploadImg(this)" class="inp-field">
-                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:200px;"></div>
+                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:150px;"></div>
                 <button onclick="submitPost()" class="btn-p">إرسال للمراجعة</button>
             </div>
         </section>
 
         <section id="sec-admin" class="section">
-            <h2 style="color:var(--warning)">إدارة الطلبات</h2><br>
-            <div id="pending-grid" class="grid"></div>
+            <h3 style="color:var(--warning)">طلبات المراجعة</h3><br>
+            <div id="admin-grid" class="grid"></div>
             <br>
-            <div id="pub-req-list"></div>
+            <h3 style="color:var(--p)">طلبات الترقية لناشر</h3><br>
+            <div id="pub-requests"></div>
         </section>
 
         <section id="sec-game" class="section">
-            <div class="card" style="padding:20px; text-align:center;">
-                <h3>لعبة X-O ضد الذكاء الاصطناعي</h3>
+            <div class="card" style="text-align:center;">
+                <h3>X vs O (الذكاء الاصطناعي)</h3>
                 <div id="xo-board">
-                    <div class="cell" onclick="userMove(0)"></div><div class="cell" onclick="userMove(1)"></div><div class="cell" onclick="userMove(2)"></div>
-                    <div class="cell" onclick="userMove(3)"></div><div class="cell" onclick="userMove(4)"></div><div class="cell" onclick="userMove(5)"></div>
-                    <div class="cell" onclick="userMove(6)"></div><div class="cell" onclick="userMove(7)"></div><div class="cell" onclick="userMove(8)"></div>
+                    <div class="cell" onclick="xo(0)"></div><div class="cell" onclick="xo(1)"></div><div class="cell" onclick="xo(2)"></div>
+                    <div class="cell" onclick="xo(3)"></div><div class="cell" onclick="xo(4)"></div><div class="cell" onclick="xo(5)"></div>
+                    <div class="cell" onclick="xo(6)"></div><div class="cell" onclick="xo(7)"></div><div class="cell" onclick="xo(8)"></div>
                 </div>
-                <button onclick="resetGame()" class="btn-p" style="width:auto; margin:0 auto;">إعادة البدء</button>
+                <button onclick="resetXO()" class="btn-p">إعادة اللعب</button>
             </div>
         </section>
 
         <section id="sec-settings" class="section">
-            <div class="card" style="padding:20px;">
-                <h3>تخصيص الحساب</h3><br>
-                <button class="btn-p" onclick="requestPublisher()" id="req-pub-btn">طلب رتبة ناشر</button><br>
-                <button class="btn-p" style="background:var(--danger); color:#fff;" onclick="logout()">تسجيل الخروج</button>
-            </div>
+            <button class="btn-p" onclick="reqPub()">طلب رتبة ناشر</button><br>
+            <button class="btn-p" style="background:var(--danger); color:white" onclick="logout()">تسجيل خروج</button>
         </section>
     </main>
 
     <div id="article-modal">
-        <div style="max-width:800px; margin:auto; background:var(--card); padding:25px; border-radius:15px; border:1px solid var(--border);">
-            <button onclick="document.getElementById('article-modal').style.display='none'" class="btn-p" style="width:auto; margin-bottom:20px;">رجوع</button>
-            <div id="art-content"></div>
-            <hr style="margin:20px 0; border-color:var(--border)">
-            <h4>التعليقات:</h4>
-            <div id="comm-list" style="margin:15px 0;"></div>
+        <div style="max-width:800px; margin:auto; background:var(--card); padding:20px; border-radius:15px; border:1px solid var(--border);">
+            <button onclick="document.getElementById('article-modal').style.display='none'" class="btn-p" style="width:auto;">عودة</button>
+            <div id="art-full-content"></div>
+            <div style="display:flex; gap:20px; margin:20px 0;">
+                <button onclick="likePost()" class="btn-p" style="width:auto; background:none; border:1px solid var(--p); color:var(--p)"><i class="fa fa-heart"></i> <span id="art-likes">0</span></button>
+                <span style="display:flex; align-items:center;">👁️ <span id="art-views" style="margin-right:5px;">0</span></span>
+            </div>
+            <hr><br>
+            <h4>التعليقات</h4>
+            <div id="comm-list"></div><br>
             <div style="display:flex; gap:10px;">
-                <input type="text" id="comm-inp" class="inp-field" style="margin:0;" placeholder="اكتب تعليقك...">
-                <button onclick="addComment()" class="btn-p" style="width:auto;">نشر</button>
+                <input type="text" id="comm-inp" class="inp-field" placeholder="اكتب تعليقك...">
+                <button onclick="sendComm()" class="btn-p" style="width:auto;">نشر</button>
             </div>
         </div>
     </div>
@@ -157,117 +159,181 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const ADM_EMAIL = "bo2584668@gmail.com";
-        
-        let user = JSON.parse(localStorage.getItem('zomerd_user')) || null;
-        let posts = [];
-        let currentImg = "";
-        let currentArtId = "";
+        const ADM = "bo2584668@gmail.com";
+        const snd = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
 
-        // التعامل مع تسجيل الدخول
-        function handleCredentialResponse(response) {
-            const base64Url = response.credential.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const payload = JSON.parse(window.atob(base64));
-            
-            user = {
-                name: payload.name,
-                email: payload.email,
-                picture: payload.picture
-            };
-            
+        let user = JSON.parse(localStorage.getItem('zomerd_user'));
+        let posts = [], currentImg = "", currentArtId = "";
+
+        function handleLogin(response) {
+            const data = JSON.parse(atob(response.credential.split('.')[1]));
+            user = { name: data.name, email: data.email, picture: data.picture };
             localStorage.setItem('zomerd_user', JSON.stringify(user));
-            init(); // إعادة تشغيل التطبيق بعد الدخول
+            location.reload();
         }
 
         async function init() {
             if(user) {
                 document.getElementById('login-overlay').style.display = 'none';
                 document.getElementById('u-img').src = user.picture;
-                
-                const uDoc = await db.collection("users").doc(user.email).get();
-                if(uDoc.exists) {
-                    const data = uDoc.data();
-                    if(data.role === 'publisher' || user.email === ADM_EMAIL) document.getElementById('pub-btn').style.display = 'flex';
-                    if(user.email === ADM_EMAIL) document.getElementById('adm-btn').style.display = 'flex';
-                } else {
-                    await db.collection("users").doc(user.email).set({ name: user.name, role: 'user', email: user.email });
-                }
+                const doc = await db.collection("users").doc(user.email).get();
+                if(doc.exists && (doc.data().role === 'publisher' || user.email === ADM)) document.getElementById('pub-btn').style.display='flex';
+                if(user.email === ADM) document.getElementById('adm-btn').style.display='flex';
             }
-            particlesJS('particles-js', { "particles": { "number": { "value": 30 }, "color": { "value": "#00d2ff" }, "move": { "speed": 1 } } });
-            listenPosts();
-            if(user?.email === ADM_EMAIL) listenAdmin();
+            particlesJS('particles-js', {"particles":{"number":{"value":30},"color":{"value":"#00d2ff"},"move":{"speed":1}}});
+            loadData();
         }
 
-        // منطق فتح المقال - التأكد من تسجيل الدخول
-        function openArt(id) {
-            if(!user) {
-                alert("يجب تسجيل الدخول أولاً");
-                location.reload();
-                return;
-            }
-            currentArtId = id;
-            const p = posts.find(x => x.id === id);
-            db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
-            
-            document.getElementById('art-content').innerHTML = `
-                <img src="${p.image}" style="width:100%; border-radius:10px;">
-                <h2 style="margin:15px 0;">${p.title}</h2>
-                <div style="line-height:1.8;">${p.content}</div>`;
-            
-            renderComments(p.comments);
-            document.getElementById('article-modal').style.display = 'block';
-        }
-
-        // بقية الدوال البرمجية (حذف تعليقات، رفع صور، الخ) بقيت كما هي
-        function listenPosts() {
+        function loadData() {
             db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
                 posts = []; let t = "";
                 snap.forEach(doc => {
-                    const data = doc.data();
-                    if(data.status === 'approved') {
-                        posts.push({id: doc.id, ...data});
-                        t += ` ⚡ ${data.title} `;
+                    const d = {id: doc.id, ...doc.data()};
+                    if(d.status === 'approved') {
+                        posts.push(d);
+                        t += ` ⚡ ${d.title} `;
                     }
                 });
                 document.getElementById('ticker-text').innerText = t;
                 renderPosts();
+                if(user.email === ADM) renderAdmin();
             });
+
+            // مراقبة طلبات الناشرين للأدمن
+            if(user?.email === ADM) {
+                db.collection("pub_requests").onSnapshot(snap => {
+                    const list = document.getElementById('pub-requests');
+                    list.innerHTML = '';
+                    snap.forEach(doc => {
+                        const r = doc.data();
+                        list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>${r.email}</span>
+                            <button onclick="approvePub('${r.email}', '${doc.id}')" class="btn-p" style="width:auto; background:var(--success);">ترقية</button>
+                        </div>`;
+                    });
+                });
+            }
         }
 
         function renderPosts() {
             const grid = document.getElementById('post-grid');
             grid.innerHTML = '';
             posts.forEach(p => {
-                grid.innerHTML += `
-                    <div class="card" onclick="openArt('${p.id}')">
-                        <img src="${p.image}" style="width:100%; height:150px; object-fit:cover;">
-                        <div style="padding:15px;"><h4>${p.title}</h4></div>
-                    </div>`;
+                grid.innerHTML += `<div class="card">
+                    <img src="${p.image}" onclick="openArt('${p.id}')" style="width:100%; height:150px; object-fit:cover; border-radius:10px; cursor:pointer;">
+                    <h4 style="margin:10px 0;">${p.title}</h4>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span style="font-size:0.8rem;">👁️ ${p.views}</span>
+                        ${user.email === ADM ? `<i class="fa fa-trash" onclick="deletePost('${p.id}')" style="color:var(--danger); cursor:pointer;"></i>` : ''}
+                    </div>
+                </div>`;
             });
         }
 
-        async function addComment() {
-            const text = document.getElementById('comm-inp').value;
-            if(!text || !user) return;
-            await db.collection("posts").doc(currentArtId).update({
-                comments: firebase.firestore.FieldValue.arrayUnion({ user: user.name, text: text, time: Date.now() })
-            });
+        async function openArt(id) {
+            currentArtId = id;
+            const p = posts.find(x => x.id === id);
+            await db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
+            document.getElementById('art-full-content').innerHTML = `<img src="${p.image}" style="width:100%; border-radius:10px;"><h2>${p.title}</h2><p>${p.content}</p>`;
+            document.getElementById('art-likes').innerText = p.likes;
+            document.getElementById('art-views').innerText = p.views + 1;
+            renderComms(p.comments);
+            document.getElementById('article-modal').style.display='block';
+        }
+
+        async function likePost() {
+            await db.collection("posts").doc(currentArtId).update({ likes: firebase.firestore.FieldValue.increment(1) });
+            document.getElementById('art-likes').innerText = parseInt(document.getElementById('art-likes').innerText) + 1;
+        }
+
+        async function sendComm() {
+            const val = document.getElementById('comm-inp').value;
+            if(!val) return;
+            const c = { user: user.name, text: val };
+            await db.collection("posts").doc(currentArtId).update({ comments: firebase.firestore.FieldValue.arrayUnion(c) });
             document.getElementById('comm-inp').value = '';
+            // تحديث محلي سريع للتعليقات
+            const list = document.getElementById('comm-list');
+            list.innerHTML += `<div style="padding:8px; background:rgba(255,255,255,0.05); margin-bottom:5px; border-radius:5px;"><b>${user.name}:</b> ${val}</div>`;
         }
 
-        function renderComments(comms) {
-            const list = document.getElementById('comm-list');
-            list.innerHTML = comms.map(c => `<div class="comm-box"><b>${c.user}:</b> ${c.text}</div>`).join('');
+        function renderComms(comms) {
+            document.getElementById('comm-list').innerHTML = comms.map(c => `<div style="padding:8px; background:rgba(255,255,255,0.05); margin-bottom:5px; border-radius:5px;"><b>${c.user}:</b> ${c.text}</div>`).join('');
+        }
+
+        async function submitPost() {
+            const t = document.getElementById('p-title').value, b = document.getElementById('p-body').innerHTML;
+            await db.collection("posts").add({
+                title: t, content: b, image: currentImg, author: user.email, 
+                status: user.email===ADM?'approved':'pending', views: 0, likes: 0, comments: [], time: Date.now()
+            });
+            snd.play();
+            document.getElementById('notif-dot').style.display = 'block';
+            alert("تم الإرسال!");
+            nav('home');
+        }
+
+        // XO Game Logic
+        let b = ["","","","","","","","",""];
+        function xo(i) {
+            if(b[i] || checkXO()) return;
+            b[i] = "X"; drawXO();
+            if(!checkXO()) setTimeout(ai, 500);
+        }
+        function ai() {
+            let e = b.map((v,i)=>v===""?i:null).filter(v=>v!==null);
+            if(e.length) { b[e[Math.floor(Math.random()*e.length)]] = "O"; drawXO(); }
+        }
+        function drawXO() {
+            const cells = document.querySelectorAll('.cell');
+            b.forEach((v,i) => cells[i].innerText = v);
+            if(checkXO()) alert("انتهى!");
+        }
+        function checkXO() {
+            const w = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            return w.find(v => b[v[0]] && b[v[0]]===b[v[1]] && b[v[0]]===b[v[2]]);
+        }
+        function resetXO() { b.fill(""); drawXO(); }
+
+        // وظائف الأدمن
+        function renderAdmin() {
+            db.collection("posts").where("status","==","pending").onSnapshot(snap => {
+                const grid = document.getElementById('admin-grid');
+                grid.innerHTML = '';
+                snap.forEach(doc => {
+                    const p = doc.data();
+                    grid.innerHTML += `<div class="card">
+                        <h4>${p.title}</h4>
+                        <button onclick="db.collection('posts').doc('${doc.id}').update({status:'approved'})" class="btn-p" style="background:var(--success)">موافقة</button>
+                    </div>`;
+                });
+            });
+        }
+        async function deletePost(id) {
+            if(confirm("حذف؟")) await db.collection("posts").doc(id).delete();
+        }
+        async function reqPub() {
+            await db.collection("pub_requests").add({ email: user.email });
+            alert("تم إرسال طلبك");
+        }
+        async function approvePub(email, id) {
+            await db.collection("users").doc(email).set({ role: 'publisher' });
+            await db.collection("pub_requests").doc(id).delete();
+            alert("تمت الترقية");
         }
 
         function nav(id, e) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
         }
-
+        function clearNotif() { document.getElementById('notif-dot').style.display='none'; }
+        async function uploadImg(el) {
+            const fd = new FormData(); fd.append("image", el.files[0]);
+            const res = await fetch("https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d", {method:"POST", body:fd});
+            const d = await res.json(); currentImg = d.data.url;
+        }
         function logout() { localStorage.clear(); location.reload(); }
-
         window.onload = init;
     </script>
 </body>
