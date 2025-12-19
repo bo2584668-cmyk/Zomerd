@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>ZOMERD OS | ULTIMATE</title>
+    <title>ZOMERD OS | THE ULTIMATE VERSION</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
-            --p: #00d2ff; --bg: #010409; --card: rgba(13, 17, 23, 0.95);
+            --p: #00d2ff; --bg: #010409; --card: rgba(13, 17, 23, 0.98);
             --txt: #e6edf3; --border: rgba(48, 54, 61, 0.8);
             --success: #238636; --danger: #da3633; --warning: #d29922;
         }
@@ -18,152 +18,154 @@
         #particles-js { position: fixed; inset: 0; z-index: -1; }
 
         /* Login */
-        #login-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        #login-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; }
 
-        /* Sidebar & Navigation */
+        /* Navigation */
         aside { width: 260px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1001; transition: 0.3s; }
         @media (max-width: 768px) { aside { position: fixed; right: -260px; height: 100%; top: 0; } aside.open { right: 0; } }
         .nav-link { padding: 12px 20px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: #8b949e; margin: 5px 15px; }
-        .nav-link.active { background: var(--p); color: #000; font-weight: bold; }
+        .nav-link.active { background: var(--p); color: #000; font-weight: bold; box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
 
         main { flex: 1; overflow-y: auto; position: relative; }
         header { height: 65px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: rgba(1, 4, 9, 0.9); position: sticky; top: 0; z-index: 100; }
 
-        .section { padding: 20px; display: none; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeIn 0.4s; }
+        .section { padding: 20px; display: none; max-width: 1200px; margin: 0 auto; width: 100%; animation: slideUp 0.4s ease; }
         .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Content UI */
+        /* Cards & UI */
         .card { background: var(--card); border-radius: 15px; border: 1px solid var(--border); padding: 15px; margin-bottom: 20px; position: relative; }
         .inp-field { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #0d1117; color: #fff; margin-bottom: 15px; outline: none; }
-        .btn-p { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; background: var(--p); color: #000; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        
+        .btn-p { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; background: var(--p); color: #000; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .btn-p:hover { opacity: 0.8; transform: scale(0.98); }
+        .btn-p:disabled { background: #30363d; cursor: not-allowed; }
+
         /* Progress Bar */
-        .prog-container { width: 100%; background: #000; height: 10px; border-radius: 5px; margin-bottom: 15px; display: none; overflow: hidden; }
-        .prog-bar { height: 100%; background: var(--p); width: 0%; transition: 0.3s; box-shadow: 0 0 10px var(--p); }
+        .prog-container { width: 100%; background: #000; height: 10px; border-radius: 5px; margin-bottom: 15px; display: none; overflow: hidden; border: 1px solid var(--border); }
+        .prog-bar { height: 100%; background: linear-gradient(90deg, var(--p), #00ffcc); width: 0%; transition: 0.3s; }
 
-        /* Chat UI */
-        #chat-box { height: 300px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; margin-bottom: 10px; }
-        .chat-msg { margin-bottom: 10px; font-size: 0.9rem; }
-        .chat-msg b { color: var(--p); }
+        /* Chat */
+        #chat-box { height: 350px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px; }
+        .chat-msg { margin-bottom: 10px; padding: 8px; border-radius: 8px; background: rgba(255,255,255,0.03); }
+        .chat-msg b { color: var(--p); font-size: 0.8rem; }
 
-        /* Trend & Badges */
-        .badge { font-size: 0.6rem; background: var(--warning); color: #000; padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
-        .trend-tag { position: absolute; top: 10px; left: 10px; background: gold; color: #000; padding: 2px 8px; border-radius: 50px; font-size: 0.7rem; font-weight: bold; }
+        /* Badges */
+        .badge { font-size: 0.65rem; background: var(--warning); color: #000; padding: 2px 8px; border-radius: 50px; margin-right: 5px; font-weight: bold; }
 
-        #notif-panel { position: absolute; top: 70px; left: 20px; width: 300px; background: var(--card); border: 1px solid var(--p); border-radius: 12px; display: none; z-index: 2000; max-height: 400px; overflow-y: auto; }
+        /* XO */
+        .xo-cell { aspect-ratio: 1; background: #161b22; border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; cursor: pointer; color: var(--p); font-weight: 900; }
+
         #article-modal { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 20px; }
+        #notif-panel { position: absolute; top: 70px; left: 20px; width: 300px; background: var(--card); border: 1px solid var(--p); border-radius: 12px; display: none; z-index: 2000; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
     </style>
 </head>
 <body>
 
     <div id="login-overlay">
-        <h1 style="color:var(--p); font-weight: 900; font-size: 2.5rem;">ZOMERD OS</h1>
-        <p style="margin-bottom: 30px; opacity: 0.7;">نظام الإدارة المتكامل - براء عمر</p>
+        <h1 style="color:var(--p); font-size: 3rem; font-weight: 900; letter-spacing: 2px;">ZOMERD OS</h1>
+        <p style="margin-bottom: 30px; opacity: 0.6;">نظام الإدارة الفائق | براء عمر</p>
         <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="handleLogin"></div>
-        <div class="g_id_signin" data-type="standard"></div>
+        <div class="g_id_signin" data-type="standard" data-theme="filled_blue"></div>
     </div>
 
     <aside id="sidebar">
-        <div style="padding: 25px; text-align: center; color:var(--p)"><h2>ZOMERD</h2></div>
+        <div style="padding: 30px; text-align: center; color:var(--p)"><h2>ZOMERD</h2></div>
         <nav>
-            <div class="nav-link active" onclick="nav('home', event)"><i class="fa fa-fire"></i> اكتشف</div>
-            <div id="pub-btn" class="nav-link" style="display:none" onclick="nav('publish', event)"><i class="fa fa-pen-nib"></i> كتابة مقال</div>
-            <div id="adm-btn" class="nav-link" style="display:none; color:var(--warning)" onclick="nav('admin', event)"><i class="fa fa-hammer"></i> لوحة التحكم</div>
-            <div class="nav-link" onclick="nav('chat', event)"><i class="fa fa-comments"></i> الدردشة</div>
-            <div class="nav-link" onclick="nav('game', event)"><i class="fa fa-trophy"></i> الألعاب</div>
-            <div class="nav-link" onclick="nav('profile', event)"><i class="fa fa-user"></i> حسابي</div>
+            <div class="nav-link active" onclick="nav('home', event)"><i class="fa fa-th-large"></i> الاستكشاف</div>
+            <div id="pub-nav" class="nav-link" style="display:none" onclick="nav('publish', event)"><i class="fa fa-plus-circle"></i> نشر مقال</div>
+            <div id="adm-nav" class="nav-link" style="display:none; color:var(--warning)" onclick="nav('admin', event)"><i class="fa fa-shield-halved"></i> الإدارة</div>
+            <div class="nav-link" onclick="nav('chat', event)"><i class="fa fa-comment-dots"></i> الدردشة</div>
+            <div class="nav-link" onclick="nav('game', event)"><i class="fa fa-gamepad"></i> الألعاب</div>
+            <div class="nav-link" onclick="nav('profile', event)"><i class="fa fa-user-circle"></i> بروفايلي</div>
         </nav>
     </aside>
 
     <main>
         <header>
-            <i class="fa fa-bars" onclick="document.getElementById('sidebar').classList.toggle('open')"></i>
+            <i class="fa fa-bars" onclick="document.getElementById('sidebar').classList.toggle('open')" style="cursor:pointer; font-size: 1.2rem;"></i>
             <div style="display:flex; align-items:center; gap:20px;">
                 <div style="position:relative; cursor:pointer;" onclick="toggleNotifs()">
-                    <i class="fa fa-bell"></i>
-                    <span id="notif-count" style="position:absolute; top:-5px; right:-5px; background:red; font-size:0.5rem; padding:2px 4px; border-radius:50%; display:none;">0</span>
+                    <i class="fa fa-bell" style="font-size: 1.3rem;"></i>
+                    <span id="notif-count" style="position:absolute; top:-5px; right:-5px; background:red; font-size:0.6rem; padding:2px 5px; border-radius:50%; display:none;">0</span>
                 </div>
-                <img id="u-img" style="width:38px; border-radius:50%; border:2px solid var(--p)">
+                <img id="u-img" style="width:40px; border-radius:50%; border:2px solid var(--p); cursor:pointer;" onclick="nav('profile')">
             </div>
-            <div id="notif-panel">
-                <div id="notif-list" style="padding:10px;"></div>
-            </div>
+            <div id="notif-panel"><div id="notif-list" style="padding:10px; max-height:300px; overflow-y:auto;"></div></div>
         </header>
 
         <section id="sec-home" class="section active">
-            <h3 style="color:var(--p); margin-bottom:15px;">🔥 الأكثر تداولاً</h3>
-            <div id="trend-grid" style="display:grid; grid-template-columns: 1fr; gap:15px; margin-bottom:30px;"></div>
-            <hr style="border:0.1px solid var(--border); margin:20px 0;">
-            <h3>📰 أحدث المقالات</h3><br>
+            <h3 style="margin-bottom:20px;"><i class="fa fa-bolt" style="color:var(--warning)"></i> المقالات المعتمدة</h3>
             <div id="post-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:20px;"></div>
         </section>
 
         <section id="sec-publish" class="section">
             <div class="card">
-                <h3>نشر محتوى جديد</h3><br>
-                <input type="text" id="p-title" class="inp-field" placeholder="العنوان المثير هنا...">
-                <div class="prog-container" id="upload-prog"><div class="prog-bar" id="prog-val"></div></div>
-                <input type="file" onchange="uploadImg(this)" class="inp-field">
-                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:250px;"></div>
-                <button id="pub-btn-action" onclick="submitPost()" class="btn-p">إطلاق المقال 🚀</button>
+                <h3>✍️ إنشاء محتوى جديد</h3><br>
+                <input type="text" id="p-title" class="inp-field" placeholder="عنوان المقال...">
+                <div class="prog-container" id="up-prog"><div class="prog-bar" id="up-bar"></div></div>
+                <input type="file" onchange="uploadImg(this)" class="inp-field" accept="image/*">
+                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:300px; overflow-y:auto; border:1px dashed var(--p)" placeholder="اكتب تفاصيل مقالك هنا..."></div>
+                <button id="submit-btn" onclick="submitPost()" class="btn-p">إرسال للمراجعة 🚀</button>
             </div>
         </section>
 
         <section id="sec-admin" class="section">
-            <h2 style="color:var(--warning)">الطلبات الواردة</h2><br>
-            <div id="admin-tasks"></div>
+            <h3 style="color:var(--warning)">📦 مراجعة المقالات</h3><div id="admin-posts" style="margin:15px 0;"></div><br>
+            <h3 style="color:var(--p)">🎖️ طلبات الترقية لناشر</h3><div id="admin-reqs" style="margin:15px 0;"></div>
         </section>
 
         <section id="sec-chat" class="section">
             <div class="card">
-                <h3>Global Chat 💬</h3>
+                <h3>الدردشة العامة 💬</h3>
                 <div id="chat-box"></div>
                 <div style="display:flex; gap:10px;">
-                    <input type="text" id="chat-inp" class="inp-field" style="margin:0" placeholder="اكتب رسالتك...">
-                    <button onclick="sendChat()" class="btn-p" style="width:auto;">إرسال</button>
+                    <input type="text" id="chat-inp" class="inp-field" style="margin:0" placeholder="رسالتك هنا...">
+                    <button onclick="sendChat()" class="btn-p" style="width:auto;"><i class="fa fa-paper-plane"></i></button>
                 </div>
             </div>
         </section>
 
         <section id="sec-game" class="section">
-             <div class="card" style="text-align:center;">
-                <h3>X vs O AI</h3><br>
-                <div id="xo-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; max-width:250px; margin:auto;">
-                    <div class="cell" onclick="xo(0)"></div><div class="cell" onclick="xo(1)"></div><div class="cell" onclick="xo(2)"></div>
-                    <div class="cell" onclick="xo(3)"></div><div class="cell" onclick="xo(4)"></div><div class="cell" onclick="xo(5)"></div>
-                    <div class="cell" onclick="xo(6)"></div><div class="cell" onclick="xo(7)"></div><div class="cell" onclick="xo(8)"></div>
+            <div class="card" style="text-align:center;">
+                <h3>XO الذكاء الاصطناعي</h3><br>
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; max-width:300px; margin:auto;">
+                    <div class="xo-cell" onclick="xo(0)"></div><div class="xo-cell" onclick="xo(1)"></div><div class="xo-cell" onclick="xo(2)"></div>
+                    <div class="xo-cell" onclick="xo(3)"></div><div class="xo-cell" onclick="xo(4)"></div><div class="xo-cell" onclick="xo(5)"></div>
+                    <div class="xo-cell" onclick="xo(6)"></div><div class="xo-cell" onclick="xo(7)"></div><div class="xo-cell" onclick="xo(8)"></div>
                 </div>
+                <br><button onclick="resetXO()" class="btn-p" style="width:auto; margin:auto;">إعادة اللعب</button>
             </div>
         </section>
 
         <section id="sec-profile" class="section">
             <div class="card" style="text-align:center;">
-                <img id="prof-img" style="width:100px; border-radius:50%; border:3px solid var(--p)">
+                <img id="prof-img" style="width:120px; border-radius:50%; border:4px solid var(--p); padding:5px;">
                 <h2 id="prof-name" style="margin-top:15px;"></h2>
                 <div id="prof-badges" style="margin:10px 0;"></div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:20px;">
-                    <div class="card"><h5>نقاطي</h5><h3 id="u-points">0</h3></div>
-                    <div class="card"><h5>مقالاتي</h5><h3 id="u-posts-count">0</h3></div>
+                    <div class="card"><h5>النقاط</h5><h2 id="u-points" style="color:var(--p)">0</h2></div>
+                    <div class="card"><h5>المنشورات</h5><h2 id="u-posts-count" style="color:var(--success)">0</h2></div>
                 </div>
-                <button class="btn-p" style="background:var(--danger); color:white" onclick="logout()">تسجيل الخروج</button>
+                <button id="req-pub-btn" class="btn-p" onclick="requestPub()">طلب رتبة ناشر 🎖️</button><br>
+                <button class="btn-p" style="background:var(--danger); color:white" onclick="logout()">تسجيل خروج</button>
             </div>
         </section>
     </main>
 
     <div id="article-modal">
-        <div style="max-width:850px; margin:auto; background:var(--card); padding:25px; border-radius:15px;">
-            <button onclick="document.getElementById('article-modal').style.display='none'" class="btn-p" style="width:auto;">رجوع</button>
-            <div id="art-full-view"></div>
-            <div style="margin:20px 0; display:flex; gap:20px;">
-                <button onclick="like()" class="btn-p" style="width:auto; background:none; border:1px solid var(--p); color:var(--p)">❤️ <span id="l-val">0</span></button>
-                <span>👁️ <span id="v-val">0</span></span>
+        <div style="max-width:800px; margin:auto; background:var(--card); padding:30px; border-radius:20px; border:1px solid var(--border);">
+            <button onclick="document.getElementById('article-modal').style.display='none'" class="btn-p" style="width:auto; margin-bottom:20px;"><i class="fa fa-arrow-right"></i> عودة</button>
+            <div id="art-view"></div>
+            <div style="margin:20px 0; display:flex; gap:20px; font-weight:bold;">
+                <button onclick="like()" class="btn-p" style="width:auto; background:none; border:1px solid var(--p); color:var(--p)">❤️ <span id="l-count">0</span></button>
+                <span style="display:flex; align-items:center; gap:5px;">👁️ <span id="v-count">0</span></span>
             </div>
-            <hr><br>
-            <div id="comms-box"></div><br>
+            <hr style="border:0.1px solid var(--border); margin:20px 0;">
+            <h4>التعليقات</h4>
+            <div id="art-comms" style="margin:15px 0;"></div>
             <div style="display:flex; gap:10px;">
-                <input type="text" id="c-input" class="inp-field" placeholder="أضف تعليقك...">
-                <button onclick="addComment()" class="btn-p" style="width:auto;">تعليق</button>
+                <input type="text" id="comm-inp" class="inp-field" placeholder="أضف تعليقك بصمة...">
+                <button onclick="addComm()" class="btn-p" style="width:auto;">تعليق</button>
             </div>
         </div>
     </div>
@@ -204,185 +206,211 @@
                 document.getElementById('prof-name').innerText = user.name;
                 
                 const uDoc = await db.collection("users").doc(user.email).get();
+                let role = 'user';
                 if(!uDoc.exists) {
                     await db.collection("users").doc(user.email).set({ name:user.name, email:user.email, role:'user', points:0, posts:0 });
                 } else {
-                    const data = uDoc.data();
-                    document.getElementById('u-points').innerText = data.points || 0;
-                    document.getElementById('u-posts-count').innerText = data.posts || 0;
-                    if(data.role === 'publisher' || user.email === ADM) document.getElementById('pub-btn').style.display='flex';
-                    if(user.email === ADM) document.getElementById('adm-btn').style.display='flex';
-                    renderBadges(data);
+                    const d = uDoc.data(); role = d.role;
+                    document.getElementById('u-points').innerText = d.points || 0;
+                    document.getElementById('u-posts-count').innerText = d.posts || 0;
+                    renderBadges(d);
                 }
+
+                if(role === 'publisher' || user.email === ADM) {
+                    document.getElementById('pub-nav').style.display = 'flex';
+                    document.getElementById('req-pub-btn').style.display = 'none';
+                }
+                if(user.email === ADM) document.getElementById('adm-nav').style.display = 'flex';
+                
                 listenChat();
                 listenNotifs();
+                if(user.email === ADM) listenAdmin();
             }
-            particlesJS('particles-js', {"particles":{"number":{"value":30},"color":{"value":"#00d2ff"},"move":{"speed":1}}});
+            particlesJS('particles-js', {"particles":{"number":{"value":40},"color":{"value":"#00d2ff"},"move":{"speed":1}}});
             loadPosts();
-            if(user?.email === ADM) loadAdmin();
         }
 
         async function uploadImg(el) {
-            const prog = document.getElementById('upload-prog');
-            const bar = document.getElementById('prog-val');
-            prog.style.display = 'block';
-            bar.style.width = '30%';
+            const btn = document.getElementById('submit-btn');
+            const bar = document.getElementById('up-bar');
+            document.getElementById('up-prog').style.display = 'block';
+            btn.disabled = true; bar.style.width = '30%';
 
             const fd = new FormData(); fd.append("image", el.files[0]);
-            const res = await fetch("https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d", {method:"POST", body:fd});
-            bar.style.width = '100%';
-            const d = await res.json();
-            currentImg = d.data.url;
-            setTimeout(() => prog.style.display='none', 1000);
-            alert("تم رفع الصورة!");
+            try {
+                const res = await fetch("https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d", {method:"POST", body:fd});
+                const d = await res.json();
+                currentImg = d.data.url;
+                bar.style.width = '100%';
+                setTimeout(() => document.getElementById('up-prog').style.display = 'none', 1000);
+            } catch(e) { alert("خطأ في الرفع"); }
+            btn.disabled = false;
         }
 
         async function submitPost() {
             const t = document.getElementById('p-title').value, b = document.getElementById('p-body').innerHTML;
-            if(!t || !currentImg) return alert("املأ البيانات!");
+            if(!t || !currentImg) return alert("أكمل العنوان والصورة أولاً");
             const isAdm = user.email === ADM;
             await db.collection("posts").add({
                 title: t, content: b, image: currentImg, author: user.email, authorName: user.name,
-                status: isAdm ? 'approved' : 'pending',
-                views: 0, likes: 0, comments: [], time: Date.now()
+                status: isAdm ? 'approved' : 'pending', views: 0, likes: 0, comments: [], time: Date.now()
             });
             if(isAdm) await db.collection("users").doc(user.email).update({ points: firebase.firestore.FieldValue.increment(50), posts: firebase.firestore.FieldValue.increment(1) });
-            snd.play();
-            alert(isAdm ? "تم النشر!" : "بانتظار مراجعة براء...");
+            snd.play(); alert(isAdm ? "تم النشر!" : "تم الإرسال للأدمن براء للمراجعة");
             nav('home');
         }
 
         function loadPosts() {
-            db.collection("posts").where("status","==","approved").onSnapshot(snap => {
+            db.collection("posts").where("status","==","approved").orderBy("time", "desc").onSnapshot(snap => {
                 posts = [];
-                snap.forEach(doc => posts.push({id: doc.id, ...doc.data()}));
-                
-                // التريند (أعلى 3 مشاهدات)
-                const trends = [...posts].sort((a,b) => b.views - a.views).slice(0, 3);
-                document.getElementById('trend-grid').innerHTML = trends.map(p => `
-                    <div class="card" onclick="openArt('${p.id}')" style="cursor:pointer; display:flex; gap:15px; align-items:center;">
-                        <img src="${p.image}" style="width:80px; height:80px; border-radius:10px; object-fit:cover;">
-                        <div>
-                            <span class="trend-tag">TRENDING</span>
-                            <h4>${p.title}</h4>
-                            <small>👁️ ${p.views} مشاهدة</small>
-                        </div>
-                    </div>`).join('');
-
-                // الشبكة الرئيسية
-                document.getElementById('post-grid').innerHTML = posts.sort((a,b)=>b.time-a.time).map(p => `
-                    <div class="card">
-                        <img src="${p.image}" onclick="openArt('${p.id}')" style="width:100%; height:160px; object-fit:cover; border-radius:10px; cursor:pointer;">
-                        <h4 style="margin:10px 0;">${p.title}</h4>
-                        <div style="display:flex; justify-content:space-between; font-size:0.8rem;">
-                            <span>BY: ${p.authorName}</span>
-                            ${user.email === ADM ? `<i class="fa fa-trash" onclick="delPost('${p.id}')"></i>` : ''}
-                        </div>
-                    </div>`).join('');
+                document.getElementById('post-grid').innerHTML = snap.docs.map(doc => {
+                    const p = {id: doc.id, ...doc.data()}; posts.push(p);
+                    return `
+                        <div class="card" onclick="openArt('${p.id}')" style="cursor:pointer">
+                            <img src="${p.image}" style="width:100%; height:180px; object-fit:cover; border-radius:10px;">
+                            <h4 style="margin:12px 0;">${p.title}</h4>
+                            <div style="display:flex; justify-content:space-between; font-size:0.75rem; opacity:0.7;">
+                                <span><i class="fa fa-user"></i> ${p.authorName}</span>
+                                <span>👁️ ${p.views}</span>
+                            </div>
+                        </div>`;
+                }).join('');
             });
         }
 
-        function loadAdmin() {
+        async function openArt(id) {
+            currentId = id; const p = posts.find(x => x.id === id);
+            await db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
+            document.getElementById('art-view').innerHTML = `<img src="${p.image}" style="width:100%; border-radius:15px; margin-bottom:20px;"><h1>${p.title}</h1><div style="line-height:1.8; margin-top:15px;">${p.content}</div>`;
+            document.getElementById('l-count').innerText = p.likes;
+            document.getElementById('v-count').innerText = p.views + 1;
+            renderComms(p.comments);
+            document.getElementById('article-modal').style.display='block';
+        }
+
+        async function like() {
+            await db.collection("posts").doc(currentId).update({ likes: firebase.firestore.FieldValue.increment(1) });
+            document.getElementById('l-count').innerText = parseInt(document.getElementById('l-count').innerText) + 1;
+        }
+
+        async function addComm() {
+            const inp = document.getElementById('comm-inp'); if(!inp.value) return;
+            const c = { name: user.name, text: inp.value };
+            await db.collection("posts").doc(currentId).update({ comments: firebase.firestore.FieldValue.arrayUnion(c) });
+            await db.collection("users").doc(user.email).update({ points: firebase.firestore.FieldValue.increment(5) });
+            inp.value = ''; 
+            const doc = await db.collection("posts").doc(currentId).get();
+            renderComms(doc.data().comments);
+        }
+
+        function renderComms(cc) {
+            document.getElementById('art-comms').innerHTML = cc.map(c => `<div class="chat-msg"><b>${c.name}:</b> ${c.text}</div>`).join('');
+        }
+
+        function listenChat() {
+            db.collection("chat").orderBy("time","desc").limit(30).onSnapshot(snap => {
+                const box = document.getElementById('chat-box');
+                box.innerHTML = snap.docs.map(doc => `<div class="chat-msg"><b>${doc.data().name}:</b> ${doc.data().text}</div>`).reverse().join('');
+                box.scrollTop = box.scrollHeight;
+            });
+        }
+
+        async function sendChat() {
+            const inp = document.getElementById('chat-inp'); if(!inp.value) return;
+            await db.collection("chat").add({ name: user.name, text: inp.value, time: Date.now() });
+            inp.value = '';
+        }
+
+        function listenAdmin() {
             db.collection("posts").where("status","==","pending").onSnapshot(snap => {
-                const box = document.getElementById('admin-tasks');
-                box.innerHTML = '';
-                snap.forEach(doc => {
+                document.getElementById('admin-posts').innerHTML = snap.docs.map(doc => {
                     const p = doc.data();
-                    box.innerHTML += `
-                        <div class="card">
-                            <img src="${p.image}" style="width:100px; border-radius:5px;">
-                            <h3>${p.title}</h3>
-                            <div style="background:#000; padding:10px; margin:10px 0; max-height:100px; overflow:auto;">${p.content}</div>
-                            <div style="display:flex; gap:10px;">
-                                <button onclick="approvePost('${doc.id}', '${p.author}')" class="btn-p" style="background:var(--success)">قبول ونشر</button>
-                                <button onclick="delPost('${doc.id}')" class="btn-p" style="background:var(--danger)">رفض وحذف</button>
-                            </div>
-                        </div>`;
-                });
+                    return `<div class="card">
+                        <img src="${p.image}" style="width:100px; border-radius:5px;">
+                        <h4>${p.title}</h4>
+                        <p style="font-size:0.8rem; height:40px; overflow:hidden;">${p.content}</p>
+                        <div style="display:flex; gap:10px; margin-top:10px;">
+                            <button onclick="approvePost('${doc.id}', '${p.author}')" class="btn-p" style="background:var(--success)">قبول</button>
+                            <button onclick="delPost('${doc.id}')" class="btn-p" style="background:var(--danger)">حذف</button>
+                        </div>
+                    </div>`;
+                }).join('');
+            });
+
+            db.collection("requests").onSnapshot(snap => {
+                document.getElementById('admin-reqs').innerHTML = snap.docs.map(doc => `
+                    <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>${doc.data().name} (${doc.id})</span>
+                        <button onclick="grantPub('${doc.id}')" class="btn-p" style="width:auto; background:var(--success)">ترقية</button>
+                    </div>`).join('');
             });
         }
 
         async function approvePost(id, email) {
             await db.collection("posts").doc(id).update({ status: 'approved' });
             await db.collection("users").doc(email).update({ points: firebase.firestore.FieldValue.increment(50), posts: firebase.firestore.FieldValue.increment(1) });
-            await addNotif(email, "تمت الموافقة على مقالك! +50 نقطة 🌟");
+            await addNotif(email, "🎉 تمت الموافقة على مقالك! +50 نقطة");
         }
 
-        function listenChat() {
-            db.collection("chat").orderBy("time","desc").limit(20).onSnapshot(snap => {
-                const box = document.getElementById('chat-box');
-                box.innerHTML = snap.docs.map(doc => {
-                    const m = doc.data();
-                    return `<div class="chat-msg"><b>${m.name}:</b> ${m.text}</div>`;
-                }).reverse().join('');
-                box.scrollTop = box.scrollHeight;
-            });
+        async function grantPub(email) {
+            await db.collection("users").doc(email).update({ role: 'publisher' });
+            await db.collection("requests").doc(email).delete();
+            await addNotif(email, "🎖️ مبروك! أصبحت الآن ناشر رسمي في زمرد.");
         }
 
-        async function sendChat() {
-            const inp = document.getElementById('chat-inp');
-            if(!inp.value) return;
-            await db.collection("chat").add({ name: user.name, text: inp.value, time: Date.now() });
-            inp.value = '';
-        }
-
-        async function openArt(id) {
-            currentId = id; const p = posts.find(x => x.id === id);
-            await db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
-            document.getElementById('art-full-view').innerHTML = `<img src="${p.image}" style="width:100%; border-radius:15px; margin-bottom:20px;"><h1>${p.title}</h1><div style="line-height:1.8">${p.content}</div>`;
-            document.getElementById('l-val').innerText = p.likes;
-            document.getElementById('v-val').innerText = p.views + 1;
-            renderComms(p.comments);
-            document.getElementById('article-modal').style.display='block';
-        }
-
-        async function addComment() {
-            const inp = document.getElementById('c-input'); if(!inp.value) return;
-            const c = { name: user.name, text: inp.value };
-            await db.collection("posts").doc(currentId).update({ comments: firebase.firestore.FieldValue.arrayUnion(c) });
-            await db.collection("users").doc(user.email).update({ points: firebase.firestore.FieldValue.increment(5) });
-            inp.value = '';
-        }
-
-        function renderComms(cc) {
-            document.getElementById('comms-box').innerHTML = cc.map(c => `<div style="padding:10px; background:rgba(255,255,255,0.05); margin-bottom:5px; border-radius:8px;"><b>${c.name}:</b> ${c.text}</div>`).join('');
-        }
-
-        function renderBadges(data) {
-            const box = document.getElementById('prof-badges'); box.innerHTML = '';
-            if(data.posts >= 1) box.innerHTML += `<span class="badge">كاتب ناشئ</span>`;
-            if(data.posts >= 10) box.innerHTML += `<span class="badge">ناشر محترف</span>`;
-            if(data.points >= 500) box.innerHTML += `<span class="badge">VIP</span>`;
-            if(user.email === ADM) box.innerHTML += `<span class="badge" style="background:var(--p)">OWNER</span>`;
+        async function requestPub() {
+            await db.collection("requests").doc(user.email).set({ name: user.name, time: Date.now() });
+            alert("تم إرسال الطلب للأدمن براء");
         }
 
         async function addNotif(email, text) { await db.collection("notifications").doc(email).collection("items").add({ text, time: Date.now() }); }
+        
         function listenNotifs() {
-            db.collection("notifications").doc(user.email).collection("items").onSnapshot(snap => {
+            db.collection("notifications").doc(user.email).collection("items").orderBy("time","desc").onSnapshot(snap => {
                 document.getElementById('notif-count').innerText = snap.size;
                 document.getElementById('notif-count').style.display = snap.size > 0 ? 'block' : 'none';
-                document.getElementById('notif-list').innerHTML = snap.docs.map(doc => `<div style="font-size:0.8rem; padding:10px; border-bottom:1px solid var(--border)">${doc.data().text}</div>`).join('');
+                document.getElementById('notif-list').innerHTML = snap.docs.map(doc => `<div style="padding:10px; border-bottom:1px solid var(--border); font-size:0.8rem;">${doc.data().text}</div>`).join('');
             });
         }
+
         function toggleNotifs() { const p = document.getElementById('notif-panel'); p.style.display = p.style.display==='block'?'none':'block'; }
-        
+
+        function renderBadges(d) {
+            const b = document.getElementById('prof-badges'); b.innerHTML = '';
+            if(user.email === ADM) b.innerHTML += `<span class="badge" style="background:var(--p)">OWNER</span>`;
+            if(d.posts >= 5) b.innerHTML += `<span class="badge">كاتب مميز</span>`;
+            if(d.points >= 100) b.innerHTML += `<span class="badge" style="background:var(--success)">نشط جداً</span>`;
+        }
+
         // XO Logic
         let xb = Array(9).fill("");
         function xo(i) {
             if(xb[i]) return; xb[i] = "X"; drawXO();
-            setTimeout(() => { 
+            if(!checkXO()) setTimeout(() => {
                 let e = xb.map((v,idx)=>v===""?idx:null).filter(v=>v!==null);
                 if(e.length) { xb[e[Math.floor(Math.random()*e.length)]]="O"; drawXO(); }
-            }, 400);
+            }, 500);
         }
-        function drawXO() { document.querySelectorAll('.cell').forEach((c,i) => c.innerText = xb[i]); }
+        function drawXO() {
+            document.querySelectorAll('.xo-cell').forEach((c,i) => c.innerText = xb[i]);
+            if(checkXO()) alert("انتهت المباراة!");
+        }
+        function checkXO() {
+            const w = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            return w.find(c => xb[c[0]] && xb[c[0]]===xb[c[1]] && xb[c[0]]===xb[c[2]]);
+        }
+        function resetXO() { xb.fill(""); drawXO(); }
+
+        async function delPost(id) { if(confirm("حذف نهائي؟")) await db.collection("posts").doc(id).delete(); }
         
-        async function delPost(id) { if(confirm("حذف؟")) await db.collection("posts").doc(id).delete(); }
         function nav(id, e) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
+            if(e) e.currentTarget.classList.add('active');
             if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
         }
+
         function logout() { localStorage.clear(); location.reload(); }
         window.onload = init;
     </script>
