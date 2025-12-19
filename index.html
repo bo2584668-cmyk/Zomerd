@@ -30,15 +30,14 @@
         /* القائمة الجانبية */
         aside { width: 260px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; transition: 0.4s; }
         
-        /* تعديلات الموبايل (القائمة مخفية) */
         @media (max-width: 768px) {
             aside { position: fixed; right: -260px; height: 100%; top: 0; }
             aside.open { right: 0; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
-            main { width: 100vw !important; }
-            .menu-btn { display: block !important; }
         }
 
         .menu-btn { display: none; font-size: 1.5rem; color: var(--p); cursor: pointer; background: none; border: none; }
+        @media (max-width: 768px) { .menu-btn { display: block; } }
+
         .logo-side { padding: 25px; text-align: center; color: var(--p); border-bottom: 1px solid var(--border); }
         nav { flex: 1; padding: 10px; }
         .nav-link { padding: 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--dim); margin-bottom: 5px; text-decoration: none; }
@@ -50,7 +49,6 @@
         .section { padding: 20px; display: none; max-width: 1200px; margin: 0 auto; width: 100%; }
         .section.active { display: block; animation: fadeIn 0.4s; }
 
-        /* نظام تسجيل الدخول */
         #login-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .login-box { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--p); text-align: center; max-width: 320px; width: 90%; }
 
@@ -58,9 +56,9 @@
         @media (min-width: 768px) { .posts-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; } }
         
         .post-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; }
-        .post-img { width: 100%; height: 120px; object-fit: cover; }
+        .post-img { width: 100%; height: 120px; object-fit: cover; background: #000; }
         .post-details { padding: 10px; }
-        .post-details h3 { font-size: 0.9rem; color: #fff; }
+        .post-details h3 { font-size: 0.9rem; color: #fff; line-height: 1.4; height: 2.8em; overflow: hidden; }
 
         .inp-field { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.3); color: white; margin-bottom: 10px; outline: none; }
         #article-view { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 15px; }
@@ -74,9 +72,13 @@
         <div class="login-box">
             <h2 style="color:var(--p)">دخول المحترفين</h2>
             <p style="font-size: 0.8rem; margin: 15px 0; opacity: 0.8;">سجل دخولك لمشاهدة المقالات كاملة والتفاعل</p>
-            <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="onGoogleLogin"></div>
+            <div id="g_id_onload" 
+                 data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" 
+                 data-callback="onGoogleLogin"
+                 data-auto_prompt="false">
+            </div>
             <div class="g_id_signin" data-type="standard"></div>
-            <button onclick="hideLogin()" style="margin-top: 20px; background: none; border: 1px solid var(--border); color: white; padding: 5px 15px; border-radius: 5px;">إغلاق</button>
+            <button onclick="hideLogin()" style="margin-top: 20px; background: none; border: 1px solid var(--border); color: white; padding: 5px 15px; border-radius: 5px; cursor: pointer;">إغلاق</button>
         </div>
     </div>
 
@@ -119,7 +121,7 @@
                 <input type="text" id="p-title" class="inp-field" placeholder="عنوان الخبر...">
                 <input type="file" id="img-upload" class="inp-field" onchange="uploadImageHandler(this)">
                 <div id="p-body" class="inp-field" contenteditable="true" style="min-height:200px; background:rgba(0,0,0,0.2);" placeholder="اكتب التفاصيل هنا..."></div>
-                <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:10px; font-weight:bold; cursor:pointer;">نشر الخبر الآن</button>
+                <button id="pub-btn" onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:10px; font-weight:bold; cursor:pointer;">نشر الخبر الآن</button>
             </div>
         </section>
 
@@ -171,8 +173,15 @@
         function showLogin() { document.getElementById('login-modal').style.display = 'flex'; }
         function hideLogin() { document.getElementById('login-modal').style.display = 'none'; }
 
+        // فك تشفير بيانات جوجل
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            return JSON.parse(window.atob(base64));
+        }
+
         function onGoogleLogin(res) {
-            user = JSON.parse(atob(res.credential.split('.')[1]));
+            user = parseJwt(res.credential);
             localStorage.setItem('zomerd_user', JSON.stringify(user));
             location.reload();
         }
@@ -181,37 +190,49 @@
             if(user) {
                 document.getElementById('btn-login-aside').style.display = 'none';
                 document.getElementById('header-user').style.display = 'flex';
-                document.getElementById('user-avatar').innerText = user.given_name[0];
+                document.getElementById('user-avatar').innerText = user.given_name ? user.given_name[0] : '?';
                 document.getElementById('profile-name').innerText = user.name;
                 document.getElementById('profile-email').innerText = user.email;
                 if(user.email === ADMIN_EMAIL) document.getElementById('nav-admin-only').style.display = 'flex';
             }
             particlesJS('particles-js', { "particles": { "number": { "value": 30 }, "color": { "value": "#00d2ff" }, "move": { "speed": 1 } } });
             listenToPosts();
-            setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}); }, 1000);
+            setInterval(() => { 
+                document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}); 
+            }, 1000);
         }
 
         async function uploadImageHandler(input) {
+            if(!input.files[0]) return;
             const file = input.files[0];
             const formData = new FormData();
             formData.append("image", file);
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d`, { method: "POST", body: formData });
-            const data = await res.json();
-            uploadedImageUrl = data.data.url;
-            alert("تم رفع الصورة بنجاح");
+            try {
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d`, { method: "POST", body: formData });
+                const data = await res.json();
+                uploadedImageUrl = data.data.url;
+                alert("تم رفع الصورة بنجاح");
+            } catch(e) { alert("فشل رفع الصورة"); }
         }
 
         async function publishPost() {
             const title = document.getElementById('p-title').value;
             const content = document.getElementById('p-body').innerHTML;
-            if(!title || !content || user.email !== ADMIN_EMAIL) return;
+            if(!title || !content || !user || user.email !== ADMIN_EMAIL) {
+                alert("تأكد من إدخال البيانات وأنك تملك صلاحية الأدمن");
+                return;
+            }
+            const btn = document.getElementById('pub-btn');
+            btn.disabled = true; btn.innerText = "جاري النشر...";
+            
             await db.collection("posts").add({
-                title, content, image: uploadedImageUrl,
+                title, content, image: uploadedImageUrl || 'https://via.placeholder.com/300',
                 author: user.name, likes: 0, views: 0,
                 time: firebase.firestore.FieldValue.serverTimestamp()
             });
+            
             alert("تم النشر بنجاح يا براء!");
-            nav('home');
+            location.reload();
         }
 
         function listenToPosts() {
@@ -219,9 +240,11 @@
                 allPosts = [];
                 let tickerContent = "";
                 snap.forEach(doc => {
-                    allPosts.push({id: doc.id, ...doc.data()});
-                    tickerContent += `<span>🔥 ${doc.data().title}</span>`;
+                    const data = {id: doc.id, ...doc.data()};
+                    allPosts.push(data);
+                    tickerContent += `<span> 🔥 ${data.title} </span>`;
                 });
+                if(tickerContent === "") tickerContent = "<span>لا يوجد أخبار حالياً</span>";
                 document.getElementById('breaking-ticker').innerHTML = tickerContent;
                 renderPosts();
             });
@@ -231,10 +254,12 @@
             const grid = document.getElementById('posts-display-grid');
             const term = document.getElementById('smart-search').value.toLowerCase();
             grid.innerHTML = '';
-            allPosts.filter(p => p.title.toLowerCase().includes(term)).forEach(p => {
+            const filtered = allPosts.filter(p => p.title.toLowerCase().includes(term));
+            
+            filtered.forEach(p => {
                 grid.innerHTML += `
                     <div class="post-card" onclick="openArticle('${p.id}')">
-                        <img src="${p.image || 'https://via.placeholder.com/300'}" class="post-img">
+                        <img src="${p.image}" class="post-img" onerror="this.src='https://via.placeholder.com/300'">
                         <div class="post-details">
                             <h3>${p.title}</h3>
                             <div style="font-size:0.7rem; color:var(--p); margin-top:5px;">
@@ -249,17 +274,22 @@
             if(!user) { showLogin(); return; }
             const p = allPosts.find(x => x.id === id);
             db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
+            
             document.getElementById('full-article-data').innerHTML = `
-                <img src="${p.image}" style="width:100%; border-radius:10px; margin-bottom:15px;">
+                <img src="${p.image}" style="width:100%; border-radius:10px; margin-bottom:15px;" onerror="this.src='https://via.placeholder.com/300'">
                 <h2 style="color:var(--p)">${p.title}</h2>
                 <p style="font-size:0.8rem; opacity:0.6; margin:10px 0;">بواسطة: ${p.author}</p>
-                <div style="line-height:1.7; margin:20px 0; border-top:1px solid var(--border); padding-top:15px;">${p.content}</div>
-                <button onclick="likePost('${id}')" style="background:var(--p); border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">❤️ أعجبني</button>
+                <div style="line-height:1.7; margin:20px 0; border-top:1px solid var(--border); padding-top:15px; color:#e2e8f0;">${p.content}</div>
+                <button onclick="likePost('${id}')" style="background:var(--p); border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer; color:black;">❤️ أعجبني</button>
             `;
             document.getElementById('article-view').style.display = 'block';
         }
 
-        async function likePost(id) { await db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) }); }
+        async function likePost(id) { 
+            await db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) });
+            alert("شكراً لتفاعلك!");
+        }
+
         function closeArticle() { document.getElementById('article-view').style.display = 'none'; }
         
         function nav(id, e) {
@@ -267,7 +297,8 @@
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
             if(e) e.currentTarget.classList.add('active');
-            if(window.innerWidth <= 768) toggleMenu();
+            document.getElementById('sec-title').innerText = e ? e.currentTarget.innerText : 'الرئيسية';
+            if(window.innerWidth <= 768) { document.getElementById('main-aside').classList.remove('open'); }
         }
         
         function logout() { localStorage.clear(); location.reload(); }
