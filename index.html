@@ -58,14 +58,14 @@
         .post-img { width: 100%; height: 180px; object-fit: cover; }
         .post-badge { position: absolute; top: 10px; right: 10px; background: var(--p); color: #000; padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; z-index: 2; }
         .post-details { padding: 15px; flex: 1; }
-        
-        /* Single Article View */
+
+        .filter-btn { padding: 8px 18px; border-radius: 10px; background: var(--card); color: #fff; border: 1px solid var(--border); cursor: pointer; white-space: nowrap; }
+        .filter-btn.active { background: var(--p); color: #000; font-weight: bold; }
+
+        /* Article Full View */
         #article-view { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 20px; }
-        .article-content { max-width: 800px; margin: 0 auto; background: var(--card); border-radius: 20px; padding: 25px; border: 1px solid var(--border); }
-        .full-img { width: 100%; border-radius: 15px; margin-bottom: 20px; }
-        .interaction-bar { display: flex; gap: 20px; padding: 15px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 20px 0; }
-        .btn-action { background: none; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 1rem; }
-        .comment { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; }
+        .article-full-card { max-width: 800px; margin: 0 auto; background: var(--card); border-radius: 20px; padding: 25px; border: 1px solid var(--border); }
+        .comment-item { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; }
 
         #zomerd-chat-wrapper { position: fixed; bottom: 80px; left: 20px; z-index: 1000; }
         #chat-window-box { width: 300px; height: 400px; background: var(--card); border: 1px solid var(--p); border-radius: 15px; display: none; flex-direction: column; margin-bottom: 10px; overflow: hidden; }
@@ -117,39 +117,75 @@
         </section>
 
         <section id="sec-feed" class="section">
-            <div id="posts-display-grid" class="posts-grid">جاري التحميل...</div>
+            <div class="discovery-section" style="padding: 15px; background: var(--card); border-radius: 15px; margin-bottom: 20px;">
+                <div class="search-box" style="position: relative; margin-bottom: 15px;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 15px; top: 12px; color: var(--p);"></i>
+                    <input type="text" id="smart-search" oninput="runSmartFilter()" placeholder="ابحث بالعنوان أو اسم الكاتب..." class="inp-field" style="padding-right: 40px; margin-bottom: 0;">
+                </div>
+                <div class="categories-bar" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none;">
+                    <button onclick="setCategory('الكل')" class="filter-btn active" id="btn-الكل">الكل</button>
+                    <button onclick="setCategory('رياضة')" class="filter-btn" id="btn-رياضة">⚽ رياضة</button>
+                    <button onclick="setCategory('أكواد')" class="filter-btn" id="btn-أكواد">💻 أكواد</button>
+                    <button onclick="setCategory('ترفيه')" class="filter-btn" id="btn-ترفيه">🎭 ترفيه</button>
+                    <button onclick="setCategory('قصص')" class="filter-btn" id="btn-قصص">📖 قصص</button>
+                    <button onclick="setCategory('تقنية')" class="filter-btn" id="btn-تقنية">⚙️ تقنية</button>
+                </div>
+            </div>
+            <div id="posts-display-grid" class="posts-grid">جاري تحميل الأخبار...</div>
         </section>
 
         <section id="sec-write" class="section">
-            <div class="article-content">
-                <h3 style="color:var(--p)">✍️ استوديو النشر</h3><br>
+            <div class="article-full-card">
+                <h3 style="color:var(--p)">✍️ استوديو براء عمر للنشر</h3><br>
                 <input type="text" id="p-title" class="inp-field" placeholder="عنوان المنشور...">
-                <input type="text" id="p-img-manual" class="inp-field" placeholder="رابط الصورة (اختياري)">
-                <div id="p-body" contenteditable="true" class="inp-field" style="min-height:200px; background:rgba(0,0,0,0.2);" placeholder="اكتب المقال هنا..."></div>
-                <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:12px; font-weight:bold; cursor:pointer; color:black;">نشر الآن</button>
+                
+                <label style="color: var(--dim); font-size: 0.8rem;">اختر قسم المنشور:</label>
+                <select id="new-post-category" class="inp-field">
+                    <option value="عام">🌍 عام</option>
+                    <option value="رياضة">⚽ رياضة</option>
+                    <option value="أكواد">💻 أكواد وبرمجة</option>
+                    <option value="ترفيه">🎭 ترفيه</option>
+                    <option value="قصص">📖 قصص وحكايات</option>
+                    <option value="تقنية">⚙️ تقنية</option>
+                </select>
+
+                <div style="margin-bottom: 15px;">
+                    <input type="file" id="img-upload" class="inp-field" onchange="uploadImageHandler(this)">
+                    <div id="upload-status-container" style="display:none; margin-top:10px;">
+                        <div style="height:8px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
+                            <div id="upload-progress-bar" style="width:0%; height:100%; background:#00d2ff; transition:0.3s;"></div>
+                        </div>
+                        <p id="upload-text" style="font-size:0.8rem; margin-top:5px; color:#00d2ff;">جاري الرفع...</p>
+                    </div>
+                </div>
+
+                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:200px; background:rgba(0,0,0,0.2);" placeholder="اكتب المقال هنا..."></div>
+                <br>
+                <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:12px; font-weight:bold; cursor:pointer; color:black;">نشر الآن بسحابة Firebase</button>
             </div>
         </section>
 
         <section id="sec-settings" class="section">
-            <div class="article-content">
+            <div class="article-full-card">
                 <h3>إعدادات الحساب</h3><br>
-                <p id="user-email-display"></p><br>
-                <button onclick="logout()" style="background:#ef4444; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer;">تسجيل الخروج</button>
+                <input type="text" id="user-display-name" class="inp-field" readonly>
+                <input type="text" id="user-display-email" class="inp-field" readonly><br>
+                <button onclick="logout()" style="width:100%; padding:10px; background:#ef4444; border:none; border-radius:10px; color:white; cursor:pointer;">تسجيل الخروج</button>
             </div>
         </section>
 
         <section id="sec-contact" class="section">
-            <div class="stat-card">
-                <h2>تواصل مع براء عمر</h2>
-                <p>bo2584668@gmail.com</p><br>
-                <a href="https://wa.me/201273740256" target="_blank" style="padding:10px 20px; background:#25d366; color:white; border-radius:8px; text-decoration:none;">واتساب مباشر</a>
+            <div class="article-full-card" style="text-align:center;">
+                <h2>براء عمر - Baraa Omar</h2>
+                <p>Email: bo2584668@gmail.com</p><br>
+                <a href="https://wa.me/201273740256" target="_blank" style="display:inline-block; padding:15px 30px; background:#25d366; color:white; border-radius:50px; text-decoration:none; font-weight:bold;"><i class="fa-brands fa-whatsapp"></i> واتساب مباشر</a>
             </div>
         </section>
     </main>
 
     <div id="article-view">
-        <button onclick="closeArticle()" style="color:var(--p); background:none; border:none; font-size:1.2rem; cursor:pointer; margin-bottom:20px;"><i class="fa fa-arrow-right"></i> العودة</button>
-        <div id="full-article-data" class="article-content"></div>
+        <button onclick="closeArticle()" style="background:none; border:none; color:var(--p); cursor:pointer; font-size:1.2rem; margin-bottom:20px;"><i class="fa fa-arrow-right"></i> العودة للأخبار</button>
+        <div id="full-article-data" class="article-full-card"></div>
     </div>
 
     <div id="zomerd-chat-wrapper">
@@ -158,10 +194,10 @@
                 <span>🤖 مساعد براء</span>
                 <i class="fa-solid fa-times" onclick="toggleChat()" style="cursor:pointer"></i>
             </div>
-            <div id="chat-logs" style="flex:1; padding:10px; overflow-y:auto;"></div>
+            <div id="chat-logs" style="flex:1; padding:10px; overflow-y:auto; font-size:0.9rem;"></div>
             <div style="padding:10px; display:flex; gap:5px;">
-                <input type="text" id="chat-query" placeholder="اسألني..." style="flex:1; background:#000; color:#fff; border:1px solid var(--border); padding:5px;">
-                <button onclick="sendChatMsg()" style="background:var(--p); border:none; padding:5px 10px;"><i class="fa fa-paper-plane"></i></button>
+                <input type="text" id="chat-query" placeholder="اسألني..." style="flex:1; background:#000; color:#fff; border:1px solid var(--border); padding:5px; border-radius:5px;">
+                <button onclick="sendChat()" style="background:var(--p); border:none; padding:5px 10px; border-radius:5px;"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
         <div id="chat-btn-main" onclick="toggleChat()"><i class="fa-solid fa-headset"></i></div>
@@ -184,8 +220,13 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const ADMIN_EMAIL = "bo2584668@gmail.com";
+        
         let user = null;
+        let allPosts = [];
+        let currentCat = 'الكل';
+        let uploadedImageUrl = "";
 
+        // تسجيل الدخول
         function onGoogleLogin(res) {
             user = JSON.parse(atob(res.credential.split('.')[1]));
             localStorage.setItem('zomerd_user', JSON.stringify(user));
@@ -201,10 +242,11 @@
             document.getElementById('app-sidebar').style.display = 'flex';
             document.getElementById('app-main').style.display = 'block';
             document.getElementById('user-avatar').innerText = user.given_name[0];
-            document.getElementById('user-email-display').innerText = user.email;
+            document.getElementById('user-display-name').value = user.name;
+            document.getElementById('user-display-email').value = user.email;
 
             if(user.email === ADMIN_EMAIL) document.getElementById('nav-admin-only').style.display = 'flex';
-
+            
             particlesJS('particles-js', {
                 "particles": { "number": { "value": 40 }, "color": { "value": "#00d2ff" }, "line_linked": { "enable": true, "color": "#00d2ff" }, "move": { "speed": 1.5 } }
             });
@@ -214,59 +256,115 @@
             animateValue("experience", 0, 5000, 2000);
             
             listenToPosts();
-            setInterval(updateClock, 1000);
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('live-clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+            }, 1000);
         }
 
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('live-clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+        // نظام النشر ورفع الصور
+        async function uploadImageHandler(input) {
+            const file = input.files[0];
+            if (!file) return;
+            document.getElementById('upload-status-container').style.display = 'block';
+            const formData = new FormData();
+            formData.append("image", file);
+            try {
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d`, { method: "POST", body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    uploadedImageUrl = data.data.url;
+                    document.getElementById('upload-progress-bar').style.width = "100%";
+                    document.getElementById('upload-text').innerText = "✅ تم الرفع بنجاح!";
+                }
+            } catch (e) { alert("فشل الرفع"); }
         }
 
-        function nav(id, e) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById('sec-' + id).classList.add('active');
-            if(e) e.currentTarget.classList.add('active');
-            if(id === 'feed') listenToPosts();
+        async function publishPost() {
+            const title = document.getElementById('p-title').value;
+            const content = document.getElementById('p-body').innerHTML;
+            const cat = document.getElementById('new-post-category').value;
+            if(!title || !content) return alert("اكمل البيانات");
+            await db.collection("posts").add({
+                title, content, category: cat, image: uploadedImageUrl,
+                author: user.name, likes: 0, views: 0, comments: [],
+                time: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("تم النشر بنجاح!");
+            location.reload();
         }
 
+        // جلب الأخبار والفلاتر
         function listenToPosts() {
             db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
-                const grid = document.getElementById('posts-display-grid');
-                grid.innerHTML = '';
-                snap.forEach(doc => {
-                    const p = doc.data();
-                    grid.innerHTML += `
-                        <div class="post-card" onclick="openArticle('${doc.id}')">
-                            <img src="${p.image || 'https://via.placeholder.com/300'}" class="post-img">
-                            <div class="post-details">
-                                <h3>${p.title}</h3>
-                                <p style="font-size:0.8rem; color:var(--p)"><i class="fa fa-eye"></i> ${p.views || 0} | <i class="fa fa-heart"></i> ${p.likes || 0}</p>
-                            </div>
-                        </div>`;
-                });
+                allPosts = [];
+                snap.forEach(doc => allPosts.push({id: doc.id, ...doc.data()}));
+                renderPosts();
             });
         }
 
+        function renderPosts() {
+            const grid = document.getElementById('posts-display-grid');
+            const term = document.getElementById('smart-search').value.toLowerCase();
+            grid.innerHTML = '';
+            
+            const filtered = allPosts.filter(p => {
+                const matchCat = currentCat === 'الكل' || p.category === currentCat;
+                const matchSearch = p.title.toLowerCase().includes(term) || p.author.toLowerCase().includes(term);
+                return matchCat && matchSearch;
+            });
+
+            filtered.forEach(p => {
+                grid.innerHTML += `
+                    <div class="post-card" onclick="openArticle('${p.id}')">
+                        <div class="post-badge">${p.category || 'عام'}</div>
+                        <img src="${p.image || 'https://via.placeholder.com/300'}" class="post-img">
+                        <div class="post-details">
+                            <h3 style="font-size:1.1rem; margin-bottom:10px;">${p.title}</h3>
+                            <div style="display:flex; gap:10px; font-size:0.8rem; color:var(--p);">
+                                <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
+                                <span><i class="fa fa-heart"></i> ${p.likes || 0}</span>
+                                <span><i class="fa fa-comment"></i> ${(p.comments || []).length}</span>
+                            </div>
+                        </div>
+                        ${user.email === ADMIN_EMAIL ? `<button onclick="event.stopPropagation(); deletePost('${p.id}')" style="position:absolute; bottom:10px; left:10px; background:red; border:none; color:white; padding:5px; border-radius:5px;">حذف</button>` : ''}
+                    </div>`;
+            });
+        }
+
+        function setCategory(cat) {
+            currentCat = cat;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + cat).classList.add('active');
+            renderPosts();
+        }
+
+        function runSmartFilter() { renderPosts(); }
+
+        // فتح المقال المنفرد
         async function openArticle(id) {
             const doc = await db.collection("posts").doc(id).get();
             const p = doc.data();
             db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
 
-            const full = document.getElementById('full-article-data');
-            full.innerHTML = `
+            const view = document.getElementById('full-article-data');
+            view.innerHTML = `
                 <img src="${p.image}" class="full-img">
-                <h1>${p.title}</h1>
-                <p style="opacity:0.6">بواسطة: ${p.author}</p>
-                <div style="margin:20px 0;">${p.content}</div>
-                <div class="interaction-bar">
-                    <button class="btn-action" onclick="likePost('${id}')"><i class="fa fa-heart"></i> ${p.likes || 0}</button>
+                <h1 style="color:var(--p)">${p.title}</h1>
+                <p style="font-size:0.8rem; opacity:0.6">القسم: ${p.category} | الكاتب: ${p.author}</p>
+                <div style="margin:20px 0; line-height:1.8;">${p.content}</div>
+                <div style="display:flex; gap:15px; border-top:1px solid var(--border); padding-top:15px;">
+                    <button onclick="likePost('${id}')" style="background:none; border:1px solid var(--p); color:white; padding:8px 15px; border-radius:8px; cursor:pointer;"><i class="fa fa-heart"></i> إعجاب (${p.likes || 0})</button>
                 </div>
-                <div id="comments-sec">
+                <div style="margin-top:20px;">
                     <h4>التعليقات</h4>
-                    <div id="com-list">${(p.comments || []).map(c => `<div class="comment"><b>${c.u}:</b> ${c.t}</div>`).join('')}</div>
-                    <input type="text" id="new-c" class="inp-field" placeholder="تعليقك...">
-                    <button onclick="addComment('${id}')" style="background:var(--p); border:none; padding:10px; border-radius:8px;">إرسال</button>
+                    <div id="com-list" style="margin-top:10px;">
+                        ${(p.comments || []).map(c => `<div class="comment-item"><b>${c.u}:</b> ${c.t}</div>`).join('')}
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <input type="text" id="com-inp" class="inp-field" placeholder="اكتب تعليقك..." style="margin-bottom:0">
+                        <button onclick="addComment('${id}')" style="background:var(--p); border:none; padding:10px; border-radius:8px; color:black; font-weight:bold;">إرسال</button>
+                    </div>
                 </div>
             `;
             document.getElementById('article-view').style.display = 'block';
@@ -280,38 +378,39 @@
         }
 
         async function addComment(id) {
-            const t = document.getElementById('new-c').value;
-            if(!t) return;
+            const txt = document.getElementById('com-inp').value;
+            if(!txt) return;
             await db.collection("posts").doc(id).update({
-                comments: firebase.firestore.FieldValue.arrayUnion({ u: user.name, t: t })
+                comments: firebase.firestore.FieldValue.arrayUnion({ u: user.name, t: txt })
             });
             openArticle(id);
         }
 
-        async function publishPost() {
-            const title = document.getElementById('p-title').value;
-            const content = document.getElementById('p-body').innerHTML;
-            const img = document.getElementById('p-img-manual').value;
-            if(!title || !content) return alert("اكمل البيانات");
-            await db.collection("posts").add({
-                title, content, image: img, author: user.name, 
-                views: 0, likes: 0, comments: [],
-                time: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            alert("تم النشر");
-            nav('feed');
+        async function deletePost(id) {
+            if(confirm("هل أنت متأكد من الحذف؟")) {
+                await db.collection("posts").doc(id).delete();
+            }
+        }
+
+        // أدوات مساعدة
+        function nav(id, e) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('sec-' + id).classList.add('active');
+            if(e) e.currentTarget.classList.add('active');
+            document.getElementById('sec-title').innerText = (id==='feed'?'الأخبار':id==='home'?'الرئيسية':'زمرد نت');
         }
 
         function animateValue(id, start, end, duration) {
             let obj = document.getElementById(id);
-            let range = end - start;
             let current = start;
+            let range = end - start;
             let increment = end > start ? 10 : -10;
             let stepTime = Math.abs(Math.floor(duration / (range / 10)));
-            let timer = setInterval(function() {
+            let timer = setInterval(() => {
                 current += increment;
                 obj.innerHTML = current;
-                if (current >= end) clearInterval(timer);
+                if (current >= end) { obj.innerHTML = end; clearInterval(timer); }
             }, stepTime);
         }
 
@@ -320,10 +419,7 @@
             box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        function logout() {
-            localStorage.clear();
-            location.reload();
-        }
+        function logout() { localStorage.clear(); location.reload(); }
 
         window.onload = startApp;
     </script>
