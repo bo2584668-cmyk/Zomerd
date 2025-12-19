@@ -2,187 +2,169 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
-    <meta name="google-site-verification" content="l9QWU9EfN7iGme5VjBMjdLUvQlOYRBitRQMJ6pBvJQE" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-    <title>زمرد نت | براء عمر</title>
+    <title>ZOMERD PRO | براء عمر</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 
     <style>
         :root {
-            --p: #00d2ff; --bg: #0b0f19; --card: #151c2c; --txt: #f1f5f9; --dim: #94a3b8; --border: rgba(255,255,255,0.05);
-            --main-glow: rgba(0, 210, 255, 0.6);
+            --p: #00d2ff; --bg: #020617; --card: rgba(15, 23, 42, 0.8); 
+            --txt: #f8fafc; --border: rgba(0, 210, 255, 0.2); --grad: linear-gradient(135deg, #00d2ff 0%, #0072ff 100%);
         }
         
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; transition: 0.3s; }
-        body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; width: 100vw; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; }
 
-        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
-        
-        /* نظام تسجيل الدخول */
-        #login-overlay { position: fixed; inset: 0; background: #0b0f19; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        #particles-js { position: fixed; inset: 0; z-index: -1; }
 
-        /* القائمة الجانبية - تتكيف مع الشاشة */
-        aside { width: 260px; background: var(--card); border-left: 1px solid var(--border); display: none; flex-direction: column; z-index: 100; flex-shrink: 0; }
-        
-        /* تعديلات الموبايل لجعلها تملأ الشاشة والأزرار صغيرة */
+        /* شريط عاجل مطور */
+        .ticker-container { background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--border); height: 45px; display: flex; align-items: center; z-index: 100; backdrop-filter: blur(15px); }
+        .ticker-label { background: var(--grad); color: #000; padding: 0 20px; font-weight: 900; font-size: 0.8rem; height: 100%; display: flex; align-items: center; z-index: 2; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+        .ticker-wrapper { flex: 1; overflow: hidden; }
+        .ticker-content { display: inline-block; white-space: nowrap; animation: ticker 30s linear infinite; }
+        .ticker-content span { margin-right: 50px; color: var(--p); font-size: 0.85rem; font-weight: 600; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        /* القائمة الجانبية */
+        aside { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1001; backdrop-filter: blur(25px); }
         @media (max-width: 768px) {
-            body { flex-direction: column; overflow-y: auto; }
-            aside { 
-                width: 100% !important; 
-                height: 55px !important; 
-                position: fixed; 
-                bottom: 0; 
-                flex-direction: row !important; 
-                display: flex !important; 
-                justify-content: space-around; 
-                border-top: 1px solid var(--border); 
-                padding: 0 5px;
-            }
-            .nav-link { 
-                flex-direction: column; 
-                font-size: 0.65rem !important; 
-                padding: 5px !important; 
-                margin: 0 !important; 
-                gap: 2px !important;
-                flex: 1;
-            }
-            .nav-link i { font-size: 1.1rem !important; }
-            .logo-side, header { display: none !important; }
-            main { width: 100% !important; padding-bottom: 60px; }
-            .section { padding: 12px !important; }
-            .hero h1 { font-size: 2.2rem !important; }
+            aside { position: fixed; right: -280px; height: 100%; top: 0; }
+            aside.open { right: 0; box-shadow: -20px 0 50px rgba(0,0,0,0.9); }
         }
 
-        .logo-side { padding: 25px; text-align: center; color: var(--p); border-bottom: 1px solid var(--border); }
-        nav { flex: 1; padding: 15px 8px; }
-        .nav-link { padding: 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--dim); margin-bottom: 4px; text-decoration: none; font-size: 0.9rem; }
-        .nav-link.active { background: var(--p); color: black; font-weight: bold; box-shadow: 0 0 15px var(--main-glow); }
+        .nav-link { padding: 15px 25px; border-radius: 15px; cursor: pointer; display: flex; align-items: center; gap: 15px; color: #94a3b8; margin: 8px 15px; border: 1px solid transparent; }
+        .nav-link.active { background: var(--grad); color: #000; font-weight: 900; box-shadow: 0 10px 20px rgba(0, 210, 255, 0.3); }
+        .nav-link:hover:not(.active) { background: rgba(0, 210, 255, 0.1); color: var(--p); transform: translateX(-5px); }
 
-        main { flex: 1; overflow-y: auto; position: relative; width: 100%; }
-        header { height: 60px; padding: 0 25px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--card); position: sticky; top: 0; z-index: 10; }
+        main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; background: radial-gradient(circle at top right, rgba(0,210,255,0.05), transparent); }
+        header { height: 70px; padding: 0 25px; display: flex; align-items: center; justify-content: space-between; background: rgba(2, 6, 23, 0.8); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); }
 
-        .section { padding: 30px; display: none; width: 100%; max-width: 1200px; margin: 0 auto; animation: fadeIn 0.4s ease-out; }
-        .section.active { display: block; }
+        .menu-btn { font-size: 1.4rem; color: var(--p); cursor: pointer; background: rgba(0,210,255,0.15); border: 1px solid var(--p); padding: 10px 15px; border-radius: 12px; display: none; }
+        @media (max-width: 768px) { .menu-btn { display: block; } }
 
-        /* البطاقات وتوزيع الأخبار */
-        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 10px 0; }
-        @media (min-width: 769px) { .posts-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; } }
+        .section { padding: 25px; display: none; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .section.active { display: block; animation: fadeInUp 0.5s ease forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .post-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); position: relative; display: flex; flex-direction: column; height: 100%; }
-        .post-img { width: 100%; height: 120px; object-fit: cover; }
-        @media (min-width: 769px) { .post-img { height: 180px; } }
-        
-        .post-details { padding: 10px; flex-grow: 1; }
-        .post-details h3 { font-size: 0.9rem; margin-bottom: 5px; line-height: 1.3; }
-        
-        .post-badge { position: absolute; top: 8px; right: 8px; background: var(--p); color: #000; padding: 2px 8px; border-radius: 6px; font-size: 0.6rem; font-weight: bold; z-index: 2; }
+        /* كروت الأخبار */
+        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; margin-top: 25px; }
+        @media (max-width: 600px) { .posts-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
 
-        /* الحقول والأزرار صغيرة ومرتبة */
-        .inp-field { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: white; margin-bottom: 10px; outline: none; font-size: 0.9rem; }
-        .btn-main { width: 100%; padding: 12px; background: var(--p); border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: black; font-size: 0.9rem; }
+        .post-card { background: var(--card); border-radius: 22px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; position: relative; }
+        .post-card:hover { border-color: var(--p); transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0, 210, 255, 0.2); }
+        .post-img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid var(--border); }
+        @media (max-width: 600px) { .post-img { height: 120px; } }
+        .post-info { padding: 15px; }
+        .post-info h3 { font-size: 1rem; margin-bottom: 12px; line-height: 1.5; font-weight: 700; color: #fff; }
 
-        /* واجهة المقال المنفرد */
-        #article-view { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 15px; }
-        .article-full-card { max-width: 800px; margin: 0 auto; background: var(--card); border-radius: 15px; padding: 20px; border: 1px solid var(--border); }
-        .full-img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
+        /* العدادات */
+        .stat-group { display: flex; gap: 10px; }
+        .stat-item { font-family: 'JetBrains Mono'; color: var(--p); font-size: 0.75rem; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border); }
 
-        /* شات بوت صغير */
-        #zomerd-chat-wrapper { position: fixed; bottom: 70px; left: 15px; z-index: 1000; }
-        #chat-btn-main { width: 50px; height: 50px; background: var(--p); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border:none; box-shadow: 0 0 15px var(--main-glow); }
+        /* عرض المقال */
+        #article-view { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 20px; backdrop-filter: blur(20px); }
+        .article-container { max-width: 900px; margin: 0 auto; background: var(--card); padding: 40px; border-radius: 30px; border: 1px solid var(--border); box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        @media (max-width: 600px) { .article-container { padding: 20px; } }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        /* نظام التعليقات */
+        .comments-sec { margin-top: 40px; border-top: 1px solid var(--border); padding-top: 30px; }
+        .comment-box { display: flex; gap: 15px; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        .comment-box img { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--p); }
+
+        .btn-action { padding: 15px 30px; background: var(--grad); border: none; border-radius: 15px; font-weight: 900; color: #000; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .liked { background: #ef4444 !important; color: #fff !important; cursor: default; }
+
+        #login-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 10000; display: none; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
     <div id="particles-js"></div>
 
-    <div id="login-overlay">
-        <h1 style="color:var(--p); font-size: 2.2rem; margin-bottom: 5px;">زمرد نت</h1>
-        <p style="color:white; opacity: 0.7; margin-bottom: 25px; font-size: 0.9rem;">بوابة براء عمر للمقاولات والاتصالات</p>
-        <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="onGoogleLogin"></div>
-        <div class="g_id_signin" data-type="standard" data-theme="filled_blue"></div>
+    <div id="login-modal">
+        <div style="background: var(--card); padding: 50px; border-radius: 35px; border: 1px solid var(--p); text-align: center; max-width: 400px; box-shadow: 0 0 50px var(--p);">
+            <h2 style="color:var(--p); font-size: 2rem;">ZOMERD</h2>
+            <p style="margin: 25px 0; opacity: 0.8; line-height: 1.6;">للانضمام إلى مجتمع براء عمر وقراءة المقالات، يرجى تسجيل الدخول.</p>
+            <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="onGoogleLogin"></div>
+            <div class="g_id_signin" data-type="standard" data-theme="filled_blue" data-shape="pill"></div>
+        </div>
     </div>
 
-    <aside id="app-sidebar">
-        <div class="logo-side"><h3>زمرد نت</h3></div>
+    <aside id="sidebar">
+        <div style="padding: 40px 20px; text-align: center;">
+            <h1 style="color: var(--p); font-weight: 900; letter-spacing: 3px;">زمرد</h1>
+        </div>
         <nav>
-            <div class="nav-link active" onclick="nav('home', event)"><i class="fa-solid fa-house"></i> الرئيسية</div>
-            <div class="nav-link" onclick="nav('feed', event)"><i class="fa-solid fa-newspaper"></i> الأخبار</div>
-            <div id="nav-admin-only" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa-solid fa-plus-square"></i> نشر</div>
-            <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-user-gear"></i> الإعدادات</div>
-            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-headset"></i> تواصل</div>
+            <div class="nav-link active" onclick="nav('home', event)"><i class="fa fa-th-large"></i> الرئيسية</div>
+            <div id="admin-zone" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa fa-feather-pointed"></i> إضافة محتوى</div>
+            <div class="nav-link" onclick="nav('settings', event)"><i class="fa fa-user-astronaut"></i> الحساب</div>
+            <div class="nav-link" onclick="nav('contact', event)"><i class="fa fa-headset"></i> دعم فني</div>
         </nav>
     </aside>
 
-    <main id="app-main">
+    <main>
+        <div class="ticker-container">
+            <div class="ticker-label">عاجل الآن</div>
+            <div class="ticker-wrapper"><div class="ticker-content" id="ticker"><span>جاري مزامنة آخر الأخبار...</span></div></div>
+        </div>
+
         <header>
-            <div id="sec-title" style="font-weight: bold; color: var(--p);">الرئيسية</div>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <span id="live-clock" style="color:var(--p); font-family:'JetBrains Mono'; font-size: 0.9rem;">00:00</span>
-                <div id="user-avatar" style="width:32px; height:32px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size: 0.8rem;">?</div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <button class="menu-btn" onclick="toggleMenu()"><i class="fa fa-bars-staggered"></i></button>
+                <div id="sec-title" style="font-weight:900; font-size:1.2rem; color:var(--p);">الرئيسية</div>
+            </div>
+            <div id="user-top-info" style="display:none; align-items:center; gap:12px; background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 50px; border: 1px solid var(--border);">
+                <span id="clock" style="font-family:'JetBrains Mono'; color:var(--p); font-size:0.85rem;">00:00</span>
+                <img id="u-avatar" style="width:35px; height:35px; border-radius:50%; border:2px solid var(--p);">
             </div>
         </header>
 
         <section id="sec-home" class="section active">
-            <div class="hero" style="text-align:center; padding: 40px 0;">
-                <h1 style="font-weight:900;">إبداع بلا حدود</h1>
-                <p style="opacity:0.7; font-size:0.9rem;">أهلاً بك في منصة براء عمر الرسمية</p>
-                <div class="stats-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-top:30px;">
-                    <div class="stat-card" style="padding:15px;"><h2 id="clients" style="font-size:1.5rem;">0</h2><p style="font-size:0.7rem;">عميل</p></div>
-                    <div class="stat-card" style="padding:15px;"><h2 id="projects" style="font-size:1.5rem;">0</h2><p style="font-size:0.7rem;">مشروع</p></div>
-                    <div class="stat-card" style="padding:15px;"><h2 id="experience" style="font-size:1.5rem;">0</h2><p style="font-size:0.7rem;">ساعة</p></div>
-                </div>
+            <div style="position:relative;">
+                <i class="fa fa-search" style="position:absolute; right:15px; top:18px; color:var(--p);"></i>
+                <input type="text" id="search-box" oninput="renderPosts()" placeholder="عن ماذا تبحث اليوم؟" class="inp-field" style="padding-right: 45px; background: rgba(255,255,255,0.03); border-radius: 18px;">
             </div>
-        </section>
-
-        <section id="sec-feed" class="section">
-            <div class="search-area" style="margin-bottom:15px; display:flex; gap:8px;">
-                <input type="text" id="smart-search" oninput="runSmartFilter()" placeholder="ابحث..." class="inp-field" style="margin-bottom:0; flex:1;">
-                <select id="cat-filter" onchange="setCategory(this.value)" class="inp-field" style="width:auto; margin-bottom:0; padding: 5px;">
-                    <option value="الكل">الكل</option>
-                    <option value="تقنية">تقنية</option>
-                    <option value="رياضة">رياضة</option>
-                    <option value="أكواد">أكواد</option>
-                </select>
-            </div>
-            <div id="posts-display-grid" class="posts-grid">جاري التحميل...</div>
+            <div id="posts-grid" class="posts-grid"></div>
         </section>
 
         <section id="sec-write" class="section">
-            <div class="article-full-card">
-                <h4 style="color:var(--p); margin-bottom:15px;">✍️ نشر مقال جديد</h4>
-                <input type="text" id="p-title" class="inp-field" placeholder="العنوان...">
-                <select id="new-post-category" class="inp-field">
-                    <option value="تقنية">⚙️ تقنية</option>
-                    <option value="أكواد">💻 برمجة</option>
-                    <option value="رياضة">⚽ رياضة</option>
-                    <option value="عام">🌍 عام</option>
-                </select>
-                <input type="file" id="img-upload" class="inp-field" onchange="uploadImageHandler(this)">
-                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:150px; background:rgba(0,0,0,0.3);" placeholder="المحتوى..."></div>
-                <button onclick="publishPost()" class="btn-main">نشر الآن</button>
+            <div class="article-container">
+                <h2 style="color:var(--p); margin-bottom: 25px;">نشر مقال احترافي</h2>
+                <input type="text" id="p-title" class="inp-field" placeholder="عنوان المقال الخاطف...">
+                <div style="display:flex; gap:10px; margin-bottom:20px;">
+                    <button onclick="document.getElementById('img-file').click()" class="btn-action" style="flex:1; background:rgba(255,255,255,0.05); color:#fff; border:1px solid var(--border);"><i class="fa fa-image"></i> ارفع صورة الغلاف</button>
+                    <input type="file" id="img-file" hidden onchange="handleImg(this)">
+                </div>
+                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:300px; padding:20px; line-height:1.8;" placeholder="ابدأ سرد القصة هنا..."></div>
+                <button onclick="publish()" class="btn-action" style="width:100%"><i class="fa fa-paper-plane"></i> اعتماد ونشر</button>
             </div>
         </section>
 
         <section id="sec-settings" class="section">
-            <div class="article-full-card" style="text-align:center;">
-                <div id="user-avatar-big" style="width:70px; height:70px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size: 2rem; margin: 0 auto 15px;">?</div>
-                <h3 id="user-name-display">مستخدم زمرد</h3>
-                <p id="user-email-display" style="opacity:0.6; font-size:0.8rem; margin-bottom:20px;"></p>
-                <button onclick="logout()" style="background:#ef4444; border:none; padding:10px 20px; border-radius:8px; color:white; cursor:pointer;">تسجيل الخروج</button>
+            <div class="article-container" style="text-align:center;">
+                <img id="u-large-img" style="width:120px; height:120px; border-radius:50%; border:4px solid var(--p); margin-bottom:20px; box-shadow: 0 0 30px var(--p);">
+                <h2 id="u-full-name">براء عمر</h2>
+                <p id="u-full-email" style="opacity:0.6; margin-bottom:30px;"></p>
+                <button onclick="logout()" class="btn-action" style="background:#ef4444; color:#fff; margin:0 auto;">تسجيل الخروج</button>
             </div>
         </section>
     </main>
 
     <div id="article-view">
-        <button onclick="closeArticle()" style="background:none; border:none; color:var(--p); cursor:pointer; margin-bottom:15px;"><i class="fa fa-arrow-right"></i> رجوع</button>
-        <div id="full-article-data" class="article-full-card"></div>
-    </div>
-
-    <div id="zomerd-chat-wrapper">
-        <div id="chat-btn-main" onclick="alert('المساعد قيد التطوير حالياً')"><i class="fa-solid fa-robot"></i></div>
+        <div class="article-container">
+            <button onclick="closeArt()" style="background:none; border:none; color:var(--p); cursor:pointer; font-weight:bold; margin-bottom:20px; font-size:1.1rem;"><i class="fa fa-chevron-right"></i> عودة</button>
+            <div id="full-post-data"></div>
+            
+            <div class="comments-sec">
+                <h3 style="margin-bottom:20px;"><i class="fa fa-comments"></i> التعليقات</h3>
+                <div id="comments-list"></div>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <input type="text" id="comment-input" class="inp-field" style="margin-bottom:0;" placeholder="اكتب تعليقك هنا...">
+                    <button onclick="sendComment()" class="btn-action" style="padding:10px 20px;"><i class="fa fa-send"></i></button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -201,148 +183,164 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const ADMIN_EMAIL = "bo2584668@gmail.com";
+        const OWNER = "bo2584668@gmail.com";
         
-        let user = null;
-        let allPosts = [];
-        let currentCat = 'الكل';
-        let uploadedImageUrl = "";
+        let user = JSON.parse(localStorage.getItem('zomerd_user')) || null;
+        let posts = [];
+        let currentArtId = "";
+        let upImg = "";
+        let liked = JSON.parse(localStorage.getItem('z_likes')) || [];
 
-        function onGoogleLogin(res) {
-            user = JSON.parse(atob(res.credential.split('.')[1]));
-            localStorage.setItem('zomerd_user', JSON.stringify(user));
-            startApp();
+        function init() {
+            if(user) {
+                document.getElementById('user-top-info').style.display = 'flex';
+                document.getElementById('u-avatar').src = user.picture;
+                document.getElementById('u-large-img').src = user.picture;
+                document.getElementById('u-full-name').innerText = user.name;
+                document.getElementById('u-full-email').innerText = user.email;
+                if(user.email === OWNER) document.getElementById('admin-zone').style.display = 'flex';
+            }
+            particlesJS('particles-js', { "particles": { "number": { "value": 40 }, "color": { "value": "#00d2ff" }, "move": { "speed": 1.5 }, "line_linked": { "opacity": 0.1 } } });
+            fetchData();
+            updateClock();
+            setInterval(updateClock, 1000);
         }
 
-        function startApp() {
-            const saved = localStorage.getItem('zomerd_user');
-            if(saved) user = JSON.parse(saved);
-            if(!user) return;
+        function updateClock() { document.getElementById('clock').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}); }
 
-            document.getElementById('login-overlay').style.display = 'none';
-            document.getElementById('app-sidebar').style.display = 'flex';
-            document.getElementById('app-main').style.display = 'block';
-            document.getElementById('user-avatar').innerText = user.given_name[0];
-            document.getElementById('user-avatar-big').innerText = user.given_name[0];
-            document.getElementById('user-name-display').innerText = user.name;
-            document.getElementById('user-email-display').innerText = user.email;
-
-            if(user.email === ADMIN_EMAIL) document.getElementById('nav-admin-only').style.display = 'flex';
-            
-            particlesJS('particles-js', { "particles": { "number": { "value": 30 }, "color": { "value": "#00d2ff" }, "line_linked": { "enable": true, "color": "#00d2ff" }, "move": { "speed": 1 } } });
-            
-            animateValue("clients", 0, 1500, 2000);
-            animateValue("projects", 0, 320, 2000);
-            animateValue("experience", 0, 5000, 2000);
-            
-            listenToPosts();
-            setInterval(() => {
-                const now = new Date();
-                document.getElementById('live-clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-            }, 1000);
+        async function handleImg(i) {
+            const fd = new FormData(); fd.append("image", i.files[0]);
+            const res = await fetch("https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d", { method: "POST", body: fd });
+            const d = await res.json(); upImg = d.data.url; alert("الصورة جاهزة!");
         }
 
-        async function uploadImageHandler(input) {
-            const file = input.files[0];
-            if (!file) return;
-            const formData = new FormData();
-            formData.append("image", file);
-            try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d`, { method: "POST", body: formData });
-                const data = await res.json();
-                if (data.success) { uploadedImageUrl = data.data.url; alert("✅ تم رفع الصورة"); }
-            } catch (e) { alert("فشل الرفع"); }
+        async function publish() {
+            const t = document.getElementById('p-title').value;
+            const b = document.getElementById('p-body').innerHTML;
+            if(!t || !b) return;
+            await db.collection("posts").add({ title: t, content: b, image: upImg, views: 0, likes: 0, comments: [], time: firebase.firestore.FieldValue.serverTimestamp() });
+            alert("تم النشر بنجاح!"); nav('home');
         }
 
-        async function publishPost() {
-            const title = document.getElementById('p-title').value;
-            const content = document.getElementById('p-body').innerHTML;
-            const cat = document.getElementById('new-post-category').value;
-            if(!title || !content) return alert("اكمل البيانات");
-            await db.collection("posts").add({
-                title, content, category: cat, image: uploadedImageUrl,
-                author: user.name, likes: 0, views: 0, comments: [],
-                time: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            alert("تم النشر");
-            nav('feed');
-        }
-
-        function listenToPosts() {
+        function fetchData() {
             db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
-                allPosts = [];
-                snap.forEach(doc => allPosts.push({id: doc.id, ...doc.data()}));
+                posts = []; let tick = "";
+                snap.forEach(doc => {
+                    posts.push({id: doc.id, ...doc.data()});
+                    tick += `<span>🔥 ${doc.data().title}</span>`;
+                });
+                document.getElementById('ticker').innerHTML = tick;
                 renderPosts();
             });
         }
 
         function renderPosts() {
-            const grid = document.getElementById('posts-display-grid');
-            const term = document.getElementById('smart-search').value.toLowerCase();
+            const grid = document.getElementById('posts-grid');
+            const search = document.getElementById('search-box').value.toLowerCase();
             grid.innerHTML = '';
-            
-            const filtered = allPosts.filter(p => {
-                const matchCat = currentCat === 'الكل' || p.category === currentCat;
-                const matchSearch = p.title.toLowerCase().includes(term);
-                return matchCat && matchSearch;
-            });
-
-            filtered.forEach(p => {
+            posts.filter(p => p.title.toLowerCase().includes(search)).forEach(p => {
                 grid.innerHTML += `
-                    <div class="post-card" onclick="openArticle('${p.id}')">
-                        <div class="post-badge">${p.category || 'عام'}</div>
-                        <img src="${p.image || 'https://via.placeholder.com/300'}" class="post-img">
-                        <div class="post-details">
+                    <div class="post-card" onclick="openArt('${p.id}')">
+                        <img src="${p.image}" class="post-img">
+                        <div class="post-info">
                             <h3>${p.title}</h3>
-                            <div style="font-size:0.7rem; color:var(--p); display:flex; gap:8px;">
-                                <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
-                                <span><i class="fa fa-heart"></i> ${p.likes || 0}</span>
+                            <div class="stat-group">
+                                <div class="stat-item"><i class="fa fa-eye"></i> <span class="counter" data-target="${p.views}">0</span></div>
+                                <div class="stat-item"><i class="fa fa-heart"></i> <span class="counter" data-target="${p.likes}">0</span></div>
+                                <div class="stat-item"><i class="fa fa-comment"></i> ${p.comments ? p.comments.length : 0}</div>
                             </div>
+                        </div>
+                    </div>`;
+            });
+            runCounters();
+        }
+
+        function runCounters() {
+            document.querySelectorAll('.counter').forEach(el => {
+                const target = +el.dataset.target;
+                let c = 0;
+                const i = setInterval(() => {
+                    c += Math.ceil(target/15);
+                    if(c >= target) { el.innerText = target; clearInterval(i); }
+                    else el.innerText = c;
+                }, 50);
+            });
+        }
+
+        async function openArt(id) {
+            if(!user) { document.getElementById('login-modal').style.display='flex'; return; }
+            currentArtId = id;
+            const p = posts.find(x => x.id === id);
+            
+            // زيادة مشاهدة تلقائية
+            db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
+
+            const hasLiked = liked.includes(id);
+            document.getElementById('full-post-data').innerHTML = `
+                <img src="${p.image}" style="width:100%; border-radius:20px; margin-bottom:25px; border:1px solid var(--border);">
+                <h1 style="color:var(--p); margin-bottom:15px; font-size:1.8rem;">${p.title}</h1>
+                <div style="line-height:2; font-size:1.1rem; color:#cbd5e1; margin-bottom:30px;">${p.content}</div>
+                <button id="l-btn" onclick="hitLike('${id}')" class="btn-action ${hasLiked ? 'liked' : ''}" ${hasLiked ? 'disabled' : ''}>
+                    ${hasLiked ? '<i class="fa fa-check"></i> تم الإعجاب' : '<i class="fa fa-heart"></i> أعجبني'}
+                </button>
+            `;
+            
+            loadComments(p.comments || []);
+            document.getElementById('article-view').style.display = 'block';
+        }
+
+        function loadComments(list) {
+            const div = document.getElementById('comments-list');
+            div.innerHTML = list.length ? '' : '<p style="opacity:0.5; text-align:center;">لا توجد تعليقات بعد، كن أول المعلقين!</p>';
+            list.forEach(c => {
+                div.innerHTML += `
+                    <div class="comment-box">
+                        <img src="${c.uimg}">
+                        <div>
+                            <div style="font-weight:bold; color:var(--p); font-size:0.8rem;">${c.uname}</div>
+                            <div style="font-size:0.9rem; margin-top:3px;">${c.text}</div>
                         </div>
                     </div>`;
             });
         }
 
-        async function openArticle(id) {
-            const doc = await db.collection("posts").doc(id).get();
-            const p = doc.data();
-            db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
-            const view = document.getElementById('full-article-data');
-            view.innerHTML = `
-                <img src="${p.image}" class="full-img">
-                <h2 style="color:var(--p); font-size:1.2rem;">${p.title}</h2>
-                <div style="margin:15px 0; font-size:0.9rem; line-height:1.6;">${p.content}</div>
-                <button onclick="likePost('${id}')" style="background:var(--p); border:none; padding:8px 15px; border-radius:8px; font-weight:bold;">❤️ إعجاب (${p.likes || 0})</button>
-                <div style="margin-top:20px;">
-                    <input type="text" id="com-inp" class="inp-field" placeholder="تعليق...">
-                    <button onclick="addComment('${id}')" style="background:white; border:none; padding:8px; border-radius:8px; font-size:0.8rem;">إرسال</button>
-                    <div style="margin-top:15px;">${(p.comments || []).map(c => `<div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:8px; margin-bottom:5px; font-size:0.8rem;"><b>${c.u}:</b> ${c.t}</div>`).join('')}</div>
-                </div>
-            `;
-            document.getElementById('article-view').style.display = 'block';
+        async function sendComment() {
+            const txt = document.getElementById('comment-input').value;
+            if(!txt) return;
+            const cObj = { uname: user.name, uimg: user.picture, text: txt, time: Date.now() };
+            await db.collection("posts").doc(currentArtId).update({ comments: firebase.firestore.FieldValue.arrayUnion(cObj) });
+            document.getElementById('comment-input').value = '';
+            // تحديث المقال المفتوح
+            const doc = await db.collection("posts").doc(currentArtId).get();
+            loadComments(doc.data().comments);
         }
 
-        function closeArticle() { document.getElementById('article-view').style.display = 'none'; }
-        function setCategory(cat) { currentCat = cat; renderPosts(); }
-        function runSmartFilter() { renderPosts(); }
+        async function hitLike(id) {
+            if(liked.includes(id)) return;
+            await db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) });
+            liked.push(id);
+            localStorage.setItem('z_likes', JSON.stringify(liked));
+            const btn = document.getElementById('l-btn');
+            btn.classList.add('liked'); btn.innerHTML = '<i class="fa fa-check"></i> تم الإعجاب'; btn.disabled = true;
+        }
+
         function nav(id, e) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
             if(e) e.currentTarget.classList.add('active');
+            if(window.innerWidth < 768) toggleMenu();
         }
-        function animateValue(id, start, end, duration) {
-            let obj = document.getElementById(id);
-            let current = start;
-            let increment = end > start ? 10 : -10;
-            let timer = setInterval(() => {
-                current += increment;
-                obj.innerHTML = current;
-                if (current >= end) { obj.innerHTML = end; clearInterval(timer); }
-            }, 20);
+
+        function closeArt() { document.getElementById('article-view').style.display='none'; }
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
+        function onGoogleLogin(res) {
+            user = JSON.parse(atob(res.credential.split('.')[1]));
+            localStorage.setItem('zomerd_user', JSON.stringify(user));
+            location.reload();
         }
         function logout() { localStorage.clear(); location.reload(); }
-        window.onload = startApp;
+        window.onload = init;
     </script>
 </body>
 </html>
