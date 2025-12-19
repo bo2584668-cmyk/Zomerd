@@ -233,7 +233,91 @@ aside {
         </section>
 
         <section id="sec-feed" class="section">
-            <div id="feed-container">جاري جلب المنشورات...</div>
+    <div class="discovery-section" style="padding: 15px; background: var(--card); border-bottom: 1px solid var(--border);">
+    
+    <div class="search-box" style="position: relative; margin-bottom: 15px;">
+        <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 15px; top: 12px; color: var(--p);"></i>
+        <input type="text" id="smart-search" oninput="runSmartFilter()" placeholder="ابحث بالعنوان أو اسم الكاتب..." 
+               style="width: 100%; padding: 12px 40px 12px 10px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: #fff; outline: none;">
+    </div>
+
+    <div class="categories-bar" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none;">
+        <button onclick="setCategory('الكل')" class="filter-btn active" id="btn-الكل">الكل</button>
+        <button onclick="setCategory('رياضة')" class="filter-btn" id="btn-رياضة">⚽ رياضة</button>
+        <button onclick="setCategory('أكواد')" class="filter-btn" id="btn-أكواد">💻 أكواد</button>
+        <button onclick="setCategory('ترفيه')" class="filter-btn" id="btn-ترفيه">🎭 ترفيه</button>
+        <button onclick="setCategory('قصص')" class="filter-btn" id="btn-قصص">📖 قصص</button>
+        <button onclick="setCategory('تقنية')" class="filter-btn" id="btn-تقنية">⚙️ تقنية</button>
+    </div>
+</div>
+
+<div id="posts-display-grid" class="posts-grid">
+    </div>
+
+<script>
+let localPosts = []; // تخزين المنشورات محلياً لسرعة البحث
+let selectedCat = 'الكل';
+
+// جلب المنشورات من الفايربيز (مرة واحدة وتحديث تلقائي)
+function initFeed() {
+    db.collection("posts").orderBy("time", "desc").onSnapshot((snap) => {
+        localPosts = [];
+        snap.forEach(doc => {
+            localPosts.push({ id: doc.id, ...doc.data() });
+        });
+        runSmartFilter(); // تشغيل الفلترة فور جلب البيانات
+    });
+}
+
+// دالة الفلترة والبحث (تشتغل مع الكتابة أو تغيير الفئة)
+function runSmartFilter() {
+    const query = document.getElementById('smart-search').value.toLowerCase();
+    const grid = document.getElementById('posts-display-grid');
+    grid.innerHTML = '';
+
+    const filtered = localPosts.filter(p => {
+        const matchesSearch = p.title.toLowerCase().includes(query) || p.author.toLowerCase().includes(query);
+        const matchesCat = (selectedCat === 'الكل' || p.category === selectedCat);
+        return matchesSearch && matchesCat;
+    });
+
+    filtered.forEach(p => {
+        grid.innerHTML += `
+            <div class="post-card" onclick="viewArticle('${p.id}')">
+                <div class="post-badge">${p.category || 'عام'}</div>
+                <img src="${p.image}" class="post-img">
+                <div class="post-details">
+                    <h3>${p.title}</h3>
+                    <p>بواسطة: ${p.author}</p>
+                </div>
+            </div>`;
+    });
+}
+
+// تغيير الفئة المختارة
+function setCategory(cat) {
+    selectedCat = cat;
+    // تحديث شكل الأزرار
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('btn-' + cat).classList.add('active');
+    runSmartFilter();
+}
+
+// تشغيل النظام عند فتح الصفحة
+initFeed();
+</script>
+
+<style>
+.posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
+.post-card { background: var(--card); border-radius: 15px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; position: relative; transition: 0.3s; }
+.post-card:hover { transform: translateY(-5px); border-color: var(--p); }
+.post-img { width: 100%; height: 180px; object-fit: cover; }
+.post-badge { position: absolute; top: 10px; left: 10px; background: var(--p); color: #000; padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; }
+.post-details { padding: 15px; }
+.filter-btn { padding: 8px 18px; border-radius: 10px; background: var(--card); color: #fff; border: 1px solid var(--border); cursor: pointer; white-space: nowrap; }
+.filter-btn.active { background: var(--p); color: #000; font-weight: bold; }
+</style>        <div id="feed-container">جاري جلب المنشورات...</div>
+    
         </section>
 
         <section id="sec-write" class="section">
