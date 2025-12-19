@@ -72,6 +72,59 @@
         #chat-btn-main { width: 60px; height: 60px; background: var(--p); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border:none; box-shadow: 0 0 20px var(--main-glow); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+   /* التنسيق الجديد للموبايل والتابلت */
+@media (max-width: 768px) {
+    body { flex-direction: column; overflow-y: auto; height: 100vh; width: 100vw; }
+    
+    /* جعل المنيو السفلي نحيف جداً */
+    aside { 
+        width: 100% !important; 
+        height: 50px !important; /* تقليل الارتفاع */
+        position: fixed; 
+        bottom: 0; 
+        flex-direction: row !important; 
+        display: flex !important; 
+        justify-content: space-around; 
+        padding: 0 2px;
+        background: rgba(21, 28, 44, 0.95);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid var(--border);
+    }
+
+    /* تصغير أزرار التنقل */
+    .nav-link { 
+        flex-direction: column; 
+        font-size: 0.6rem !important; 
+        padding: 4px !important; 
+        gap: 1px !important;
+        flex: 1;
+    }
+    .nav-link i { font-size: 1rem !important; }
+
+    /* إخفاء الهيدر لتوفير مساحة */
+    header { height: 50px !important; padding: 0 15px !important; }
+    #sec-title { font-size: 0.9rem; }
+    
+    /* عرض الأخبار بنظام كارتين في الصف */
+    .posts-grid { 
+        grid-template-columns: repeat(2, 1fr) !important; 
+        gap: 8px !important; 
+        padding: 8px !important; 
+    }
+    .post-img { height: 100px !important; }
+    .post-details h3 { font-size: 0.8rem !important; }
+
+    /* تصغير الفلاتر والبحث */
+    .search-area { flex-wrap: nowrap; gap: 5px; }
+    .inp-field { padding: 8px; font-size: 0.8rem; }
+}
+
+/* تحسين شكل البطاقات بشكل عام */
+.post-card {
+    border-radius: 10px;
+    background: var(--card);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
     </style>
 </head>
 <body>
