@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-    <title>ZOMERD OS | ULTIMATE PRO</title>
+    <title>ZOMERD OS | النسخة النهائية</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -18,10 +18,10 @@
         body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; }
         #particles-js { position: fixed; inset: 0; z-index: -1; }
 
-        /* Login Screen */
+        /* Login */
         #login-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; }
 
-        /* Sidebar */
+        /* Navigation */
         aside { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1001; transition: 0.3s; }
         @media (max-width: 768px) { aside { position: fixed; right: -280px; height: 100%; top: 0; } aside.open { right: 0; } }
         
@@ -43,13 +43,12 @@
 
         /* Progress Bar */
         .prog-container { width: 100%; background: #000; height: 8px; border-radius: 4px; margin-bottom: 15px; display: none; overflow: hidden; border: 1px solid var(--border); }
-        .prog-bar { height: 100%; background: var(--p); width: 0%; transition: 0.3s; box-shadow: 0 0 10px var(--p); }
+        .prog-bar { height: 100%; background: var(--p); width: 0%; transition: 0.3s; }
 
-        /* Chat & XO */
+        /* Chat */
         #chat-box { height: 350px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
-        .xo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 300px; margin: auto; }
-        .xo-cell { aspect-ratio: 1; background: #161b22; border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; color: var(--p); }
-
+        
+        .post-card-img { width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:10px; }
         #article-modal { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 20px; }
     </style>
 </head>
@@ -57,19 +56,18 @@
 
     <div id="login-overlay">
         <h1 style="color:var(--p); font-size: 3rem; font-weight: 900;">ZOMERD OS</h1>
-        <p style="margin-bottom: 30px; opacity: 0.6;">نظام براء عمر المتكامل</p>
+        <p style="margin-bottom: 30px; opacity: 0.6;">نظام الإدارة الفائق | براء عمر</p>
         <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="handleLogin"></div>
-        <div class="g_id_signin" data-type="standard"></div>
+        <div class="g_id_signin" data-type="standard" data-theme="filled_blue"></div>
     </div>
 
     <aside id="sidebar">
         <div style="padding: 30px; text-align: center; color:var(--p)"><h2>ZOMERD</h2></div>
         <nav>
-            <div class="nav-link active" onclick="nav('home', event)"><i class="fa fa-home"></i> الرئيسية</div>
-            <div id="pub-nav" class="nav-link" style="display:none" onclick="nav('publish', event)"><i class="fa fa-pen-fancy"></i> نشر مقال</div>
-            <div id="adm-nav" class="nav-link" style="display:none; color:var(--warning)" onclick="nav('admin', event)"><i class="fa fa-user-shield"></i> لوحة الإدارة</div>
+            <div class="nav-link active" onclick="nav('home', event)"><i class="fa fa-compass"></i> الاستكشاف</div>
+            <div id="pub-nav" class="nav-link" style="display:none" onclick="nav('publish', event)"><i class="fa fa-plus-circle"></i> نشر مقال</div>
+            <div id="adm-nav" class="nav-link" style="display:none; color:var(--warning)" onclick="nav('admin', event)"><i class="fa fa-shield-halved"></i> الإدارة</div>
             <div class="nav-link" onclick="nav('chat', event)"><i class="fa fa-comments"></i> الدردشة</div>
-            <div class="nav-link" onclick="nav('game', event)"><i class="fa fa-gamepad"></i> الألعاب</div>
             <div class="nav-link" onclick="nav('profile', event)"><i class="fa fa-user-circle"></i> حسابي</div>
         </nav>
     </aside>
@@ -77,46 +75,41 @@
     <main>
         <header>
             <i class="fa fa-bars" onclick="document.getElementById('sidebar').classList.toggle('open')" style="cursor:pointer;"></i>
-            <div id="user-info" style="display:flex; align-items:center; gap:15px;">
-                <img id="u-img" style="width:38px; border-radius:50%; border:2px solid var(--p)">
-            </div>
+            <img id="u-img" style="width:38px; border-radius:50%; border:2px solid var(--p)">
         </header>
 
         <section id="sec-home" class="section active">
-            <h3 style="margin-bottom:20px;">🔥 آخر المقالات المعتمدة</h3>
+            <h3 style="margin-bottom:20px;"><i class="fa fa-bolt" style="color:var(--warning)"></i> الاستكشاف</h3>
             <div id="post-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:20px;"></div>
         </section>
 
         <section id="sec-publish" class="section">
             <div class="card">
-                <h3>✍️ إنشاء مقال جديد</h3><br>
-                <input type="text" id="p-title" class="inp-field" placeholder="عنوان المقال الخاطف...">
-                
+                <h3>✍️ نشر محتوى</h3><br>
+                <input type="text" id="p-title" class="inp-field" placeholder="عنوان المقال...">
                 <div class="prog-container" id="up-prog"><div class="prog-bar" id="up-bar"></div></div>
-                
                 <div style="display:flex; gap:10px; margin-bottom:20px;">
                     <button onclick="document.getElementById('img-file').click()" class="btn-p" style="flex:1; background:rgba(255,255,255,0.05); color:#fff; border:1px solid var(--border);">
-                        <i class="fa fa-image"></i> ارفع صورة الغلاف
+                        <i class="fa fa-image"></i> اختر صورة
                     </button>
                     <input type="file" id="img-file" hidden onchange="uploadImg(this)" accept="image/*">
                 </div>
-
-                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:250px; border:1px dashed var(--p)" placeholder="ابدأ الكتابة هنا..."></div>
-                <button id="submit-btn" onclick="submitPost()" class="btn-p">إرسال للمراجعة 🚀</button>
+                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:300px; border:1px dashed var(--p)" placeholder="اكتب هنا..."></div>
+                <button id="submit-btn" onclick="submitPost()" class="btn-p">نشر الآن 🚀</button>
             </div>
         </section>
 
         <section id="sec-admin" class="section">
-            <h3 style="color:var(--warning)">📦 مراجعة المقالات</h3><div id="admin-posts"></div><br>
-            <h3 style="color:var(--p)">🎖️ طلبات ترقية الناشرين</h3><div id="admin-reqs"></div>
+            <h3 style="color:var(--p)">🎖️ طلبات الترقية</h3><br>
+            <div id="admin-reqs"></div>
         </section>
 
         <section id="sec-chat" class="section">
             <div class="card">
-                <h3>Global Chat 💬</h3>
+                <h3>الدردشة العامة 💬</h3>
                 <div id="chat-box"></div>
                 <div style="display:flex; gap:10px;">
-                    <input type="text" id="chat-inp" class="inp-field" style="margin:0" placeholder="اكتب رسالتك...">
+                    <input type="text" id="chat-inp" class="inp-field" style="margin:0" placeholder="رسالتك...">
                     <button onclick="sendChat()" class="btn-p" style="width:auto;"><i class="fa fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -124,26 +117,11 @@
 
         <section id="sec-profile" class="section">
             <div class="card" style="text-align:center;">
-                <img id="prof-img" style="width:100px; border-radius:50%; border:3px solid var(--p)">
+                <img id="prof-img" style="width:110px; border-radius:50%; border:3px solid var(--p)">
                 <h2 id="prof-name" style="margin-top:15px;"></h2>
-                <p id="prof-role" style="color:var(--p); font-weight:bold;"></p>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:20px;">
-                    <div class="card"><h5>نقاط التفاعل</h5><h3 id="u-points">0</h3></div>
-                    <div class="card"><h5>مقالاتي</h5><h3 id="u-posts-count">0</h3></div>
-                </div>
+                <p id="prof-role" style="color:var(--p); margin-bottom:20px;"></p>
                 <button id="req-pub-btn" class="btn-p" onclick="requestPub()">طلب رتبة ناشر 🎖️</button><br>
-                <button class="btn-p" style="background:var(--danger); color:white" onclick="logout()">تسجيل الخروج</button>
-            </div>
-        </section>
-
-        <section id="sec-game" class="section">
-            <div class="card" style="text-align:center;">
-                <h3>X vs O AI</h3><br>
-                <div class="xo-grid">
-                    <div class="xo-cell" onclick="xo(0)"></div><div class="xo-cell" onclick="xo(1)"></div><div class="xo-cell" onclick="xo(2)"></div>
-                    <div class="xo-cell" onclick="xo(3)"></div><div class="xo-cell" onclick="xo(4)"></div><div class="xo-cell" onclick="xo(5)"></div>
-                    <div class="xo-cell" onclick="xo(6)"></div><div class="xo-cell" onclick="xo(7)"></div><div class="xo-cell" onclick="xo(8)"></div>
-                </div>
+                <button class="btn-p" style="background:var(--danger); color:white" onclick="logout()">خروج</button>
             </div>
         </section>
     </main>
@@ -158,6 +136,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
         const firebaseConfig = {
@@ -191,43 +170,33 @@
                 
                 const uDoc = await db.collection("users").doc(user.email).get();
                 let role = 'user';
-                if(uDoc.exists) {
-                    const d = uDoc.data(); role = d.role;
-                    document.getElementById('u-points').innerText = d.points || 0;
-                    document.getElementById('u-posts-count').innerText = d.posts || 0;
-                } else {
-                    await db.collection("users").doc(user.email).set({name:user.name, role:'user', points:0, posts:0});
-                }
+                if(uDoc.exists) role = uDoc.data().role;
+                else await db.collection("users").doc(user.email).set({name:user.name, role:'user'});
                 
-                document.getElementById('prof-role').innerText = role === 'publisher' ? "رتبة: ناشر" : "رتبة: مستخدم";
-                if(role === 'publisher' || user.email === ADM) document.getElementById('pub-nav').style.display='flex';
-                if(user.email === ADM) document.getElementById('adm-nav').style.display='flex';
+                document.getElementById('prof-role').innerText = (user.email === ADM) ? "المالك" : "الرتبة: " + role;
+                if(role === 'publisher' || user.email === ADM) document.getElementById('pub-nav').style.display = 'flex';
+                if(user.email === ADM) document.getElementById('adm-nav').style.display = 'flex';
 
                 listenChat();
                 if(user.email === ADM) listenAdmin();
             }
-            particlesJS('particles-js', {"particles":{"number":{"value":30},"color":{"value":"#00d2ff"},"move":{"speed":1}}});
+            particlesJS('particles-js', {"particles":{"number":{"value":40},"color":{"value":"#00d2ff"},"move":{"speed":1}}});
             loadPosts();
         }
 
-        // دالة الرفع الاحترافية التي طلبتها
         async function uploadImg(el) {
             const btn = document.getElementById('submit-btn');
             const bar = document.getElementById('up-bar');
             const prog = document.getElementById('up-prog');
-
             if(!el.files[0]) return;
-            prog.style.display = 'block';
-            btn.disabled = true; 
-            bar.style.width = '30%';
-
+            prog.style.display = 'block'; btn.disabled = true; bar.style.width = '40%';
             const fd = new FormData(); fd.append("image", el.files[0]);
             try {
                 const res = await fetch("https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d", {method:"POST", body:fd});
                 const d = await res.json();
                 currentImg = d.data.url;
                 bar.style.width = '100%';
-                alert("الصورة جاهزة! ✅");
+                alert("تم رفع الصورة! ✅");
             } catch(e) { alert("خطأ في الرفع"); }
             btn.disabled = false;
             setTimeout(() => prog.style.display='none', 1000);
@@ -235,79 +204,71 @@
 
         async function submitPost() {
             const t = document.getElementById('p-title').value, b = document.getElementById('p-body').innerHTML;
-            if(!t || !currentImg) return alert("أكمل العنوان والصورة");
+            if(!t || !currentImg) return alert("أكمل البيانات");
             await db.collection("posts").add({
                 title: t, content: b, image: currentImg, author: user.email, authorName: user.name,
-                status: user.email === ADM ? 'approved' : 'pending', time: Date.now(), views: 0
+                status: 'approved', time: Date.now()
             });
-            alert("تم الإرسال!"); nav('home');
+            alert("تم النشر!"); nav('home');
         }
 
         function loadPosts() {
-            db.collection("posts").where("status","==","approved").onSnapshot(snap => {
+            // حل مشكلة عدم ظهور المنشورات: الجلب بدون Filter ثم التصفية والترتيب برمجياً
+            db.collection("posts").onSnapshot(snap => {
                 const grid = document.getElementById('post-grid');
-                grid.innerHTML = snap.docs.map(doc => {
-                    const p = doc.data();
-                    return `<div class="card" onclick="openArt('${doc.id}')" style="cursor:pointer">
-                        <img src="${p.image}" style="width:100%; height:160px; object-fit:cover; border-radius:10px;">
-                        <h4 style="margin:10px 0;">${p.title}</h4>
+                let all = [];
+                snap.forEach(doc => {
+                    if(doc.data().status === 'approved') all.push({id: doc.id, ...doc.data()});
+                });
+                
+                // ترتيب يدوي من الأحدث للأقدم
+                all.sort((a,b) => b.time - a.time);
+
+                grid.innerHTML = all.map(p => `
+                    <div class="card" onclick="openArt('${p.id}')" style="cursor:pointer">
+                        <img src="${p.image}" class="post-card-img">
+                        <h4>${p.title}</h4>
                         <small>بواسطة: ${p.authorName}</small>
-                    </div>`;
-                }).join('');
+                    </div>`).join('');
             });
         }
 
         async function openArt(id) {
             const doc = await db.collection("posts").doc(id).get();
             const p = doc.data();
-            document.getElementById('art-view').innerHTML = `<img src="${p.image}" style="width:100%; border-radius:15px; margin-bottom:20px;"><h1>${p.title}</h1><div style="margin-top:20px; line-height:1.8;">${p.content}</div>`;
+            document.getElementById('art-view').innerHTML = `
+                <img src="${p.image}" style="width:100%; border-radius:15px; margin-bottom:20px;">
+                <h1>${p.title}</h1>
+                <div style="margin-top:20px; line-height:1.8;">${p.content}</div>`;
             document.getElementById('article-modal').style.display='block';
-            db.collection("posts").doc(id).update({views: firebase.firestore.FieldValue.increment(1)});
         }
 
         function listenAdmin() {
-            db.collection("posts").where("status","==","pending").onSnapshot(snap => {
-                document.getElementById('admin-posts').innerHTML = snap.docs.map(doc => {
-                    const p = doc.data();
-                    return `<div class="card">
-                        <img src="${p.image}" style="width:80px; border-radius:5px;"> <b>${p.title}</b>
-                        <div style="margin-top:10px; display:flex; gap:10px;">
-                            <button onclick="approvePost('${doc.id}', '${p.author}')" class="btn-p" style="background:var(--success)">قبول</button>
-                            <button onclick="db.collection('posts').doc('${doc.id}').delete()" class="btn-p" style="background:var(--danger)">حذف</button>
-                        </div>
-                    </div>`;
-                }).join('');
-            });
-
             db.collection("requests").onSnapshot(snap => {
                 document.getElementById('admin-reqs').innerHTML = snap.docs.map(doc => `
                     <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>${doc.data().name} يطلب ترقية</span>
+                        <span>${doc.data().name}</span>
                         <button onclick="grantPub('${doc.id}')" class="btn-p" style="width:auto; background:var(--success)">ترقية</button>
                     </div>`).join('');
             });
         }
 
-        async function approvePost(id, email) {
-            await db.collection("posts").doc(id).update({status: 'approved'});
-            await db.collection("users").doc(email).update({points: firebase.firestore.FieldValue.increment(50), posts: firebase.firestore.FieldValue.increment(1)});
-            alert("تم قبول المقال");
-        }
-
         async function grantPub(email) {
             await db.collection("users").doc(email).update({role: 'publisher'});
             await db.collection("requests").doc(email).delete();
-            alert("تمت الترقية لناشر");
+            alert("تمت الترقية");
         }
 
         async function requestPub() {
-            await db.collection("requests").doc(user.email).set({name: user.name, email: user.email});
-            alert("تم إرسال طلبك للبراء");
+            await db.collection("requests").doc(user.email).set({name: user.name});
+            alert("تم إرسال الطلب");
         }
 
         function listenChat() {
-            db.collection("chat").orderBy("time","desc").limit(20).onSnapshot(snap => {
-                document.getElementById('chat-box').innerHTML = snap.docs.map(doc => `<div><b>${doc.data().name}:</b> ${doc.data().text}</div>`).reverse().join('');
+            db.collection("chat").orderBy("time","desc").limit(30).onSnapshot(snap => {
+                const box = document.getElementById('chat-box');
+                box.innerHTML = snap.docs.map(doc => `<div><b>${doc.data().name}:</b> ${doc.data().text}</div>`).reverse().join('');
+                box.scrollTop = box.scrollHeight;
             });
         }
 
@@ -325,17 +286,6 @@
 
         function logout() { localStorage.clear(); location.reload(); }
         window.onload = init;
-
-        // XO Mini Logic
-        let xb = Array(9).fill("");
-        function xo(i) {
-            if(xb[i]) return; xb[i] = "X"; drawXO();
-            setTimeout(() => {
-                let e = xb.map((v,idx)=>v===""?idx:null).filter(v=>v!==null);
-                if(e.length) { xb[e[Math.floor(Math.random()*e.length)]]="O"; drawXO(); }
-            }, 500);
-        }
-        function drawXO() { document.querySelectorAll('.xo-cell').forEach((c,i) => c.innerText = xb[i]); }
     </script>
 </body>
 </html>
