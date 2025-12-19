@@ -274,7 +274,18 @@ aside {
     <button onclick="addInlineImg()" type="button" style="background:#333; color:#fff; border:1px solid var(--border); padding:5px 10px; border-radius:5px; cursor:pointer;"><i class="fa-solid fa-image"></i> صورة</button>
 
     <div style="margin-right: auto; color: var(--p); font-size: 0.8rem;">
-        الكلمات: <span id="word-count">0</span> / 400
+    <div class="add-post-fields">
+    <label style="color: var(--dim); font-size: 0.8rem;">قسم المنشور:</label>
+    <select id="new-post-category" class="inp-field" style="width: 100%; margin-bottom: 15px;">
+        <option value="عام">🌍 عام</option>
+        <option value="رياضة">⚽ رياضة</option>
+        <option value="أكواد">💻 أكواد وبرمجة</option>
+        <option value="ترفيه">🎭 ترفيه</option>
+        <option value="قصص">📖 قصص وحكايات</option>
+        <option value="تقنية">⚙️ تقنية</option>
+    </select>
+    </div>    الكلمات: <span id="word-count">0</span> / 400
+  
     </div>
         </section>
 
