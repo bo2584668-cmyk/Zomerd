@@ -2,8 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
-    <meta name="google-site-verification" content="l9QWU9EfN7iGme5VjBMjdLUvQlOYRBitRQMJ6pBvJQE" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <title>زمرد نت | براء عمر</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet" />
@@ -11,196 +10,220 @@
 
     <style>
         :root {
-            --p: #00d2ff; --bg: #0b0f19; --card: #151c2c; --txt: #f1f5f9; --dim: #94a3b8; --border: rgba(255,255,255,0.05);
-            --main-glow: rgba(0, 210, 255, 0.6);
+            --p: #00d2ff; --bg: #050810; --card: rgba(21, 28, 44, 0.6); --txt: #f1f5f9; 
+            --dim: #94a3b8; --border: rgba(0, 210, 255, 0.2); --main-glow: rgba(0, 210, 255, 0.4);
         }
-        .theme-light { --bg: #f8fafc; --card: #ffffff; --txt: #1e293b; --dim: #64748b; --border: rgba(0,0,0,0.1); }
         
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; transition: 0.3s; scroll-behavior: smooth; }
-        body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; width: 100vw; }
 
-        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; background: var(--bg); }
-        #login-overlay { position: fixed; inset: 0; background: #0b0f19; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
 
-        aside { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: none; flex-direction: column; z-index: 100; transition: 0.4s; }
+        /* شريط الأخبار المطور */
+        .breaking-news { 
+            background: rgba(0, 0, 0, 0.8); border-bottom: 1px solid var(--border); 
+            height: 40px; display: flex; align-items: center; z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .breaking-label { 
+            background: var(--p); color: #000; padding: 0 20px; font-weight: 900; 
+            font-size: 0.8rem; height: 100%; display: flex; align-items: center; 
+            box-shadow: 10px 0 20px rgba(0,0,0,0.5); z-index: 2;
+        }
+        .ticker-wrapper { flex: 1; overflow: hidden; }
+        .ticker { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; }
+        .ticker span { margin-right: 60px; color: var(--p); font-size: 0.85rem; font-weight: bold; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        /* القائمة الجانبية الزجاجية */
+        aside { 
+            width: 280px; background: var(--card); backdrop-filter: blur(15px);
+            border-left: 1px solid var(--border); display: flex; flex-direction: column; 
+            z-index: 1001; position: relative;
+        }
         
         @media (max-width: 768px) {
-            body { flex-direction: column; height: auto; overflow-y: auto; }
-            aside { width: 100% !important; height: 65px !important; position: fixed; bottom: 0; flex-direction: row !important; display: flex !important; justify-content: space-around; border-top: 1px solid var(--border); border-left: none; }
-            main { padding-bottom: 70px; width: 100% !important; }
-            .nav-link { flex-direction: column; font-size: 0.6rem !important; flex: 1; justify-content: center; margin-bottom: 0 !important; padding: 5px !important; }
-            .logo-side, header { display: none !important; }
+            aside { position: fixed; right: -280px; height: 100%; top: 0; }
+            aside.open { right: 0; box-shadow: -20px 0 50px rgba(0,0,0,0.8); }
+            .menu-overlay.show { display: block; }
         }
 
-        .logo-side { padding: 30px; text-align: center; color: var(--p); border-bottom: 1px solid var(--border); }
-        nav { flex: 1; padding: 20px 10px; }
-        .nav-link { padding: 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--dim); margin-bottom: 5px; text-decoration: none; }
-        .nav-link.active { background: var(--p); color: black; font-weight: bold; }
+        .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: none; backdrop-filter: blur(3px); }
 
-        main { flex: 1; overflow-y: auto; background: transparent; display: none; }
-        header { height: 70px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--card); position: sticky; top: 0; z-index: 10; }
+        .logo-side { padding: 40px 20px; text-align: center; border-bottom: 1px solid var(--border); }
+        .logo-side h2 { color: var(--p); font-weight: 900; letter-spacing: 2px; text-shadow: 0 0 15px var(--main-glow); }
 
-        .section { padding: 20px; display: none; max-width: 1000px; margin: 0 auto; }
-        .section.active { display: block; animation: fadeIn 0.5s ease; }
+        nav { flex: 1; padding: 20px 15px; }
+        .nav-link { 
+            padding: 14px 18px; border-radius: 15px; cursor: pointer; display: flex; 
+            align-items: center; gap: 12px; color: var(--dim); margin-bottom: 10px; 
+            text-decoration: none; border: 1px solid transparent;
+        }
+        .nav-link:hover { background: rgba(255,255,255,0.05); color: var(--p); }
+        .nav-link.active { 
+            background: linear-gradient(45deg, var(--p), #0088ff); color: #000; 
+            font-weight: bold; border-color: var(--p); box-shadow: 0 5px 20px var(--main-glow);
+        }
 
-        .hero { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .hero h1 { font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900; background: linear-gradient(to bottom, #fff, var(--p)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 100%; margin-top: 40px; }
-        .stat-card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
-        .stat-card h2 { font-size: 3rem; color: #fff; }
+        main { flex: 1; overflow-y: auto; position: relative; display: flex; flex-direction: column; background: radial-gradient(circle at top right, rgba(0,210,255,0.05), transparent); }
+        header { 
+            height: 70px; padding: 0 25px; display: flex; align-items: center; justify-content: space-between; 
+            background: rgba(11, 15, 25, 0.8); backdrop-filter: blur(10px); 
+            border-bottom: 1px solid var(--border); sticky; top: 0; z-index: 50;
+        }
 
-        .inp-field { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.3); color: white; margin-bottom: 10px; outline: none; }
-        
-        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
-        .post-card { background: var(--card); border-radius: 15px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; position: relative; transition: 0.3s; display: flex; flex-direction: column; }
-        .post-card:hover { transform: translateY(-5px); border-color: var(--p); box-shadow: 0 10px 20px rgba(0,210,255,0.1); }
-        .post-img { width: 100%; height: 180px; object-fit: cover; }
-        .post-badge { position: absolute; top: 10px; right: 10px; background: var(--p); color: #000; padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; z-index: 2; }
-        .post-details { padding: 15px; flex: 1; }
+        .menu-btn { font-size: 1.4rem; color: var(--p); cursor: pointer; background: rgba(0,210,255,0.1); border: 1px solid var(--p); padding: 8px 12px; border-radius: 10px; display: none; }
+        @media (max-width: 768px) { .menu-btn { display: block; } }
 
-        .filter-btn { padding: 8px 18px; border-radius: 10px; background: var(--card); color: #fff; border: 1px solid var(--border); cursor: pointer; white-space: nowrap; }
-        .filter-btn.active { background: var(--p); color: #000; font-weight: bold; }
+        /* الأقسام والكروت */
+        .section { padding: 25px; display: none; max-width: 1100px; margin: 0 auto; width: 100%; opacity: 0; transform: translateY(15px); }
+        .section.active { display: block; opacity: 1; transform: translateY(0); }
 
-        /* Article Full View */
-        #article-view { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 20px; }
-        .article-full-card { max-width: 800px; margin: 0 auto; background: var(--card); border-radius: 20px; padding: 25px; border: 1px solid var(--border); }
-        .comment-item { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 10px; }
+        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 25px; }
+        @media (max-width: 600px) { .posts-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 
-        #zomerd-chat-wrapper { position: fixed; bottom: 80px; left: 20px; z-index: 1000; }
-        #chat-window-box { width: 300px; height: 400px; background: var(--card); border: 1px solid var(--p); border-radius: 15px; display: none; flex-direction: column; margin-bottom: 10px; overflow: hidden; }
-        #chat-btn-main { width: 60px; height: 60px; background: var(--p); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border:none; box-shadow: 0 0 20px var(--main-glow); }
+        .post-card { 
+            background: var(--card); border-radius: 20px; overflow: hidden; 
+            border: 1px solid var(--border); position: relative; 
+            cursor: pointer; transform-origin: center;
+        }
+        .post-card:hover { transform: translateY(-8px); border-color: var(--p); box-shadow: 0 10px 30px rgba(0,210,255,0.15); }
+        .post-img { width: 100%; height: 160px; object-fit: cover; filter: brightness(0.8); }
+        @media (max-width: 600px) { .post-img { height: 110px; } }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .post-details { padding: 15px; }
+        .post-details h3 { font-size: 1rem; color: #fff; line-height: 1.4; margin-bottom: 10px; }
+
+        /* الأزرار والحقول */
+        .inp-field { 
+            width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--border); 
+            background: rgba(0,0,0,0.4); color: white; margin-bottom: 15px; outline: none;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .inp-field:focus { border-color: var(--p); box-shadow: 0 0 10px var(--main-glow); }
+
+        .btn-glow { 
+            width: 100%; padding: 16px; background: linear-gradient(45deg, var(--p), #0088ff); 
+            border: none; border-radius: 12px; font-weight: 900; cursor: pointer; color: #000; 
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* عرض المقال المطور */
+        #article-view { 
+            position: fixed; inset: 0; background: rgba(5, 8, 16, 0.98); 
+            z-index: 2000; display: none; overflow-y: auto; padding: 20px;
+            backdrop-filter: blur(20px);
+        }
+        .article-container { 
+            max-width: 850px; margin: 20px auto; background: var(--card); 
+            padding: 35px; border-radius: 25px; border: 1px solid var(--border); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        /* تسجيل الدخول */
+        #login-modal { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); 
+            z-index: 10000; display: none; align-items: center; justify-content: center;
+            backdrop-filter: blur(15px);
+        }
+        .login-box { 
+            background: var(--card); padding: 40px; border-radius: 30px; 
+            border: 1px solid var(--p); text-align: center; max-width: 380px; width: 90%; 
+            box-shadow: 0 0 50px var(--main-glow);
+        }
     </style>
 </head>
 <body>
     <div id="particles-js"></div>
+    <div class="menu-overlay" id="overlay" onclick="toggleMenu()"></div>
 
-    <div id="login-overlay">
-        <h1 style="color:var(--p); font-size: 2.5rem; margin-bottom: 10px;">زمرد نت</h1>
-        <p style="color:white; opacity: 0.7; margin-bottom: 30px;">بوابة براء عمر للمقاولات والاتصالات</p>
-        <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="onGoogleLogin"></div>
-        <div class="g_id_signin" data-type="standard" data-theme="filled_blue"></div>
+    <div id="login-modal">
+        <div class="login-box">
+            <div style="font-size: 3rem; color: var(--p); margin-bottom: 20px;"><i class="fa-solid fa-shield-halved"></i></div>
+            <h2 style="color:var(--p); margin-bottom: 10px;">بوابة زمرد</h2>
+            <p style="font-size: 0.9rem; margin-bottom: 30px; opacity: 0.8; line-height: 1.6;">سجل دخولك لتتمكن من قراءة المقالات الحصرية والتفاعل مع مجتمع براء عمر.</p>
+            <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="onGoogleLogin"></div>
+            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_blue"></div>
+            <br>
+            <button onclick="hideLogin()" style="background: none; border: none; color: var(--dim); cursor: pointer; text-decoration: underline;">تصفح كزائر</button>
+        </div>
     </div>
 
-    <aside id="app-sidebar">
-        <div class="logo-side"><h2>زمرد نت</h2></div>
+    <aside id="main-sidebar">
+        <div class="logo-side"><h2>ZOMERD</h2></div>
         <nav>
-            <div class="nav-link active" onclick="nav('home', event)"><i class="fa-solid fa-house"></i> الرئيسية</div>
-            <div class="nav-link" onclick="nav('feed', event)"><i class="fa-solid fa-newspaper"></i> الأخبار</div>
-            <div id="nav-admin-only" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa-solid fa-pen"></i> نشر مقال</div>
-            <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-gear"></i> الإعدادات</div>
-            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-phone"></i> تواصل معنا</div>
+            <div class="nav-link active" onclick="nav('home', event)"><i class="fa-solid fa-house-chimney"></i> الرئيسية</div>
+            <div id="admin-publish-link" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa-solid fa-plus-square"></i> إضافة منشور</div>
+            <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-user-gear"></i> الإعدادات</div>
+            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-paper-plane"></i> تواصل معنا</div>
+            <div id="login-link-side" class="nav-link" onclick="showLogin()" style="color:var(--p); margin-top: 20px; border: 1px dashed var(--p);"><i class="fa-solid fa-sign-in"></i> تسجيل الدخول</div>
         </nav>
     </aside>
 
-    <main id="app-main">
+    <main>
+        <div class="breaking-news">
+            <div class="ticker-wrapper"><div class="ticker" id="ticker-content"><span>جاري تحميل آخر التحديثات من براء عمر...</span></div></div>
+            <div class="breaking-label">عاجل</div>
+        </div>
+
         <header>
-            <div id="sec-title">الرئيسية</div>
             <div style="display:flex; align-items:center; gap:15px;">
-                <span id="live-clock" style="color:var(--p); font-family:monospace;">00:00</span>
-                <div id="user-avatar" style="width:35px; height:35px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">?</div>
+                <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars-staggered"></i></button>
+                <div id="sec-title" style="font-weight:900; font-size:1.2rem; color:var(--p);">الرئيسية</div>
+            </div>
+            <div id="user-pill" style="display:none; align-items:center; gap:12px; background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 50px; border: 1px solid var(--border);">
+                <span id="live-clock" style="font-family:'JetBrains Mono'; font-size: 0.8rem; color: var(--p);">00:00</span>
+                <img id="u-img" style="width:30px; height:30px; border-radius:50%; border: 1px solid var(--p);">
             </div>
         </header>
 
         <section id="sec-home" class="section active">
-            <div class="hero">
-                <h1>مستقبل التقنية بين يديك</h1>
-                <p>مرحباً بك في عالم براء عمر الأسطوري. زمرد نت هو مستودع للإبداع الرقمي.</p>
-                <div class="stats-grid">
-                    <div class="stat-card"><h2 id="clients">0</h2><p>عميل يثق بنا</p></div>
-                    <div class="stat-card"><h2 id="projects">0</h2><p>مشروع مكتمل</p></div>
-                    <div class="stat-card"><h2 id="experience">0</h2><p>ساعة برمجة</p></div>
-                </div>
+            <div style="position: relative; margin-bottom: 25px;">
+                <i class="fa fa-search" style="position: absolute; right: 15px; top: 15px; color: var(--p);"></i>
+                <input type="text" id="search-input" oninput="runFilter()" placeholder="ابحث عن مقال، كود، أو خبر..." class="inp-field" style="padding-right: 45px; margin-bottom: 0;">
             </div>
-        </section>
-
-        <section id="sec-feed" class="section">
-            <div class="discovery-section" style="padding: 15px; background: var(--card); border-radius: 15px; margin-bottom: 20px;">
-                <div class="search-box" style="position: relative; margin-bottom: 15px;">
-                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 15px; top: 12px; color: var(--p);"></i>
-                    <input type="text" id="smart-search" oninput="runSmartFilter()" placeholder="ابحث بالعنوان أو اسم الكاتب..." class="inp-field" style="padding-right: 40px; margin-bottom: 0;">
-                </div>
-                <div class="categories-bar" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none;">
-                    <button onclick="setCategory('الكل')" class="filter-btn active" id="btn-الكل">الكل</button>
-                    <button onclick="setCategory('رياضة')" class="filter-btn" id="btn-رياضة">⚽ رياضة</button>
-                    <button onclick="setCategory('أكواد')" class="filter-btn" id="btn-أكواد">💻 أكواد</button>
-                    <button onclick="setCategory('ترفيه')" class="filter-btn" id="btn-ترفيه">🎭 ترفيه</button>
-                    <button onclick="setCategory('قصص')" class="filter-btn" id="btn-قصص">📖 قصص</button>
-                    <button onclick="setCategory('تقنية')" class="filter-btn" id="btn-تقنية">⚙️ تقنية</button>
-                </div>
-            </div>
-            <div id="posts-display-grid" class="posts-grid">جاري تحميل الأخبار...</div>
+            <div id="main-grid" class="posts-grid"></div>
         </section>
 
         <section id="sec-write" class="section">
-            <div class="article-full-card">
-                <h3 style="color:var(--p)">✍️ استوديو براء عمر للنشر</h3><br>
-                <input type="text" id="p-title" class="inp-field" placeholder="عنوان المنشور...">
-                
-                <label style="color: var(--dim); font-size: 0.8rem;">اختر قسم المنشور:</label>
-                <select id="new-post-category" class="inp-field">
-                    <option value="عام">🌍 عام</option>
-                    <option value="رياضة">⚽ رياضة</option>
-                    <option value="أكواد">💻 أكواد وبرمجة</option>
-                    <option value="ترفيه">🎭 ترفيه</option>
-                    <option value="قصص">📖 قصص وحكايات</option>
-                    <option value="تقنية">⚙️ تقنية</option>
-                </select>
-
-                <div style="margin-bottom: 15px;">
-                    <input type="file" id="img-upload" class="inp-field" onchange="uploadImageHandler(this)">
-                    <div id="upload-status-container" style="display:none; margin-top:10px;">
-                        <div style="height:8px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
-                            <div id="upload-progress-bar" style="width:0%; height:100%; background:#00d2ff; transition:0.3s;"></div>
-                        </div>
-                        <p id="upload-text" style="font-size:0.8rem; margin-top:5px; color:#00d2ff;">جاري الرفع...</p>
-                    </div>
+            <div class="article-container" style="padding: 25px;">
+                <h3 style="color:var(--p); margin-bottom: 20px;"><i class="fa fa-pen-fancy"></i> إنشاء محتوى جديد</h3>
+                <input type="text" id="p-title" class="inp-field" placeholder="عنوان المقال...">
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <button onclick="document.getElementById('file-inp').click()" class="inp-field" style="margin-bottom:0; cursor:pointer; flex:1; text-align:center;"><i class="fa fa-image"></i> اختر صورة</button>
+                    <input type="file" id="file-inp" hidden onchange="handleImage(this)">
                 </div>
-
-                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:200px; background:rgba(0,0,0,0.2);" placeholder="اكتب المقال هنا..."></div>
-                <br>
-                <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:12px; font-weight:bold; cursor:pointer; color:black;">نشر الآن بسحابة Firebase</button>
+                <div id="p-content" class="inp-field" contenteditable="true" style="min-height:250px; background:rgba(0,0,0,0.3); border-style:dashed;" placeholder="ابدأ الكتابة هنا..."></div>
+                <button onclick="publish()" class="btn-glow">نشر الآن على المنصة</button>
             </div>
         </section>
 
         <section id="sec-settings" class="section">
-            <div class="article-full-card">
-                <h3>إعدادات الحساب</h3><br>
-                <input type="text" id="user-display-name" class="inp-field" readonly>
-                <input type="text" id="user-display-email" class="inp-field" readonly><br>
-                <button onclick="logout()" style="width:100%; padding:10px; background:#ef4444; border:none; border-radius:10px; color:white; cursor:pointer;">تسجيل الخروج</button>
+            <div class="article-container" style="text-align:center;">
+                <img id="u-img-large" style="width:100px; height:100px; border-radius:50%; border:3px solid var(--p); margin-bottom:15px;">
+                <h2 id="u-name">ضيف زمرد</h2>
+                <p id="u-email" style="opacity:0.6; margin-bottom:30px;"></p>
+                <button onclick="logout()" class="btn-glow" style="background:#ef4444; color:white;">تسجيل الخروج</button>
             </div>
         </section>
 
         <section id="sec-contact" class="section">
-            <div class="article-full-card" style="text-align:center;">
-                <h2>براء عمر - Baraa Omar</h2>
-                <p>Email: bo2584668@gmail.com</p><br>
-                <a href="https://wa.me/201273740256" target="_blank" style="display:inline-block; padding:15px 30px; background:#25d366; color:white; border-radius:50px; text-decoration:none; font-weight:bold;"><i class="fa-brands fa-whatsapp"></i> واتساب مباشر</a>
+            <div class="article-container" style="text-align:center;">
+                <h1 style="color:var(--p); font-size: 2.5rem;">براء عمر</h1>
+                <p style="margin: 15px 0; opacity: 0.8;">خبير تطوير حلول الويب والاتصالات</p>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:30px;">
+                    <a href="https://wa.me/201273740256" class="btn-glow" style="background:#25d366; text-decoration:none;"><i class="fa-brands fa-whatsapp"></i> واتساب</a>
+                    <a href="mailto:bo2584668@gmail.com" class="btn-glow" style="background:#ea4335; text-decoration:none;"><i class="fa fa-envelope"></i> إيميل</a>
+                </div>
             </div>
         </section>
     </main>
 
     <div id="article-view">
-        <button onclick="closeArticle()" style="background:none; border:none; color:var(--p); cursor:pointer; font-size:1.2rem; margin-bottom:20px;"><i class="fa fa-arrow-right"></i> العودة للأخبار</button>
-        <div id="full-article-data" class="article-full-card"></div>
-    </div>
-
-    <div id="zomerd-chat-wrapper">
-        <div id="chat-window-box">
-            <div style="background:var(--p); color:black; padding:10px; font-weight:bold; display:flex; justify-content:space-between;">
-                <span>🤖 مساعد براء</span>
-                <i class="fa-solid fa-times" onclick="toggleChat()" style="cursor:pointer"></i>
-            </div>
-            <div id="chat-logs" style="flex:1; padding:10px; overflow-y:auto; font-size:0.9rem;"></div>
-            <div style="padding:10px; display:flex; gap:5px;">
-                <input type="text" id="chat-query" placeholder="اسألني..." style="flex:1; background:#000; color:#fff; border:1px solid var(--border); padding:5px; border-radius:5px;">
-                <button onclick="sendChat()" style="background:var(--p); border:none; padding:5px 10px; border-radius:5px;"><i class="fa-solid fa-paper-plane"></i></button>
-            </div>
+        <div class="article-container">
+            <button onclick="closeArt()" style="background:none; border:none; color:var(--p); cursor:pointer; font-size:1.1rem; margin-bottom:20px;"><i class="fa fa-chevron-right"></i> العودة للرئيسية</button>
+            <div id="art-body"></div>
         </div>
-        <div id="chat-btn-main" onclick="toggleChat()"><i class="fa-solid fa-headset"></i></div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -221,207 +244,137 @@
         const db = firebase.firestore();
         const ADMIN_EMAIL = "bo2584668@gmail.com";
         
-        let user = null;
-        let allPosts = [];
-        let currentCat = 'الكل';
-        let uploadedImageUrl = "";
+        let currentUser = JSON.parse(localStorage.getItem('zomerd_user')) || null;
+        let posts = [];
+        let tempImg = "";
 
-        // تسجيل الدخول
+        // بدء التطبيق
+        function start() {
+            if(currentUser) {
+                document.getElementById('login-link-side').style.display = 'none';
+                document.getElementById('user-pill').style.display = 'flex';
+                document.getElementById('u-img').src = currentUser.picture;
+                document.getElementById('u-img-large').src = currentUser.picture;
+                document.getElementById('u-name').innerText = currentUser.name;
+                document.getElementById('u-email').innerText = currentUser.email;
+                if(currentUser.email === ADMIN_EMAIL) document.getElementById('admin-publish-link').style.display = 'flex';
+            }
+            particlesJS('particles-js', { "particles": { "number": { "value": 40 }, "color": { "value": "#00d2ff" }, "move": { "speed": 1.5 }, "line_linked": { "opacity": 0.2 } } });
+            loadPosts();
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        function updateClock() {
+            document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+        }
+
+        function toggleMenu() {
+            document.getElementById('main-sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('show');
+        }
+
+        function showLogin() { document.getElementById('login-modal').style.display = 'flex'; }
+        function hideLogin() { document.getElementById('login-modal').style.display = 'none'; }
+
         function onGoogleLogin(res) {
-            user = JSON.parse(atob(res.credential.split('.')[1]));
-            localStorage.setItem('zomerd_user', JSON.stringify(user));
-            startApp();
-        }
-
-        function startApp() {
-            const saved = localStorage.getItem('zomerd_user');
-            if(saved) user = JSON.parse(saved);
-            if(!user) return;
-
-            document.getElementById('login-overlay').style.display = 'none';
-            document.getElementById('app-sidebar').style.display = 'flex';
-            document.getElementById('app-main').style.display = 'block';
-            document.getElementById('user-avatar').innerText = user.given_name[0];
-            document.getElementById('user-display-name').value = user.name;
-            document.getElementById('user-display-email').value = user.email;
-
-            if(user.email === ADMIN_EMAIL) document.getElementById('nav-admin-only').style.display = 'flex';
-            
-            particlesJS('particles-js', {
-                "particles": { "number": { "value": 40 }, "color": { "value": "#00d2ff" }, "line_linked": { "enable": true, "color": "#00d2ff" }, "move": { "speed": 1.5 } }
-            });
-
-            animateValue("clients", 0, 1500, 2000);
-            animateValue("projects", 0, 320, 2000);
-            animateValue("experience", 0, 5000, 2000);
-            
-            listenToPosts();
-            setInterval(() => {
-                const now = new Date();
-                document.getElementById('live-clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-            }, 1000);
-        }
-
-        // نظام النشر ورفع الصور
-        async function uploadImageHandler(input) {
-            const file = input.files[0];
-            if (!file) return;
-            document.getElementById('upload-status-container').style.display = 'block';
-            const formData = new FormData();
-            formData.append("image", file);
-            try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d`, { method: "POST", body: formData });
-                const data = await res.json();
-                if (data.success) {
-                    uploadedImageUrl = data.data.url;
-                    document.getElementById('upload-progress-bar').style.width = "100%";
-                    document.getElementById('upload-text').innerText = "✅ تم الرفع بنجاح!";
-                }
-            } catch (e) { alert("فشل الرفع"); }
-        }
-
-        async function publishPost() {
-            const title = document.getElementById('p-title').value;
-            const content = document.getElementById('p-body').innerHTML;
-            const cat = document.getElementById('new-post-category').value;
-            if(!title || !content) return alert("اكمل البيانات");
-            await db.collection("posts").add({
-                title, content, category: cat, image: uploadedImageUrl,
-                author: user.name, likes: 0, views: 0, comments: [],
-                time: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            alert("تم النشر بنجاح!");
+            currentUser = JSON.parse(atob(res.credential.split('.')[1]));
+            localStorage.setItem('zomerd_user', JSON.stringify(currentUser));
             location.reload();
         }
 
-        // جلب الأخبار والفلاتر
-        function listenToPosts() {
+        async function handleImage(input) {
+            const file = input.files[0];
+            const reader = new FormData();
+            reader.append("image", file);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d`, { method: "POST", body: reader });
+            const data = await res.json();
+            tempImg = data.data.url;
+            alert("تم رفع الصورة بنجاح");
+        }
+
+        async function publish() {
+            const t = document.getElementById('p-title').value;
+            const c = document.getElementById('p-content').innerHTML;
+            if(!t || !c) return alert("املا البيانات");
+            await db.collection("posts").add({
+                title: t, content: c, image: tempImg,
+                author: currentUser.name, views: 0, likes: 0,
+                time: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("تم النشر بنجاح");
+            nav('home');
+        }
+
+        function loadPosts() {
             db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
-                allPosts = [];
-                snap.forEach(doc => allPosts.push({id: doc.id, ...doc.data()}));
-                renderPosts();
+                posts = [];
+                let tickers = "";
+                snap.forEach(doc => {
+                    posts.push({id: doc.id, ...doc.data()});
+                    tickers += `<span>⚡ ${doc.data().title}</span>`;
+                });
+                document.getElementById('ticker-content').innerHTML = tickers;
+                runFilter();
             });
         }
 
-        function renderPosts() {
-            const grid = document.getElementById('posts-display-grid');
-            const term = document.getElementById('smart-search').value.toLowerCase();
+        function runFilter() {
+            const grid = document.getElementById('main-grid');
+            const term = document.getElementById('search-input').value.toLowerCase();
             grid.innerHTML = '';
-            
-            const filtered = allPosts.filter(p => {
-                const matchCat = currentCat === 'الكل' || p.category === currentCat;
-                const matchSearch = p.title.toLowerCase().includes(term) || p.author.toLowerCase().includes(term);
-                return matchCat && matchSearch;
-            });
-
-            filtered.forEach(p => {
+            posts.filter(p => p.title.toLowerCase().includes(term)).forEach(p => {
                 grid.innerHTML += `
-                    <div class="post-card" onclick="openArticle('${p.id}')">
-                        <div class="post-badge">${p.category || 'عام'}</div>
-                        <img src="${p.image || 'https://via.placeholder.com/300'}" class="post-img">
+                    <div class="post-card" onclick="openArt('${p.id}')">
+                        <img src="${p.image || 'https://via.placeholder.com/400x200'}" class="post-img">
                         <div class="post-details">
-                            <h3 style="font-size:1.1rem; margin-bottom:10px;">${p.title}</h3>
-                            <div style="display:flex; gap:10px; font-size:0.8rem; color:var(--p);">
-                                <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
-                                <span><i class="fa fa-heart"></i> ${p.likes || 0}</span>
-                                <span><i class="fa fa-comment"></i> ${(p.comments || []).length}</span>
+                            <h3>${p.title}</h3>
+                            <div style="font-size:0.75rem; color:var(--p); display:flex; justify-content:space-between;">
+                                <span><i class="fa fa-eye"></i> ${p.views}</span>
+                                <span><i class="fa fa-clock"></i> ${p.time ? new Date(p.time.seconds*1000).toLocaleDateString() : 'الآن'}</span>
                             </div>
                         </div>
-                        ${user.email === ADMIN_EMAIL ? `<button onclick="event.stopPropagation(); deletePost('${p.id}')" style="position:absolute; bottom:10px; left:10px; background:red; border:none; color:white; padding:5px; border-radius:5px;">حذف</button>` : ''}
                     </div>`;
             });
         }
 
-        function setCategory(cat) {
-            currentCat = cat;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-' + cat).classList.add('active');
-            renderPosts();
-        }
-
-        function runSmartFilter() { renderPosts(); }
-
-        // فتح المقال المنفرد
-        async function openArticle(id) {
-            const doc = await db.collection("posts").doc(id).get();
-            const p = doc.data();
+        async function openArt(id) {
+            if(!currentUser) return showLogin();
+            const p = posts.find(x => x.id === id);
             db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
-
-            const view = document.getElementById('full-article-data');
-            view.innerHTML = `
-                <img src="${p.image}" class="full-img">
-                <h1 style="color:var(--p)">${p.title}</h1>
-                <p style="font-size:0.8rem; opacity:0.6">القسم: ${p.category} | الكاتب: ${p.author}</p>
-                <div style="margin:20px 0; line-height:1.8;">${p.content}</div>
-                <div style="display:flex; gap:15px; border-top:1px solid var(--border); padding-top:15px;">
-                    <button onclick="likePost('${id}')" style="background:none; border:1px solid var(--p); color:white; padding:8px 15px; border-radius:8px; cursor:pointer;"><i class="fa fa-heart"></i> إعجاب (${p.likes || 0})</button>
+            
+            document.getElementById('art-body').innerHTML = `
+                <img src="${p.image}" style="width:100%; border-radius:20px; margin-bottom:25px; border:1px solid var(--border);">
+                <h1 style="color:var(--p); margin-bottom:10px;">${p.title}</h1>
+                <div style="display:flex; gap:15px; margin-bottom:25px; opacity:0.6; font-size:0.8rem;">
+                    <span>بواسطة: ${p.author}</span> | <span>مشاهدات: ${p.views + 1}</span>
                 </div>
-                <div style="margin-top:20px;">
-                    <h4>التعليقات</h4>
-                    <div id="com-list" style="margin-top:10px;">
-                        ${(p.comments || []).map(c => `<div class="comment-item"><b>${c.u}:</b> ${c.t}</div>`).join('')}
-                    </div>
-                    <div style="display:flex; gap:10px; margin-top:10px;">
-                        <input type="text" id="com-inp" class="inp-field" placeholder="اكتب تعليقك..." style="margin-bottom:0">
-                        <button onclick="addComment('${id}')" style="background:var(--p); border:none; padding:10px; border-radius:8px; color:black; font-weight:bold;">إرسال</button>
-                    </div>
+                <div style="line-height:1.9; font-size:1.05rem; color:#e2e8f0;">${p.content}</div>
+                <div style="margin-top:40px; border-top:1px solid var(--border); padding-top:20px;">
+                    <button onclick="like('${id}')" class="btn-glow" style="width:auto; padding:10px 30px;">❤️ أعجبني</button>
                 </div>
             `;
             document.getElementById('article-view').style.display = 'block';
         }
 
-        function closeArticle() { document.getElementById('article-view').style.display = 'none'; }
-
-        async function likePost(id) {
+        async function like(id) {
             await db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) });
-            openArticle(id);
+            alert("شكراً لتفاعلك!");
         }
 
-        async function addComment(id) {
-            const txt = document.getElementById('com-inp').value;
-            if(!txt) return;
-            await db.collection("posts").doc(id).update({
-                comments: firebase.firestore.FieldValue.arrayUnion({ u: user.name, t: txt })
-            });
-            openArticle(id);
-        }
+        function closeArt() { document.getElementById('article-view').style.display = 'none'; }
 
-        async function deletePost(id) {
-            if(confirm("هل أنت متأكد من الحذف؟")) {
-                await db.collection("posts").doc(id).delete();
-            }
-        }
-
-        // أدوات مساعدة
         function nav(id, e) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
             if(e) e.currentTarget.classList.add('active');
-            document.getElementById('sec-title').innerText = (id==='feed'?'الأخبار':id==='home'?'الرئيسية':'زمرد نت');
-        }
-
-        function animateValue(id, start, end, duration) {
-            let obj = document.getElementById(id);
-            let current = start;
-            let range = end - start;
-            let increment = end > start ? 10 : -10;
-            let stepTime = Math.abs(Math.floor(duration / (range / 10)));
-            let timer = setInterval(() => {
-                current += increment;
-                obj.innerHTML = current;
-                if (current >= end) { obj.innerHTML = end; clearInterval(timer); }
-            }, stepTime);
-        }
-
-        function toggleChat() {
-            const box = document.getElementById('chat-window-box');
-            box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
+            document.getElementById('sec-title').innerText = e ? e.currentTarget.innerText : 'الرئيسية';
+            if(window.innerWidth < 768) toggleMenu();
         }
 
         function logout() { localStorage.clear(); location.reload(); }
-
-        window.onload = startApp;
+        window.onload = start;
     </script>
 </body>
 </html>
