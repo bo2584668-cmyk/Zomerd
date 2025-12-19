@@ -791,6 +791,67 @@ async function openFullPost(postId) {
         document.getElementById('app-main').scrollTop = 0;
     }
 }
+  // 1. تعريف إيميل المسؤول
+const ADMIN_EMAIL = "Bo2584668@gmail.com";
+
+// 2. دالة حذف المنشور من قاعدة البيانات
+async function deletePost(postId) {
+    const currentUser = firebase.auth().currentUser;
+
+    // التحقق من الصلاحية قبل البدء
+    if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
+        alert("عذراً، هذه الخاصية للمسؤول فقط!");
+        return;
+    }
+
+    if (confirm("⚠️ هل أنت متأكد من حذف هذا المنشور نهائياً؟ لا يمكن التراجع عن هذه الخطوة.")) {
+        try {
+            await db.collection("posts").doc(postId).delete();
+            alert("✅ تم حذف المنشور بنجاح.");
+            
+            // تحديث الواجهة: إذا كان المقال مفتوحاً، نغلقه ونعود للرئيسية
+            if (document.getElementById('full-article-view') && 
+                document.getElementById('full-article-view').style.display === 'block') {
+                closeArticle(); // الدالة التي تغلق عرض المقال وتعود للرئيسية
+            }
+        } catch (error) {
+            console.error("خطأ أثناء الحذف:", error);
+            alert("❌ فشل الحذف: " + error.message);
+        }
+    }
+}
+
+// 3. تعديل دالة عرض المنشورات لإضافة زر الحذف (تعديل داخل الـ Loop)
+function renderPosts(posts) {
+    const grid = document.getElementById('posts-display-grid');
+    grid.innerHTML = '';
+    const currentUser = firebase.auth().currentUser;
+
+    posts.forEach(p => {
+        // التحقق إذا كان المستخدم الحالي هو الأدمن لإظهار الزر
+        let adminBtn = "";
+        if (currentUser && currentUser.email === ADMIN_EMAIL) {
+            adminBtn = `
+                <button class="delete-admin-btn" onclick="event.stopPropagation(); deletePost('${p.id}')">
+                    <i class="fa-solid fa-trash"></i> حذف
+                </button>
+            `;
+        }
+
+        grid.innerHTML += `
+            <div class="post-card" onclick="viewArticle('${p.id}')">
+                ${adminBtn}
+                <div class="post-badge">${p.category || 'عام'}</div>
+                <img src="${p.image}" class="post-img" loading="lazy">
+                <div class="post-details">
+                    <h3>${p.title}</h3>
+                    <div class="post-meta-mini">
+                        <span><i class="fa-solid fa-user"></i> ${p.author}</span>
+                    </div>
+                </div>
+            </div>`;
+    });
+        }
     </script>
 </body>
 </html>
