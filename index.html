@@ -1,136 +1,148 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-    <title>ZOMERD OS | النسخة النهائية</title>
+    <title>زمرد نت | براء عمر</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 
     <style>
         :root {
-            --p: #00d2ff; --bg: #010409; --card: rgba(13, 17, 23, 0.98);
-            --txt: #e6edf3; --border: rgba(0, 210, 255, 0.2);
-            --success: #238636; --danger: #da3633; --warning: #d29922;
+            --p: #00d2ff; --bg: #0b0f19; --card: #151c2c; --txt: #f1f5f9; --dim: #94a3b8; --border: rgba(255,255,255,0.05);
+            --main-glow: rgba(0, 210, 255, 0.6);
         }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; }
-        body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; }
-        #particles-js { position: fixed; inset: 0; z-index: -1; }
-
-        /* Login */
-        #login-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; }
-
-        /* Navigation */
-        aside { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1001; transition: 0.3s; }
-        @media (max-width: 768px) { aside { position: fixed; right: -280px; height: 100%; top: 0; } aside.open { right: 0; } }
         
-        .nav-link { padding: 12px 20px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: #8b949e; margin: 5px 15px; }
-        .nav-link.active { background: var(--p); color: #000; font-weight: bold; box-shadow: 0 0 15px rgba(0, 210, 255, 0.4); }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; transition: 0.3s; }
+        body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; width: 100vw; }
 
-        main { flex: 1; overflow-y: auto; position: relative; }
-        header { height: 65px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: rgba(1, 4, 9, 0.9); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
-
-        .section { padding: 25px; display: none; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeInUp 0.4s ease; }
-        .section.active { display: block; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* UI Elements */
-        .card { background: var(--card); border-radius: 18px; border: 1px solid var(--border); padding: 15px; margin-bottom: 20px; }
-        .inp-field { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: #0d1117; color: #fff; margin-bottom: 15px; outline: none; }
-        .btn-p { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; background: var(--p); color: #000; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-p:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        /* Progress Bar */
-        .prog-container { width: 100%; background: #000; height: 8px; border-radius: 4px; margin-bottom: 15px; display: none; overflow: hidden; border: 1px solid var(--border); }
-        .prog-bar { height: 100%; background: var(--p); width: 0%; transition: 0.3s; }
-
-        /* Chat */
-        #chat-box { height: 350px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
+        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
         
-        .post-card-img { width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:10px; }
-        #article-modal { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 20px; }
+        /* شريط الأخبار المتحرك */
+        .breaking-news { background: rgba(0, 210, 255, 0.1); border-bottom: 1px solid var(--p); height: 35px; display: flex; align-items: center; overflow: hidden; position: relative; z-index: 100; }
+        .breaking-label { background: var(--p); color: #000; padding: 0 15px; font-weight: bold; font-size: 0.8rem; height: 100%; display: flex; align-items: center; z-index: 2; }
+        .ticker-wrapper { flex: 1; overflow: hidden; }
+        .ticker { display: inline-block; white-space: nowrap; animation: ticker 30s linear infinite; }
+        .ticker span { margin-right: 50px; color: var(--p); font-size: 0.85rem; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        /* القائمة الجانبية */
+        aside { width: 260px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; transition: 0.4s; }
+        
+        /* تعديلات الموبايل (القائمة مخفية) */
+        @media (max-width: 768px) {
+            aside { position: fixed; right: -260px; height: 100%; top: 0; }
+            aside.open { right: 0; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+            main { width: 100vw !important; }
+            .menu-btn { display: block !important; }
+        }
+
+        .menu-btn { display: none; font-size: 1.5rem; color: var(--p); cursor: pointer; background: none; border: none; }
+        .logo-side { padding: 25px; text-align: center; color: var(--p); border-bottom: 1px solid var(--border); }
+        nav { flex: 1; padding: 10px; }
+        .nav-link { padding: 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--dim); margin-bottom: 5px; text-decoration: none; }
+        .nav-link.active { background: var(--p); color: black; font-weight: bold; }
+
+        main { flex: 1; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
+        header { height: 60px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+
+        .section { padding: 20px; display: none; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .section.active { display: block; animation: fadeIn 0.4s; }
+
+        /* نظام تسجيل الدخول */
+        #login-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .login-box { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--p); text-align: center; max-width: 320px; width: 90%; }
+
+        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 15px; }
+        @media (min-width: 768px) { .posts-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; } }
+        
+        .post-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; }
+        .post-img { width: 100%; height: 120px; object-fit: cover; }
+        .post-details { padding: 10px; }
+        .post-details h3 { font-size: 0.9rem; color: #fff; }
+
+        .inp-field { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.3); color: white; margin-bottom: 10px; outline: none; }
+        #article-view { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 15px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
+    <div id="particles-js"></div>
 
-    <div id="login-overlay">
-        <h1 style="color:var(--p); font-size: 3rem; font-weight: 900;">ZOMERD OS</h1>
-        <p style="margin-bottom: 30px; opacity: 0.6;">نظام الإدارة الفائق | براء عمر</p>
-        <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="handleLogin"></div>
-        <div class="g_id_signin" data-type="standard" data-theme="filled_blue"></div>
+    <div id="login-modal">
+        <div class="login-box">
+            <h2 style="color:var(--p)">دخول المحترفين</h2>
+            <p style="font-size: 0.8rem; margin: 15px 0; opacity: 0.8;">سجل دخولك لمشاهدة المقالات كاملة والتفاعل</p>
+            <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="onGoogleLogin"></div>
+            <div class="g_id_signin" data-type="standard"></div>
+            <button onclick="hideLogin()" style="margin-top: 20px; background: none; border: 1px solid var(--border); color: white; padding: 5px 15px; border-radius: 5px;">إغلاق</button>
+        </div>
     </div>
 
-    <aside id="sidebar">
-        <div style="padding: 30px; text-align: center; color:var(--p)"><h2>ZOMERD</h2></div>
+    <aside id="main-aside">
+        <div class="logo-side"><h2>زمرد نت</h2></div>
         <nav>
-            <div class="nav-link active" onclick="nav('home', event)"><i class="fa fa-compass"></i> الاستكشاف</div>
-            <div id="pub-nav" class="nav-link" style="display:none" onclick="nav('publish', event)"><i class="fa fa-plus-circle"></i> نشر مقال</div>
-            <div id="adm-nav" class="nav-link" style="display:none; color:var(--warning)" onclick="nav('admin', event)"><i class="fa fa-shield-halved"></i> الإدارة</div>
-            <div class="nav-link" onclick="nav('chat', event)"><i class="fa fa-comments"></i> الدردشة</div>
-            <div class="nav-link" onclick="nav('profile', event)"><i class="fa fa-user-circle"></i> حسابي</div>
+            <div class="nav-link active" onclick="nav('home', event)"><i class="fa-solid fa-house"></i> الرئيسية</div>
+            <div id="nav-admin-only" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa-solid fa-plus-circle"></i> نشر مقال</div>
+            <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-user-cog"></i> الإعدادات</div>
+            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-comment-dots"></i> تواصل</div>
+            <div id="btn-login-aside" class="nav-link" onclick="showLogin()" style="color:var(--p)"><i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول</div>
         </nav>
     </aside>
 
     <main>
+        <div class="breaking-news">
+            <div class="ticker-wrapper"><div class="ticker" id="breaking-ticker"><span>جاري جلب آخر الأخبار...</span></div></div>
+            <div class="breaking-label">عاجل</div>
+        </div>
+
         <header>
-            <i class="fa fa-bars" onclick="document.getElementById('sidebar').classList.toggle('open')" style="cursor:pointer;"></i>
-            <img id="u-img" style="width:38px; border-radius:50%; border:2px solid var(--p)">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+                <div id="sec-title" style="font-weight:900; color:var(--p)">الرئيسية</div>
+            </div>
+            <div id="header-user" style="display:none; align-items:center; gap:10px;">
+                <span id="live-clock" style="font-family:monospace; color:var(--p); font-size:0.8rem;">00:00</span>
+                <div id="user-avatar" style="width:30px; height:30px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.8rem;">?</div>
+            </div>
         </header>
 
         <section id="sec-home" class="section active">
-            <h3 style="margin-bottom:20px;"><i class="fa fa-bolt" style="color:var(--warning)"></i> الاستكشاف</h3>
-            <div id="post-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:20px;"></div>
+            <input type="text" id="smart-search" oninput="renderPosts()" placeholder="ابحث في الأخبار..." class="inp-field">
+            <div id="posts-display-grid" class="posts-grid"></div>
         </section>
 
-        <section id="sec-publish" class="section">
-            <div class="card">
-                <h3>✍️ نشر محتوى</h3><br>
-                <input type="text" id="p-title" class="inp-field" placeholder="عنوان المقال...">
-                <div class="prog-container" id="up-prog"><div class="prog-bar" id="up-bar"></div></div>
-                <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    <button onclick="document.getElementById('img-file').click()" class="btn-p" style="flex:1; background:rgba(255,255,255,0.05); color:#fff; border:1px solid var(--border);">
-                        <i class="fa fa-image"></i> اختر صورة
-                    </button>
-                    <input type="file" id="img-file" hidden onchange="uploadImg(this)" accept="image/*">
-                </div>
-                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:300px; border:1px dashed var(--p)" placeholder="اكتب هنا..."></div>
-                <button id="submit-btn" onclick="submitPost()" class="btn-p">نشر الآن 🚀</button>
+        <section id="sec-write" class="section">
+            <div style="max-width:800px; margin:auto; background:var(--card); padding:20px; border-radius:15px; border:1px solid var(--border);">
+                <h3 style="color:var(--p)">✍️ لوحة تحكم الأدمن</h3><br>
+                <input type="text" id="p-title" class="inp-field" placeholder="عنوان الخبر...">
+                <input type="file" id="img-upload" class="inp-field" onchange="uploadImageHandler(this)">
+                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:200px; background:rgba(0,0,0,0.2);" placeholder="اكتب التفاصيل هنا..."></div>
+                <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:10px; font-weight:bold; cursor:pointer;">نشر الخبر الآن</button>
             </div>
         </section>
 
-        <section id="sec-admin" class="section">
-            <h3 style="color:var(--p)">🎖️ طلبات الترقية</h3><br>
-            <div id="admin-reqs"></div>
-        </section>
-
-        <section id="sec-chat" class="section">
-            <div class="card">
-                <h3>الدردشة العامة 💬</h3>
-                <div id="chat-box"></div>
-                <div style="display:flex; gap:10px;">
-                    <input type="text" id="chat-inp" class="inp-field" style="margin:0" placeholder="رسالتك...">
-                    <button onclick="sendChat()" class="btn-p" style="width:auto;"><i class="fa fa-paper-plane"></i></button>
-                </div>
+        <section id="sec-settings" class="section">
+            <div style="text-align:center; background:var(--card); padding:30px; border-radius:15px; border:1px solid var(--border);">
+                <h3 id="profile-name">زائر</h3>
+                <p id="profile-email" style="opacity:0.6; margin-bottom:20px;"></p>
+                <button onclick="logout()" style="background:#ef4444; border:none; padding:10px 20px; color:white; border-radius:8px; cursor:pointer;">تسجيل الخروج</button>
             </div>
         </section>
 
-        <section id="sec-profile" class="section">
-            <div class="card" style="text-align:center;">
-                <img id="prof-img" style="width:110px; border-radius:50%; border:3px solid var(--p)">
-                <h2 id="prof-name" style="margin-top:15px;"></h2>
-                <p id="prof-role" style="color:var(--p); margin-bottom:20px;"></p>
-                <button id="req-pub-btn" class="btn-p" onclick="requestPub()">طلب رتبة ناشر 🎖️</button><br>
-                <button class="btn-p" style="background:var(--danger); color:white" onclick="logout()">خروج</button>
+        <section id="sec-contact" class="section">
+            <div style="text-align:center; background:var(--card); padding:30px; border-radius:15px; border:1px solid var(--border);">
+                <h2>براء عمر</h2>
+                <p>للمقاولات والاتصالات والبرمجة</p><br>
+                <a href="https://wa.me/201273740256" style="display:inline-block; padding:10px 25px; background:#25d366; color:white; border-radius:50px; text-decoration:none;"><i class="fa-brands fa-whatsapp"></i> واتساب مباشر</a>
             </div>
         </section>
     </main>
 
-    <div id="article-modal">
-        <div style="max-width:800px; margin:auto; background:var(--card); padding:25px; border-radius:20px; border:1px solid var(--border);">
-            <button onclick="document.getElementById('article-modal').style.display='none'" class="btn-p" style="width:auto; margin-bottom:20px;">رجوع</button>
-            <div id="art-view"></div>
-        </div>
+    <div id="article-view">
+        <button onclick="closeArticle()" style="color:var(--p); background:none; border:none; cursor:pointer; font-size:1.1rem; margin-bottom:15px;"><i class="fa fa-arrow-right"></i> عودة</button>
+        <div id="full-article-data" style="max-width:800px; margin:auto; background:var(--card); padding:20px; border-radius:15px; border:1px solid var(--border);"></div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -149,143 +161,117 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const ADM = "bo2584668@gmail.com";
+        const ADMIN_EMAIL = "bo2584668@gmail.com";
         
-        let user = JSON.parse(localStorage.getItem('zomerd_user'));
-        let currentImg = "";
+        let user = JSON.parse(localStorage.getItem('zomerd_user')) || null;
+        let allPosts = [];
+        let uploadedImageUrl = "";
 
-        function handleLogin(res) {
-            const data = JSON.parse(atob(res.credential.split('.')[1]));
-            user = { name: data.name, email: data.email, picture: data.picture };
+        function toggleMenu() { document.getElementById('main-aside').classList.toggle('open'); }
+        function showLogin() { document.getElementById('login-modal').style.display = 'flex'; }
+        function hideLogin() { document.getElementById('login-modal').style.display = 'none'; }
+
+        function onGoogleLogin(res) {
+            user = JSON.parse(atob(res.credential.split('.')[1]));
             localStorage.setItem('zomerd_user', JSON.stringify(user));
             location.reload();
         }
 
-        async function init() {
+        function initApp() {
             if(user) {
-                document.getElementById('login-overlay').style.display = 'none';
-                document.getElementById('u-img').src = user.picture;
-                document.getElementById('prof-img').src = user.picture;
-                document.getElementById('prof-name').innerText = user.name;
-                
-                const uDoc = await db.collection("users").doc(user.email).get();
-                let role = 'user';
-                if(uDoc.exists) role = uDoc.data().role;
-                else await db.collection("users").doc(user.email).set({name:user.name, role:'user'});
-                
-                document.getElementById('prof-role').innerText = (user.email === ADM) ? "المالك" : "الرتبة: " + role;
-                if(role === 'publisher' || user.email === ADM) document.getElementById('pub-nav').style.display = 'flex';
-                if(user.email === ADM) document.getElementById('adm-nav').style.display = 'flex';
-
-                listenChat();
-                if(user.email === ADM) listenAdmin();
+                document.getElementById('btn-login-aside').style.display = 'none';
+                document.getElementById('header-user').style.display = 'flex';
+                document.getElementById('user-avatar').innerText = user.given_name[0];
+                document.getElementById('profile-name').innerText = user.name;
+                document.getElementById('profile-email').innerText = user.email;
+                if(user.email === ADMIN_EMAIL) document.getElementById('nav-admin-only').style.display = 'flex';
             }
-            particlesJS('particles-js', {"particles":{"number":{"value":40},"color":{"value":"#00d2ff"},"move":{"speed":1}}});
-            loadPosts();
+            particlesJS('particles-js', { "particles": { "number": { "value": 30 }, "color": { "value": "#00d2ff" }, "move": { "speed": 1 } } });
+            listenToPosts();
+            setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}); }, 1000);
         }
 
-        async function uploadImg(el) {
-            const btn = document.getElementById('submit-btn');
-            const bar = document.getElementById('up-bar');
-            const prog = document.getElementById('up-prog');
-            if(!el.files[0]) return;
-            prog.style.display = 'block'; btn.disabled = true; bar.style.width = '40%';
-            const fd = new FormData(); fd.append("image", el.files[0]);
-            try {
-                const res = await fetch("https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d", {method:"POST", body:fd});
-                const d = await res.json();
-                currentImg = d.data.url;
-                bar.style.width = '100%';
-                alert("تم رفع الصورة! ✅");
-            } catch(e) { alert("خطأ في الرفع"); }
-            btn.disabled = false;
-            setTimeout(() => prog.style.display='none', 1000);
+        async function uploadImageHandler(input) {
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append("image", file);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d`, { method: "POST", body: formData });
+            const data = await res.json();
+            uploadedImageUrl = data.data.url;
+            alert("تم رفع الصورة بنجاح");
         }
 
-        async function submitPost() {
-            const t = document.getElementById('p-title').value, b = document.getElementById('p-body').innerHTML;
-            if(!t || !currentImg) return alert("أكمل البيانات");
+        async function publishPost() {
+            const title = document.getElementById('p-title').value;
+            const content = document.getElementById('p-body').innerHTML;
+            if(!title || !content || user.email !== ADMIN_EMAIL) return;
             await db.collection("posts").add({
-                title: t, content: b, image: currentImg, author: user.email, authorName: user.name,
-                status: 'approved', time: Date.now()
+                title, content, image: uploadedImageUrl,
+                author: user.name, likes: 0, views: 0,
+                time: firebase.firestore.FieldValue.serverTimestamp()
             });
-            alert("تم النشر!"); nav('home');
+            alert("تم النشر بنجاح يا براء!");
+            nav('home');
         }
 
-        function loadPosts() {
-            // حل مشكلة عدم ظهور المنشورات: الجلب بدون Filter ثم التصفية والترتيب برمجياً
-            db.collection("posts").onSnapshot(snap => {
-                const grid = document.getElementById('post-grid');
-                let all = [];
+        function listenToPosts() {
+            db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
+                allPosts = [];
+                let tickerContent = "";
                 snap.forEach(doc => {
-                    if(doc.data().status === 'approved') all.push({id: doc.id, ...doc.data()});
+                    allPosts.push({id: doc.id, ...doc.data()});
+                    tickerContent += `<span>🔥 ${doc.data().title}</span>`;
                 });
-                
-                // ترتيب يدوي من الأحدث للأقدم
-                all.sort((a,b) => b.time - a.time);
-
-                grid.innerHTML = all.map(p => `
-                    <div class="card" onclick="openArt('${p.id}')" style="cursor:pointer">
-                        <img src="${p.image}" class="post-card-img">
-                        <h4>${p.title}</h4>
-                        <small>بواسطة: ${p.authorName}</small>
-                    </div>`).join('');
+                document.getElementById('breaking-ticker').innerHTML = tickerContent;
+                renderPosts();
             });
         }
 
-        async function openArt(id) {
-            const doc = await db.collection("posts").doc(id).get();
-            const p = doc.data();
-            document.getElementById('art-view').innerHTML = `
-                <img src="${p.image}" style="width:100%; border-radius:15px; margin-bottom:20px;">
-                <h1>${p.title}</h1>
-                <div style="margin-top:20px; line-height:1.8;">${p.content}</div>`;
-            document.getElementById('article-modal').style.display='block';
-        }
-
-        function listenAdmin() {
-            db.collection("requests").onSnapshot(snap => {
-                document.getElementById('admin-reqs').innerHTML = snap.docs.map(doc => `
-                    <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>${doc.data().name}</span>
-                        <button onclick="grantPub('${doc.id}')" class="btn-p" style="width:auto; background:var(--success)">ترقية</button>
-                    </div>`).join('');
+        function renderPosts() {
+            const grid = document.getElementById('posts-display-grid');
+            const term = document.getElementById('smart-search').value.toLowerCase();
+            grid.innerHTML = '';
+            allPosts.filter(p => p.title.toLowerCase().includes(term)).forEach(p => {
+                grid.innerHTML += `
+                    <div class="post-card" onclick="openArticle('${p.id}')">
+                        <img src="${p.image || 'https://via.placeholder.com/300'}" class="post-img">
+                        <div class="post-details">
+                            <h3>${p.title}</h3>
+                            <div style="font-size:0.7rem; color:var(--p); margin-top:5px;">
+                                <i class="fa fa-eye"></i> ${p.views || 0} | <i class="fa fa-heart"></i> ${p.likes || 0}
+                            </div>
+                        </div>
+                    </div>`;
             });
         }
 
-        async function grantPub(email) {
-            await db.collection("users").doc(email).update({role: 'publisher'});
-            await db.collection("requests").doc(email).delete();
-            alert("تمت الترقية");
+        async function openArticle(id) {
+            if(!user) { showLogin(); return; }
+            const p = allPosts.find(x => x.id === id);
+            db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
+            document.getElementById('full-article-data').innerHTML = `
+                <img src="${p.image}" style="width:100%; border-radius:10px; margin-bottom:15px;">
+                <h2 style="color:var(--p)">${p.title}</h2>
+                <p style="font-size:0.8rem; opacity:0.6; margin:10px 0;">بواسطة: ${p.author}</p>
+                <div style="line-height:1.7; margin:20px 0; border-top:1px solid var(--border); padding-top:15px;">${p.content}</div>
+                <button onclick="likePost('${id}')" style="background:var(--p); border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">❤️ أعجبني</button>
+            `;
+            document.getElementById('article-view').style.display = 'block';
         }
 
-        async function requestPub() {
-            await db.collection("requests").doc(user.email).set({name: user.name});
-            alert("تم إرسال الطلب");
-        }
-
-        function listenChat() {
-            db.collection("chat").orderBy("time","desc").limit(30).onSnapshot(snap => {
-                const box = document.getElementById('chat-box');
-                box.innerHTML = snap.docs.map(doc => `<div><b>${doc.data().name}:</b> ${doc.data().text}</div>`).reverse().join('');
-                box.scrollTop = box.scrollHeight;
-            });
-        }
-
-        async function sendChat() {
-            const inp = document.getElementById('chat-inp'); if(!inp.value) return;
-            await db.collection("chat").add({name: user.name, text: inp.value, time: Date.now()});
-            inp.value = '';
-        }
-
+        async function likePost(id) { await db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) }); }
+        function closeArticle() { document.getElementById('article-view').style.display = 'none'; }
+        
         function nav(id, e) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
-            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+            if(e) e.currentTarget.classList.add('active');
+            if(window.innerWidth <= 768) toggleMenu();
         }
-
+        
         function logout() { localStorage.clear(); location.reload(); }
-        window.onload = init;
+        window.onload = initApp;
     </script>
 </body>
 </html>
