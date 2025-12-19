@@ -104,8 +104,33 @@
             </div>
             <div id="header-user" style="display:none; align-items:center; gap:10px;">
                 <span id="live-clock" style="font-family:monospace; color:var(--p); font-size:0.8rem;">00:00</span>
-                <div id="user-avatar" style="width:30px; height:30px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.8rem;">?</div>
+                <div id="user-avatar" style="width:30px; height:30px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.8rem;">?</div> 
+     // توليد زر الحذف المتطور للأدمن فقط
+let adminTools = "";
+if (user && user.email === ADMIN_EMAIL) {
+    adminTools = `
+        <div style="margin-top: 25px; padding-top: 20px; border-top: 2px dashed rgba(239, 68, 68, 0.2);">
+            <p style="color: #ef4444; font-size: 0.8rem; margin-bottom: 10px; font-weight: bold;">
+                <i class="fas fa-user-shield"></i> لوحة تحكم الأدمن:
+            </p>
+            <button onclick="deletePost('${id}')" 
+                style="width: 100%; background: linear-gradient(45deg, #ff416c, #ff4b2b); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3); display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <i class="fas fa-trash-alt"></i> حذف هذا المنشور نهائياً
+            </button>
+        </div>
+    `;
+}
+
+// أضف المتغير adminTools في نهاية محتوى المقال
+document.getElementById('full-article-data').innerHTML = `
+    <img src="${p.image}" style="width:100%; border-radius:15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+    <h1 style="margin:20px 0; color:var(--p); font-size: 1.5rem;">${p.title}</h1>
+    <div style="line-height:1.8; color:#cbd5e1;">${p.content}</div>
+    ${adminTools}
+`;
+            
             </div>
+        
         </header>
 
         <section id="sec-home" class="section active">
@@ -258,36 +283,45 @@
             `;
             document.getElementById('article-view').style.display = 'block';
         }
-        // فحص هل المستخدم هو براء عمر لإظهار زر الحذف
-let deleteButton = "";
-if (user && user.email === ADMIN_EMAIL) {
-    deleteButton = `
-        <button onclick="deletePost('${id}')" style="background:#ef4444; color:white; border:none; padding:12px; border-radius:10px; width:100%; font-weight:bold; cursor:pointer; margin-top:15px;">
-            <i class="fa fa-trash"></i> حذف المقال نهائياً
-        </button>
-    `;
-}
-
-// ثم أضف متغير deleteButton داخل الـ innerHTML في المكان الذي تريده
-document.getElementById('full-article-data').innerHTML = `
-    ${deleteButton}
-`;
-        }
-        async function deletePost(postId) {
-    // التأكد أن المستخدم هو براء عمر (الأدمن)
-    if (user && user.email === ADMIN_EMAIL) {
-        if (confirm("هل أنت متأكد من حذف هذا المقال نهائياً؟")) {
-            try {
-                await db.collection("posts").doc(postId).delete();
-                alert("تم حذف المقال بنجاح");
-                closeArticle(); // لإغلاق نافذة العرض بعد الحذف
-            } catch (error) {
-                alert("حدث خطأ أثناء الحذف: " + error.message);
-            }
-        }
-    } else {
-        alert("عذراً، هذه الصلاحية للمدير فقط!");
+async function deletePost(postId) {
+    // 1. حماية أمنية: التأكد من هوية براء عمر
+    if (!user || user.email !== ADMIN_EMAIL) {
+        alert("⚠️ صلاحية غير مصرح بها!");
+        return;
     }
+
+    // 2. طلب تأكيد بشكل احترافي
+    if (!confirm("هل أنت متأكد من حذف هذا المقال نهائياً من قاعدة البيانات؟")) return;
+
+    try {
+        // 3. تأثير بصري: تغيير شكل الزر أثناء الحذف
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ الحذف...';
+        btn.disabled = true;
+
+        // 4. الحذف من Firebase
+        await db.collection("posts").doc(postId).delete();
+
+        // 5. نجاح الحذف
+        alert("✅ تم حذف المنشور بنجاح");
+        
+        // 6. تحديث الواجهة فوراً دون إعادة تحميل الصفحة
+        closeArticle(); // إغلاق المقال
+        
+        // إزالة بطاقة المنشور من الشبكة الرئيسية بتأثير اختفاء
+        const postCard = document.querySelector(`[onclick="openArticle('${postId}')"]`);
+        if (postCard) {
+            postCard.style.transform = "scale(0)";
+            postCard.style.opacity = "0";
+            setTimeout(() => postCard.remove(), 300);
+        }
+
+    } catch (error) {
+        console.error("Error:", error);
+        alert("❌ فشل الحذف: " + error.message);
+    }
+}
         }
 
         async function likePost(id) { await db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) }); }
