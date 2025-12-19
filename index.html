@@ -1,314 +1,424 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="google-site-verification" content="l9QWU9EfN7iGme5VjBMjdLUvQlOYRBitRQMJ6pBvJQE" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>ZOMERD PLATFORM | Baraa Omar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>زمرد نت | براء عمر</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
     <style>
         :root {
-            --p: #00d2ff; --bg: #010409; --card: rgba(13, 17, 23, 0.95);
-            --txt: #e6edf3; --border: rgba(48, 54, 61, 0.8);
-            --accent: #238636;
+            --p: #00d2ff; --bg: #0b0f19; --card: #151c2c; --txt: #f1f5f9; --dim: #94a3b8; --border: rgba(255,255,255,0.05);
+            --main-glow: rgba(0, 210, 255, 0.6);
         }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; }
+        .theme-light { --bg: #f8fafc; --card: #ffffff; --txt: #1e293b; --dim: #64748b; --border: rgba(0,0,0,0.1); }
+        
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; transition: 0.3s; scroll-behavior: smooth; }
         body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; }
+
+        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; background: var(--bg); }
+
+        #login-overlay { position: fixed; inset: 0; background: #0b0f19; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+
+        aside { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: none; flex-direction: column; z-index: 100; transition: 0.4s; }
         
-        /* Layout */
-        aside { width: 280px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1001; }
-        @media (max-width: 768px) { aside { position: fixed; right: -280px; height: 100%; transition: 0.3s; } aside.open { right: 0; } }
+        @media (max-width: 768px) {
+            body { flex-direction: column; height: auto; overflow-y: auto; }
+            aside { width: 100% !important; height: 65px !important; position: fixed; bottom: 0; flex-direction: row !important; display: flex !important; justify-content: space-around; border-top: 1px solid var(--border); border-left: none; }
+            main { padding-bottom: 70px; width: 100% !important; }
+            .nav-link { flex-direction: column; font-size: 0.6rem !important; flex: 1; justify-content: center; margin-bottom: 0 !important; padding: 5px !important; }
+            .logo-side, header { display: none !important; }
+        }
+
+        .logo-side { padding: 30px; text-align: center; color: var(--p); border-bottom: 1px solid var(--border); }
+        nav { flex: 1; padding: 20px 10px; }
+        .nav-link { padding: 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--dim); margin-bottom: 5px; text-decoration: none; }
+        .nav-link.active { background: var(--p); color: black; font-weight: bold; }
+
+        main { flex: 1; overflow-y: auto; background: transparent; display: none; }
+        header { height: 70px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--card); position: sticky; top: 0; z-index: 10; }
+
+        .section { padding: 20px; display: none; max-width: 1000px; margin: 0 auto; }
+        .section.active { display: block; animation: fadeIn 0.5s ease; }
+
+        .hero { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .hero h1 { font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900; background: linear-gradient(to bottom, #fff, var(--p)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        main { flex: 1; overflow-y: auto; position: relative; }
-        .section { padding: 25px; display: none; max-width: 1100px; margin: 0 auto; }
-        .section.active { display: block; animation: fadeIn 0.4s; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 100%; margin-top: 40px; }
+        .stat-card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
+        .stat-card h2 { font-size: 3rem; color: #fff; }
 
-        /* Unified Image Style */
-        .post-img-container { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-bottom: 1px solid var(--border); }
-        .post-img-container img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Grid & Cards */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; transition: 0.3s; }
-        .card:hover { border-color: var(--p); transform: translateY(-3px); }
-
-        /* Live Chat UI */
-        #chat-area { height: 300px; overflow-y: auto; background: #0d1117; border: 1px solid var(--border); border-radius: 10px; padding: 15px; margin-bottom: 10px; }
-        .msg { margin-bottom: 10px; padding: 8px 12px; border-radius: 10px; max-width: 80%; font-size: 0.9rem; }
-        .msg.sent { background: var(--p); color: #000; align-self: flex-end; margin-right: auto; }
-        .msg.received { background: #30363d; color: #fff; }
-
-        /* Buttons & Inputs */
-        .btn-p { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; background: var(--p); color: #000; margin-top: 10px; }
-        .btn-p:disabled { background: #21262d; color: #8b949e; cursor: not-allowed; }
-        .inp-field { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #0d1117; color: #fff; margin-bottom: 10px; outline: none; }
+        .inp-field { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.3); color: white; margin-bottom: 10px; outline: none; }
         
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .notif-badge { background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; position: absolute; top: 0; right: 0; }
+        /* تصميم البطاقات المطور */
+        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
+        .post-card { background: var(--card); border-radius: 15px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; position: relative; transition: 0.3s; display: flex; flex-direction: column; }
+        .post-card:hover { transform: translateY(-5px); border-color: var(--p); box-shadow: 0 10px 20px rgba(0,210,255,0.1); }
+        .post-img { width: 100%; height: 180px; object-fit: cover; }
+        .post-badge { position: absolute; top: 10px; right: 10px; background: var(--p); color: #000; padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; z-index: 2; }
+        .post-details { padding: 15px; flex: 1; }
+        
+        .delete-btn-admin { position: absolute; top: 10px; left: 10px; background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 8px; cursor: pointer; z-index: 3; font-size: 0.7rem; }
+
+        .filter-btn { padding: 8px 18px; border-radius: 10px; background: var(--card); color: #fff; border: 1px solid var(--border); cursor: pointer; white-space: nowrap; }
+        .filter-btn.active { background: var(--p); color: #000; font-weight: bold; }
+
+        #zomerd-chat-wrapper { position: fixed; bottom: 80px; left: 20px; z-index: 1000; }
+        #chat-window-box { width: 300px; height: 400px; background: var(--card); border: 1px solid var(--p); border-radius: 15px; display: none; flex-direction: column; margin-bottom: 10px; overflow: hidden; }
+        #chat-btn-main { width: 60px; height: 60px; background: var(--p); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border:none; box-shadow: 0 0 20px var(--main-glow); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-    <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+    <div id="particles-js"></div>
 
-    <aside id="sidebar">
-        <div style="padding: 30px; text-align: center;"><h2 style="color:var(--p)">ZOMERD</h2></div>
+    <div id="login-overlay">
+        <h1 style="color:var(--p); font-size: 2.5rem; margin-bottom: 10px;">زمرد نت</h1>
+        <p style="color:white; opacity: 0.7; margin-bottom: 30px;">بوابة براء عمر للمقاولات والاتصالات</p>
+        <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="onGoogleLogin"></div>
+        <div class="g_id_signin" data-type="standard" data-theme="filled_blue"></div>
+    </div>
+
+    <aside id="app-sidebar">
+        <div class="logo-side"><h2>زمرد نت</h2></div>
         <nav>
-            <div class="nav-link" onclick="nav('home')"><i class="fa fa-home"></i> الرئيسية</div>
-            <div id="btn-pub" style="display:none" class="nav-link" onclick="nav('write')"><i class="fa fa-pen"></i> نشر مقال</div>
-            <div id="btn-adm" style="display:none" class="nav-link" onclick="nav('admin')"><i class="fa fa-shield"></i> لوحة الإدارة <span id="adm-count" class="notif-badge" style="display:none">0</span></div>
-            <div class="nav-link" onclick="nav('contact')"><i class="fa fa-comments"></i> تواصل معنا</div>
-            <div class="nav-link" onclick="nav('settings')"><i class="fa fa-user"></i> حسابي</div>
+            <div class="nav-link active" onclick="nav('home', event)"><i class="fa-solid fa-house"></i> الرئيسية</div>
+            <div class="nav-link" onclick="nav('feed', event)"><i class="fa-solid fa-newspaper"></i> الأخبار</div>
+            <div id="nav-admin-only" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa-solid fa-pen"></i> نشر مقال</div>
+            <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-gear"></i> الإعدادات</div>
+            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-phone"></i> تواصل معنا</div>
         </nav>
     </aside>
 
-    <main>
-        <header style="height: 60px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; justify-content: space-between;">
-            <i class="fa fa-bars" onclick="document.getElementById('sidebar').classList.toggle('open')"></i>
-            <div id="u-info" style="display:flex; align-items:center; gap:10px;">
-                <span id="user-name"></span>
-                <img id="user-img" style="width:35px; border-radius:50%; display:none">
+    <main id="app-main">
+        <header>
+            <div id="sec-title">الرئيسية</div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <span id="live-clock" style="color:var(--p); font-family:monospace;">00:00</span>
+                <div id="user-avatar" style="width:35px; height:35px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">?</div>
             </div>
         </header>
 
         <section id="sec-home" class="section active">
-            <input type="text" id="search" oninput="renderHome()" placeholder="ابحث في المقالات المعتمدة..." class="inp-field">
-            <div id="home-grid" class="grid"></div>
-        </section>
-
-        <section id="sec-write" class="section">
-            <div class="card" style="padding:20px;">
-                <h3>إنشاء مقال جديد</h3>
-                <p id="word-count" style="font-size:0.8rem; color:var(--p);">الكلمات: 0 / 300</p>
-                <input type="text" id="p-title" class="inp-field" placeholder="العنوان">
-                <input type="file" onchange="handleUpload(this)" class="inp-field">
-                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:300px;" oninput="countWords()"></div>
-                <button id="pub-submit" disabled onclick="sendToReview()" class="btn-p">إرسال للمراجعة (يتطلب 300 كلمة)</button>
+            <div class="hero">
+                <h1>مستقبل التقنية بين يديك</h1>
+                <p>مرحباً بك في عالم براء عمر الأسطوري. زمرد نت هو مستودع للإبداع الرقمي.</p>
+                <div class="stats-grid">
+                    <div class="stat-card"><h2 id="clients">0</h2><p>عميل يثق بنا</p></div>
+                    <div class="stat-card"><h2 id="projects">0</h2><p>مشروع مكتمل</p></div>
+                    <div class="stat-card"><h2 id="experience">0</h2><p>ساعة برمجة</p></div>
+                </div>
             </div>
         </section>
 
-        <section id="sec-admin" class="section">
-            <h2 style="color:var(--p)">مراجعة المحتوى والرسائل</h2>
-            <div id="review-list" class="grid" style="margin-top:20px;"></div>
-            <hr style="margin:30px 0; border:0.5px solid var(--border)">
-            <h3>رسائل اللايف شات</h3>
-            <div id="admin-chats" style="margin-top:15px;"></div>
+        <section id="sec-feed" class="section">
+            <div class="discovery-section" style="padding: 15px; background: var(--card); border-radius: 15px; margin-bottom: 20px;">
+                <div class="search-box" style="position: relative; margin-bottom: 15px;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 15px; top: 12px; color: var(--p);"></i>
+                    <input type="text" id="smart-search" oninput="runSmartFilter()" placeholder="ابحث بالعنوان أو اسم الكاتب..." class="inp-field" style="padding-right: 40px; margin-bottom: 0;">
+                </div>
+                <div class="categories-bar" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none;">
+                    <button onclick="setCategory('الكل')" class="filter-btn active" id="btn-الكل">الكل</button>
+                    <button onclick="setCategory('رياضة')" class="filter-btn" id="btn-رياضة">⚽ رياضة</button>
+                    <button onclick="setCategory('أكواد')" class="filter-btn" id="btn-أكواد">💻 أكواد</button>
+                    <button onclick="setCategory('ترفيه')" class="filter-btn" id="btn-ترفيه">🎭 ترفيه</button>
+                    <button onclick="setCategory('قصص')" class="filter-btn" id="btn-قصص">📖 قصص</button>
+                    <button onclick="setCategory('تقنية')" class="filter-btn" id="btn-تقنية">⚙️ تقنية</button>
+                </div>
+            </div>
+            <div id="posts-display-grid" class="posts-grid">جاري التحميل...</div>
         </section>
 
-        <section id="sec-contact" class="section">
-            <div class="card" style="padding:20px;">
-                <h3>لايف شات مع الإدارة</h3>
-                <div id="chat-area"></div>
-                <div style="display:flex; gap:10px;">
-                    <input type="text" id="chat-inp" class="inp-field" style="margin:0" placeholder="اكتب رسالتك...">
-                    <button onclick="sendMsg()" class="btn-p" style="width:auto; margin:0">إرسال</button>
+        <section id="sec-write" class="section">
+            <div class="post-card" style="padding: 25px; cursor: default;">
+                <h3 style="color:var(--p)">✍️ استوديو براء عمر للنشر</h3><br>
+                <input type="text" id="p-title" class="inp-field" placeholder="عنوان المنشور...">
+                
+                <label style="color: var(--dim); font-size: 0.8rem;">اختر قسم المنشور:</label>
+                <select id="new-post-category" class="inp-field">
+                    <option value="عام">🌍 عام</option>
+                    <option value="رياضة">⚽ رياضة</option>
+                    <option value="أكواد">💻 أكواد وبرمجة</option>
+                    <option value="ترفيه">🎭 ترفيه</option>
+                    <option value="قصص">📖 قصص وحكايات</option>
+                    <option value="تقنية">⚙️ تقنية</option>
+                </select>
+
+                <div style="margin-bottom: 15px;">
+                    <input type="file" id="img-upload" class="inp-field" onchange="uploadImageHandler(this)">
+                    <div id="upload-status-container" style="display:none; margin-top:10px;">
+                        <div style="height:8px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
+                            <div id="upload-progress-bar" style="width:0%; height:100%; background:#00d2ff; transition:0.3s;"></div>
+                        </div>
+                        <p id="upload-text" style="font-size:0.8rem; margin-top:5px; color:#00d2ff;">جاري الرفع...</p>
+                    </div>
                 </div>
-                <div style="margin-top:20px; display:flex; gap:15px;">
-                    <a href="https://wa.me/201273740256" target="_blank" style="color:#25d366; font-size:1.5rem;"><i class="fa-brands fa-whatsapp"></i></a>
-                    <a href="mailto:bo2584668@gmail.com" style="color:var(--p); font-size:1.5rem;"><i class="fa fa-envelope"></i></a>
-                </div>
+
+                <div id="p-body" class="editor-box" contenteditable="true" style="background:rgba(0,0,0,0.2); border:1px solid var(--border); padding:15px; border-radius:10px; min-height:200px; outline:none; color: white;" placeholder="اكتب المقال هنا..."></div>
+                <br>
+                <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:12px; font-weight:bold; cursor:pointer; color:black;">نشر الآن بسحابة Firebase</button>
             </div>
         </section>
 
         <section id="sec-settings" class="section">
-            <div class="card" style="padding:20px; text-align:center;">
-                <button onclick="requestPub()" class="btn-p">طلب رتبة ناشر</button>
-                <button onclick="logout()" class="btn-p" style="background:#da3633; color:#fff;">تسجيل خروج</button>
+            <div class="post-card" style="padding: 25px; cursor: default;">
+                <h3 style="color: var(--p);"><i class="fa-solid fa-user-gear"></i> إعدادات حسابك</h3><br>
+                <input type="text" id="user-display-name" class="inp-field" readonly style="opacity:0.6">
+                <input type="text" id="user-display-email" class="inp-field" readonly style="opacity:0.6">
+                
+                <p style="font-size: 0.85rem; color: var(--p); margin: 10px 0;">📞 بيانات التواصل:</p>
+                <input type="text" id="user-phone" class="inp-field" placeholder="رابط واتساب أو رقم الهاتف...">
+                <input type="text" id="user-link" class="inp-field" placeholder="رابط حسابك الشخصي...">
+                
+                <button onclick="saveUserProfile()" style="background: var(--p); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-bottom: 20px;">حفظ البيانات</button>
+
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="changeTheme('light')" class="filter-btn" style="flex:1">☀️ نهار</button>
+                    <button onclick="changeTheme('dark')" class="filter-btn" style="flex:1">🌙 ليل</button>
+                </div>
+                <br>
+                <button onclick="logout()" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; width: 100%; padding: 10px; border-radius: 10px; cursor: pointer;">تسجيل الخروج</button>
+            </div>
+        </section>
+
+        <section id="sec-contact" class="section">
+            <div class="post-card" style="text-align:center; padding: 40px;">
+                <h2>براء عمر - Baraa Omar</h2>
+                <p style="color:var(--p)">للمقاولات والاتصالات</p><br>
+                <p>Email: bo2584668@gmail.com</p><br>
+                <a href="https://wa.me/201273740256" target="_blank" style="display: inline-block; padding: 15px 30px; background:#25d366; color:white; border-radius: 50px; text-decoration: none; font-weight: bold;"><i class="fa-brands fa-whatsapp"></i> واتساب مباشر</a>
             </div>
         </section>
     </main>
 
-    <div id="preview-modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:5000; display:none; padding:20px; overflow-y:auto;">
-        <div style="max-width:800px; margin:auto; background:var(--card); padding:25px; border-radius:15px;">
-            <div id="preview-content"></div>
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button id="btn-approve" class="btn-p" style="background:var(--accent); color:white">موافقة ونشر</button>
-                <button onclick="document.getElementById('preview-modal').style.display='none'" class="btn-p" style="background:#30363d; color:white">إغلاق</button>
+    <div id="zomerd-chat-wrapper">
+        <div id="chat-window-box">
+            <div style="background:var(--p); color:black; padding:10px; font-weight:bold; display:flex; justify-content:space-between;">
+                <span>🤖 مساعد براء الذكي</span>
+                <i class="fa-solid fa-times" onclick="toggleChat()" style="cursor:pointer"></i>
+            </div>
+            <div id="chat-logs" style="flex:1; padding:10px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
+            <div style="padding:10px; display:flex; gap:5px;">
+                <input type="text" id="chat-query" placeholder="اسألني..." style="flex:1; padding:8px; border-radius:5px; border:1px solid var(--border); background:#000; color:#fff;">
+                <button onclick="startChat()" style="background:var(--p); border:none; padding:8px; border-radius:5px; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
+        <div id="chat-btn-main" onclick="toggleChat()"><i class="fa-solid fa-headset"></i></div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyAt16kYfN4cNHfTwbdr3KOGbcQJlmE45tg",
-            authDomain: "zomerd-new.firebaseapp.com",
-            projectId: "zomerd-new",
-            storageBucket: "zomerd-new.firebasestorage.app",
-            messagingSenderId: "52188666382",
-            appId: "1:52188666382:web:7879a8c671af9329f67a5f"
+          apiKey: "AIzaSyAt16kYfN4cNHfTwbdr3KOGbcQJlmE45tg",
+          authDomain: "zomerd-new.firebaseapp.com",
+          projectId: "zomerd-new",
+          storageBucket: "zomerd-new.firebasestorage.app",
+          messagingSenderId: "52188666382",
+          appId: "1:52188666382:web:7879a8c671af9329f67a5f"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const ADMIN = "bo2584668@gmail.com";
+        const ADMIN_EMAIL = "bo2584668@gmail.com";
         
-        let user = JSON.parse(localStorage.getItem('zomerd_user')) || null;
-        let posts = [];
-        let currentImg = "";
+        let user = null;
+        let localPosts = [];
+        let selectedCat = 'الكل';
+        let uploadedImageUrl = "";
 
-        // تشغيل المنصة
-        async function start() {
-            if(user) {
-                document.getElementById('user-name').innerText = user.name;
-                document.getElementById('user-img').src = user.picture;
-                document.getElementById('user-img').style.display = 'block';
+        // دخول جوجل
+        function onGoogleLogin(res) {
+            user = JSON.parse(atob(res.credential.split('.')[1]));
+            localStorage.setItem('zomerd_user', JSON.stringify(user));
+            startApp();
+        }
 
-                const uDoc = await db.collection("users").doc(user.email).get();
-                if(uDoc.exists) {
-                    const data = uDoc.data();
-                    if(data.role === 'publisher' || user.email === ADMIN) document.getElementById('btn-pub').style.display = 'flex';
-                    if(user.email === ADMIN) {
-                        document.getElementById('btn-adm').style.display = 'flex';
-                        listenAdmin();
-                    }
-                } else {
-                    await db.collection("users").doc(user.email).set({ name: user.name, role: 'user', email: user.email });
+        // تشغيل التطبيق
+        function startApp() {
+            const savedUser = localStorage.getItem('zomerd_user');
+            if(savedUser) user = JSON.parse(savedUser);
+            if(!user) return;
+
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('app-sidebar').style.display = 'flex';
+            document.getElementById('app-main').style.display = 'block';
+            document.getElementById('user-avatar').innerText = user.given_name[0];
+            
+            // تعبئة بيانات الإعدادات
+            document.getElementById('user-display-name').value = user.name;
+            document.getElementById('user-display-email').value = user.email;
+
+            if(user.email === ADMIN_EMAIL) document.getElementById('nav-admin-only').style.display = 'flex';
+            
+            particlesJS('particles-js', {
+                "particles": { "number": { "value": 40 }, "color": { "value": "#00d2ff" }, "line_linked": { "enable": true, "color": "#00d2ff" }, "move": { "speed": 1.5 } }
+            });
+
+            animateValue("clients", 0, 1500, 2000);
+            animateValue("projects", 0, 320, 2000);
+            animateValue("experience", 0, 5000, 2000);
+            
+            listenToPosts();
+            updateClock();
+            setInterval(updateClock, 60000);
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('live-clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+        }
+
+        function nav(id, e) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('sec-' + id).classList.add('active');
+            document.getElementById('sec-title').innerText = (id === 'feed' ? 'الأخبار' : id === 'home' ? 'الرئيسية' : id === 'write' ? 'النشر' : 'زمرد نت');
+            if(e) e.currentTarget.classList.add('active');
+        }
+
+        // رفع الصورة
+        async function uploadImageHandler(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const container = document.getElementById('upload-status-container');
+            const progressBar = document.getElementById('upload-progress-bar');
+            container.style.display = 'block';
+            progressBar.style.width = '50%';
+            
+            const formData = new FormData();
+            formData.append("image", file);
+            try {
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d`, {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.success) {
+                    uploadedImageUrl = data.data.url;
+                    progressBar.style.width = "100%";
+                    document.getElementById('upload-text').innerText = "✅ جاهز!";
                 }
-                listenChat();
-            }
-            listenPosts();
+            } catch (e) { alert("خطأ في الرفع"); }
         }
 
-        // عد الكلمات
-        function countWords() {
-            const text = document.getElementById('p-body').innerText.trim();
-            const count = text ? text.split(/\s+/).length : 0;
-            document.getElementById('word-count').innerText = `الكلمات: ${count} / 300`;
-            document.getElementById('pub-submit').disabled = count < 300;
-            if(count >= 300) document.getElementById('pub-submit').innerText = "إرسال للمراجعة";
+        // النشر
+        async function publishPost() {
+            const title = document.getElementById('p-title').value;
+            const content = document.getElementById('p-body').innerHTML;
+            const category = document.getElementById('new-post-category').value;
+            if (!title || !content.trim()) return alert("اكمل البيانات!");
+            
+            try {
+                await db.collection("posts").add({
+                    title: title,
+                    content: content,
+                    image: uploadedImageUrl || "",
+                    category: category,
+                    author: user.name,
+                    time: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert("تم النشر!");
+                location.reload();
+            } catch (e) { alert(e.message); }
         }
 
-        // نظام الصور
-        async function handleUpload(el) {
-            const fd = new FormData(); fd.append("image", el.files[0]);
-            const res = await fetch("https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d", { method: "POST", body: fd });
-            const d = await res.json(); currentImg = d.data.url; alert("الصورة جاهزة");
-        }
-
-        // إرسال للمراجعة
-        async function sendToReview() {
-            const t = document.getElementById('p-title').value;
-            const b = document.getElementById('p-body').innerHTML;
-            await db.collection("posts").add({
-                title: t, content: b, image: currentImg,
-                author: user.email, status: 'pending',
-                views: 0, likes: [], comments: [], time: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            alert("تم الإرسال للأدمن بنجاح");
-            nav('home');
-        }
-
-        // عرض الصفحة الرئيسية
-        function listenPosts() {
-            db.collection("posts").where("status", "==", "approved").orderBy("time", "desc").onSnapshot(snap => {
-                posts = [];
-                snap.forEach(doc => posts.push({id: doc.id, ...doc.data()}));
-                renderHome();
+        // جلب المنشورات
+        function listenToPosts() {
+            db.collection("posts").orderBy("time", "desc").onSnapshot((snap) => {
+                localPosts = [];
+                snap.forEach(doc => localPosts.push({ id: doc.id, ...doc.data() }));
+                runSmartFilter();
             });
         }
 
-        function renderHome() {
-            const grid = document.getElementById('home-grid');
-            const search = document.getElementById('search').value.toLowerCase();
+        function runSmartFilter() {
+            const query = document.getElementById('smart-search').value.toLowerCase();
+            const grid = document.getElementById('posts-display-grid');
             grid.innerHTML = '';
-            posts.filter(p => p.title.toLowerCase().includes(search)).forEach(p => {
+
+            const filtered = localPosts.filter(p => {
+                const matchesSearch = p.title.toLowerCase().includes(query);
+                const matchesCat = (selectedCat === 'الكل' || p.category === selectedCat);
+                return matchesSearch && matchesCat;
+            });
+
+            filtered.forEach(p => {
+                const isAdmin = (user && user.email === ADMIN_EMAIL);
+                const delBtn = isAdmin ? `<button class="delete-btn-admin" onclick="event.stopPropagation(); deletePost('${p.id}')">حذف</button>` : "";
+                
                 grid.innerHTML += `
-                    <div class="card">
-                        <div class="post-img-container"><img src="${p.image}"></div>
-                        <div style="padding:15px;">
-                            <h4>${p.title}</h4>
-                            <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:0.8rem;">
-                                <span>👁️ ${p.views}</span>
-                                <span onclick="likePost('${p.id}')" style="cursor:pointer">❤️ ${p.likes.length}</span>
-                            </div>
+                    <div class="post-card">
+                        ${delBtn}
+                        <div class="post-badge">${p.category || 'عام'}</div>
+                        ${p.image ? `<img src="${p.image}" class="post-img">` : ""}
+                        <div class="post-details">
+                            <h3>${p.title}</h3>
+                            <p style="font-size:0.8rem; margin-top:10px; opacity:0.8">${p.content.substring(0, 100)}...</p>
+                            <div style="margin-top:15px; font-size:0.7rem; color:var(--p)">بواسطة: ${p.author}</div>
                         </div>
                     </div>`;
             });
         }
 
-        // ميزات الأدمن
-        function listenAdmin() {
-            // مقالات للمراجعة
-            db.collection("posts").where("status", "==", "pending").onSnapshot(snap => {
-                const list = document.getElementById('review-list');
-                list.innerHTML = '';
-                document.getElementById('adm-count').style.display = snap.size > 0 ? 'block' : 'none';
-                document.getElementById('adm-count').innerText = snap.size;
-                snap.forEach(doc => {
-                    const p = doc.data();
-                    list.innerHTML += `
-                        <div class="card" style="padding:10px;">
-                            <h5>${p.title}</h5>
-                            <button onclick="previewPost('${doc.id}')" class="btn-p" style="background:var(--p)">قراءة ومراجعة</button>
-                        </div>`;
-                });
-            });
+        function setCategory(cat) {
+            selectedCat = cat;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + cat).classList.add('active');
+            runSmartFilter();
         }
 
-        async function previewPost(id) {
-            const doc = await db.collection("posts").doc(id).get();
-            const p = doc.data();
-            document.getElementById('preview-content').innerHTML = `
-                <img src="${p.image}" style="width:100%; border-radius:10px;">
-                <h1 style="margin:15px 0;">${p.title}</h1>
-                <div>${p.content}</div>
-                <hr style="margin:15px 0;">
-                <p>الناشر: ${p.author}</p>
-            `;
-            document.getElementById('btn-approve').onclick = () => approve(id);
-            document.getElementById('preview-modal').style.display = 'block';
+        async function deletePost(id) {
+            if(confirm("حذف نهائي؟")) {
+                await db.collection("posts").doc(id).delete();
+            }
         }
 
-        async function approve(id) {
-            await db.collection("posts").doc(id).update({ status: 'approved' });
-            document.getElementById('preview-modal').style.display = 'none';
-            document.getElementById('notif-sound').play();
-            alert("تم النشر بنجاح!");
+        function animateValue(id, start, end, duration) {
+            let obj = document.getElementById(id);
+            if(!obj) return;
+            let range = end - start;
+            let current = start;
+            let increment = end > start ? 10 : -10;
+            let stepTime = Math.abs(Math.floor(duration / (range / 10)));
+            let timer = setInterval(() => {
+                current += increment;
+                obj.innerHTML = current + "+";
+                if (current >= end) {
+                    obj.innerHTML = end + "+";
+                    clearInterval(timer);
+                }
+            }, stepTime);
         }
 
-        // لايف شات
-        async function sendMsg() {
-            const txt = document.getElementById('chat-inp').value;
-            if(!txt) return;
-            await db.collection("chats").add({
-                sender: user.email, senderName: user.name,
-                text: txt, time: Date.now()
-            });
-            document.getElementById('chat-inp').value = '';
+        function toggleChat() { 
+            const box = document.getElementById('chat-window-box');
+            box.style.display = (box.style.display === 'flex' ? 'none' : 'flex');
         }
 
-        function listenChat() {
-            db.collection("chats").orderBy("time", "asc").onSnapshot(snap => {
-                const area = document.getElementById('chat-area');
-                area.innerHTML = '';
-                snap.forEach(doc => {
-                    const m = doc.data();
-                    const isMe = m.sender === user.email;
-                    area.innerHTML += `<div class="msg ${isMe ? 'sent' : 'received'}">${m.text}</div>`;
-                });
-                area.scrollTop = area.scrollHeight;
-            });
+        function startChat() {
+            const inp = document.getElementById('chat-query');
+            const logs = document.getElementById('chat-logs');
+            if(!inp.value) return;
+            logs.innerHTML += `<div style="align-self:flex-end; background:var(--p); color:black; padding:8px; border-radius:10px;">${inp.value}</div>`;
+            setTimeout(() => {
+                logs.innerHTML += `<div style="align-self:flex-start; background:rgba(255,255,255,0.1); padding:8px; border-radius:10px;">أهلاً بك، أنا مساعد براء الذكي. كيف يمكنني خدمتك؟</div>`;
+                logs.scrollTop = logs.scrollHeight;
+            }, 600);
+            inp.value = "";
         }
 
-        // إعجاب
-        async function likePost(id) {
-            if(!user) return alert("سجل دخول أولاً");
-            const doc = await db.collection("posts").doc(id).get();
-            let likes = doc.data().likes || [];
-            if(likes.includes(user.email)) return;
-            await db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.arrayUnion(user.email) });
-        }
+        function changeTheme(t) { document.body.className = (t === 'light' ? 'theme-light' : ''); }
+        function logout() { localStorage.removeItem('zomerd_user'); location.reload(); }
 
-        function nav(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById('sec-' + id).classList.add('active');
-            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
-        }
-
-        function logout() { localStorage.clear(); location.reload(); }
-
-        window.onload = start;
+        // التحقق من الجلسة عند التحميل
+        window.onload = startApp;
     </script>
 </body>
 </html>
