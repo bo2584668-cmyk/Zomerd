@@ -105,32 +105,7 @@
             <div id="header-user" style="display:none; align-items:center; gap:10px;">
                 <span id="live-clock" style="font-family:monospace; color:var(--p); font-size:0.8rem;">00:00</span>
                 <div id="user-avatar" style="width:30px; height:30px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.8rem;">?</div> 
-     // توليد زر الحذف المتطور للأدمن فقط
-let adminTools = "";
-if (user && user.email === ADMIN_EMAIL) {
-    adminTools = `
-        <div style="margin-top: 25px; padding-top: 20px; border-top: 2px dashed rgba(239, 68, 68, 0.2);">
-            <p style="color: #ef4444; font-size: 0.8rem; margin-bottom: 10px; font-weight: bold;">
-                <i class="fas fa-user-shield"></i> لوحة تحكم الأدمن:
-            </p>
-            <button onclick="deletePost('${id}')" 
-                style="width: 100%; background: linear-gradient(45deg, #ff416c, #ff4b2b); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3); display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <i class="fas fa-trash-alt"></i> حذف هذا المنشور نهائياً
-            </button>
-        </div>
-    `;
-}
-
-// أضف المتغير adminTools في نهاية محتوى المقال
-document.getElementById('full-article-data').innerHTML = `
-    <img src="${p.image}" style="width:100%; border-radius:15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
-    <h1 style="margin:20px 0; color:var(--p); font-size: 1.5rem;">${p.title}</h1>
-    <div style="line-height:1.8; color:#cbd5e1;">${p.content}</div>
-    ${adminTools}
-`;
-            
             </div>
-        
         </header>
 
         <section id="sec-home" class="section active">
@@ -213,7 +188,9 @@ document.getElementById('full-article-data').innerHTML = `
             }
             particlesJS('particles-js', { "particles": { "number": { "value": 30 }, "color": { "value": "#00d2ff" }, "move": { "speed": 1 } } });
             listenToPosts();
-            setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}); }, 1000);
+            setInterval(() => { 
+                document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}); 
+            }, 1000);
         }
 
         async function uploadImageHandler(input) {
@@ -274,57 +251,75 @@ document.getElementById('full-article-data').innerHTML = `
             if(!user) { showLogin(); return; }
             const p = allPosts.find(x => x.id === id);
             db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
+            
+            let adminTools = "";
+            if (user && user.email === ADMIN_EMAIL) {
+                adminTools = `
+                    <div style="margin-top: 25px; padding-top: 20px; border-top: 2px dashed rgba(239, 68, 68, 0.2);">
+                        <p style="color: #ef4444; font-size: 0.8rem; margin-bottom: 10px; font-weight: bold;">
+                            <i class="fas fa-user-shield"></i> لوحة تحكم الأدمن:
+                        </p>
+                        <button onclick="deletePost('${id}')" 
+                            style="width: 100%; background: linear-gradient(45deg, #ff416c, #ff4b2b); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3); display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            <i class="fas fa-trash-alt"></i> حذف هذا المنشور نهائياً
+                        </button>
+                    </div>
+                `;
+            }
+
             document.getElementById('full-article-data').innerHTML = `
-                <img src="${p.image}" style="width:100%; border-radius:10px; margin-bottom:15px;">
-                <h2 style="color:var(--p)">${p.title}</h2>
-                <p style="font-size:0.8rem; opacity:0.6; margin:10px 0;">بواسطة: ${p.author}</p>
-                <div style="line-height:1.7; margin:20px 0; border-top:1px solid var(--border); padding-top:15px;">${p.content}</div>
-                <button onclick="likePost('${id}')" style="background:var(--p); border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">❤️ أعجبني</button>
+                <img src="${p.image}" style="width:100%; border-radius:15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+                <h1 style="margin:20px 0; color:var(--p); font-size: 1.5rem;">${p.title}</h1>
+                <div style="line-height:1.8; color:#cbd5e1;">${p.content}</div>
+                ${adminTools}
+                <button onclick="likePost('${id}')" style="margin-top:15px; background:var(--p); border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">❤️ أعجبني</button>
             `;
             document.getElementById('article-view').style.display = 'block';
         }
-async function deletePost(postId) {
-    // 1. حماية أمنية: التأكد من هوية براء عمر
-    if (!user || user.email !== ADMIN_EMAIL) {
-        alert("⚠️ صلاحية غير مصرح بها!");
-        return;
-    }
 
-    // 2. طلب تأكيد بشكل احترافي
-    if (!confirm("هل أنت متأكد من حذف هذا المقال نهائياً من قاعدة البيانات؟")) return;
+        async function deletePost(postId) {
+            // 1. حماية أمنية: التأكد من هوية براء عمر
+            if (!user || user.email !== ADMIN_EMAIL) {
+                alert("⚠️ صلاحية غير مصرح بها!");
+                return;
+            }
 
-    try {
-        // 3. تأثير بصري: تغيير شكل الزر أثناء الحذف
-        const btn = event.target.closest('button');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ الحذف...';
-        btn.disabled = true;
+            // 2. طلب تأكيد بشكل احترافي
+            if (!confirm("هل أنت متأكد من حذف هذا المقال نهائياً من قاعدة البيانات؟")) return;
 
-        // 4. الحذف من Firebase
-        await db.collection("posts").doc(postId).delete();
+            try {
+                // 3. تأثير بصري: تغيير شكل الزر أثناء الحذف
+                const btn = event.target.closest('button');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ الحذف...';
+                btn.disabled = true;
 
-        // 5. نجاح الحذف
-        alert("✅ تم حذف المنشور بنجاح");
-        
-        // 6. تحديث الواجهة فوراً دون إعادة تحميل الصفحة
-        closeArticle(); // إغلاق المقال
-        
-        // إزالة بطاقة المنشور من الشبكة الرئيسية بتأثير اختفاء
-        const postCard = document.querySelector(`[onclick="openArticle('${postId}')"]`);
-        if (postCard) {
-            postCard.style.transform = "scale(0)";
-            postCard.style.opacity = "0";
-            setTimeout(() => postCard.remove(), 300);
+                // 4. الحذف من Firebase
+                await db.collection("posts").doc(postId).delete();
+
+                // 5. نجاح الحذف
+                alert("✅ تم حذف المنشور بنجاح");
+                
+                // 6. تحديث الواجهة فوراً دون إعادة تحميل الصفحة
+                closeArticle(); // إغلاق المقال
+                
+                // إزالة بطاقة المنشور من الشبكة الرئيسية بتأثير اختفاء
+                const postCard = document.querySelector(`[onclick="openArticle('${postId}')"]`);
+                if (postCard) {
+                    postCard.style.transform = "scale(0)";
+                    postCard.style.opacity = "0";
+                    setTimeout(() => postCard.remove(), 300);
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("❌ فشل الحذف: " + error.message);
+            }
         }
 
-    } catch (error) {
-        console.error("Error:", error);
-        alert("❌ فشل الحذف: " + error.message);
-    }
-}
+        async function likePost(id) { 
+            await db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) }); 
         }
-
-        async function likePost(id) { await db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) }); }
         function closeArticle() { document.getElementById('article-view').style.display = 'none'; }
         
         function nav(id, e) {
