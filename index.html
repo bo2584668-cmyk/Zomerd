@@ -2,7 +2,6 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
-    <meta name="google-site-verification" content="l9QWU9EfN7iGme5VjBMjdLUvQlOYRBitRQMJ6pBvJQE" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <title>زمرد نت | براء عمر</title>
     
@@ -20,169 +19,130 @@
 
         #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
         
-        /* نظام تسجيل الدخول */
-        #login-overlay { position: fixed; inset: 0; background: #0b0f19; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        /* شريط الأخبار المتحرك */
+        .breaking-news { background: rgba(0, 210, 255, 0.1); border-bottom: 1px solid var(--p); height: 35px; display: flex; align-items: center; overflow: hidden; position: relative; z-index: 100; }
+        .breaking-label { background: var(--p); color: #000; padding: 0 15px; font-weight: bold; font-size: 0.8rem; height: 100%; display: flex; align-items: center; z-index: 2; }
+        .ticker-wrapper { flex: 1; overflow: hidden; }
+        .ticker { display: inline-block; white-space: nowrap; animation: ticker 30s linear infinite; }
+        .ticker span { margin-right: 50px; color: var(--p); font-size: 0.85rem; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* القائمة الجانبية - تتكيف مع الشاشة */
-        aside { width: 260px; background: var(--card); border-left: 1px solid var(--border); display: none; flex-direction: column; z-index: 100; flex-shrink: 0; }
+        /* القائمة الجانبية */
+        aside { width: 260px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; transition: 0.4s; }
         
-        /* تعديلات الموبايل لجعلها تملأ الشاشة والأزرار صغيرة */
+        /* تعديلات الموبايل (القائمة مخفية) */
         @media (max-width: 768px) {
-            body { flex-direction: column; overflow-y: auto; }
-            aside { 
-                width: 100% !important; 
-                height: 55px !important; 
-                position: fixed; 
-                bottom: 0; 
-                flex-direction: row !important; 
-                display: flex !important; 
-                justify-content: space-around; 
-                border-top: 1px solid var(--border); 
-                padding: 0 5px;
-            }
-            .nav-link { 
-                flex-direction: column; 
-                font-size: 0.65rem !important; 
-                padding: 5px !important; 
-                margin: 0 !important; 
-                gap: 2px !important;
-                flex: 1;
-            }
-            .nav-link i { font-size: 1.1rem !important; }
-            .logo-side, header { display: none !important; }
-            main { width: 100% !important; padding-bottom: 60px; }
-            .section { padding: 12px !important; }
-            .hero h1 { font-size: 2.2rem !important; }
+            aside { position: fixed; right: -260px; height: 100%; top: 0; }
+            aside.open { right: 0; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+            main { width: 100vw !important; }
+            .menu-btn { display: block !important; }
         }
 
+        .menu-btn { display: none; font-size: 1.5rem; color: var(--p); cursor: pointer; background: none; border: none; }
         .logo-side { padding: 25px; text-align: center; color: var(--p); border-bottom: 1px solid var(--border); }
-        nav { flex: 1; padding: 15px 8px; }
-        .nav-link { padding: 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--dim); margin-bottom: 4px; text-decoration: none; font-size: 0.9rem; }
-        .nav-link.active { background: var(--p); color: black; font-weight: bold; box-shadow: 0 0 15px var(--main-glow); }
+        nav { flex: 1; padding: 10px; }
+        .nav-link { padding: 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--dim); margin-bottom: 5px; text-decoration: none; }
+        .nav-link.active { background: var(--p); color: black; font-weight: bold; }
 
-        main { flex: 1; overflow-y: auto; position: relative; width: 100%; }
-        header { height: 60px; padding: 0 25px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--card); position: sticky; top: 0; z-index: 10; }
+        main { flex: 1; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
+        header { height: 60px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
 
-        .section { padding: 30px; display: none; width: 100%; max-width: 1200px; margin: 0 auto; animation: fadeIn 0.4s ease-out; }
-        .section.active { display: block; }
+        .section { padding: 20px; display: none; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .section.active { display: block; animation: fadeIn 0.4s; }
 
-        /* البطاقات وتوزيع الأخبار */
-        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 10px 0; }
-        @media (min-width: 769px) { .posts-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; } }
+        /* نظام تسجيل الدخول */
+        #login-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .login-box { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--p); text-align: center; max-width: 320px; width: 90%; }
 
-        .post-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); position: relative; display: flex; flex-direction: column; height: 100%; }
+        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 15px; }
+        @media (min-width: 768px) { .posts-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; } }
+        
+        .post-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; }
         .post-img { width: 100%; height: 120px; object-fit: cover; }
-        @media (min-width: 769px) { .post-img { height: 180px; } }
-        
-        .post-details { padding: 10px; flex-grow: 1; }
-        .post-details h3 { font-size: 0.9rem; margin-bottom: 5px; line-height: 1.3; }
-        
-        .post-badge { position: absolute; top: 8px; right: 8px; background: var(--p); color: #000; padding: 2px 8px; border-radius: 6px; font-size: 0.6rem; font-weight: bold; z-index: 2; }
+        .post-details { padding: 10px; }
+        .post-details h3 { font-size: 0.9rem; color: #fff; }
 
-        /* الحقول والأزرار صغيرة ومرتبة */
-        .inp-field { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: white; margin-bottom: 10px; outline: none; font-size: 0.9rem; }
-        .btn-main { width: 100%; padding: 12px; background: var(--p); border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: black; font-size: 0.9rem; }
-
-        /* واجهة المقال المنفرد */
+        .inp-field { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.3); color: white; margin-bottom: 10px; outline: none; }
         #article-view { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 15px; }
-        .article-full-card { max-width: 800px; margin: 0 auto; background: var(--card); border-radius: 15px; padding: 20px; border: 1px solid var(--border); }
-        .full-img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
-
-        /* شات بوت صغير */
-        #zomerd-chat-wrapper { position: fixed; bottom: 70px; left: 15px; z-index: 1000; }
-        #chat-btn-main { width: 50px; height: 50px; background: var(--p); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border:none; box-shadow: 0 0 15px var(--main-glow); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
     <div id="particles-js"></div>
 
-    <div id="login-overlay">
-        <h1 style="color:var(--p); font-size: 2.2rem; margin-bottom: 5px;">زمرد نت</h1>
-        <p style="color:white; opacity: 0.7; margin-bottom: 25px; font-size: 0.9rem;">بوابة براء عمر للمقاولات والاتصالات</p>
-        <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="onGoogleLogin"></div>
-        <div class="g_id_signin" data-type="standard" data-theme="filled_blue"></div>
+    <div id="login-modal">
+        <div class="login-box">
+            <h2 style="color:var(--p)">دخول المحترفين</h2>
+            <p style="font-size: 0.8rem; margin: 15px 0; opacity: 0.8;">سجل دخولك لمشاهدة المقالات كاملة والتفاعل</p>
+            <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="onGoogleLogin"></div>
+            <div class="g_id_signin" data-type="standard"></div>
+            <button onclick="hideLogin()" style="margin-top: 20px; background: none; border: 1px solid var(--border); color: white; padding: 5px 15px; border-radius: 5px;">إغلاق</button>
+        </div>
     </div>
 
-    <aside id="app-sidebar">
-        <div class="logo-side"><h3>زمرد نت</h3></div>
+    <aside id="main-aside">
+        <div class="logo-side"><h2>زمرد نت</h2></div>
         <nav>
             <div class="nav-link active" onclick="nav('home', event)"><i class="fa-solid fa-house"></i> الرئيسية</div>
-            <div class="nav-link" onclick="nav('feed', event)"><i class="fa-solid fa-newspaper"></i> الأخبار</div>
-            <div id="nav-admin-only" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa-solid fa-plus-square"></i> نشر</div>
-            <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-user-gear"></i> الإعدادات</div>
-            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-headset"></i> تواصل</div>
+            <div id="nav-admin-only" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa-solid fa-plus-circle"></i> نشر مقال</div>
+            <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-user-cog"></i> الإعدادات</div>
+            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-comment-dots"></i> تواصل</div>
+            <div id="btn-login-aside" class="nav-link" onclick="showLogin()" style="color:var(--p)"><i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول</div>
         </nav>
     </aside>
 
-    <main id="app-main">
+    <main>
+        <div class="breaking-news">
+            <div class="ticker-wrapper"><div class="ticker" id="breaking-ticker"><span>جاري جلب آخر الأخبار...</span></div></div>
+            <div class="breaking-label">عاجل</div>
+        </div>
+
         <header>
-            <div id="sec-title" style="font-weight: bold; color: var(--p);">الرئيسية</div>
-            <div style="display:flex; align-items:center; gap:12px;">
-                <span id="live-clock" style="color:var(--p); font-family:'JetBrains Mono'; font-size: 0.9rem;">00:00</span>
-                <div id="user-avatar" style="width:32px; height:32px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size: 0.8rem;">?</div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+                <div id="sec-title" style="font-weight:900; color:var(--p)">الرئيسية</div>
+            </div>
+            <div id="header-user" style="display:none; align-items:center; gap:10px;">
+                <span id="live-clock" style="font-family:monospace; color:var(--p); font-size:0.8rem;">00:00</span>
+                <div id="user-avatar" style="width:30px; height:30px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.8rem;">?</div>
             </div>
         </header>
 
         <section id="sec-home" class="section active">
-            <div class="hero" style="text-align:center; padding: 40px 0;">
-                <h1 style="font-weight:900;">إبداع بلا حدود</h1>
-                <p style="opacity:0.7; font-size:0.9rem;">أهلاً بك في منصة براء عمر الرسمية</p>
-                <div class="stats-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-top:30px;">
-                    <div class="stat-card" style="padding:15px;"><h2 id="clients" style="font-size:1.5rem;">0</h2><p style="font-size:0.7rem;">عميل</p></div>
-                    <div class="stat-card" style="padding:15px;"><h2 id="projects" style="font-size:1.5rem;">0</h2><p style="font-size:0.7rem;">مشروع</p></div>
-                    <div class="stat-card" style="padding:15px;"><h2 id="experience" style="font-size:1.5rem;">0</h2><p style="font-size:0.7rem;">ساعة</p></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="sec-feed" class="section">
-            <div class="search-area" style="margin-bottom:15px; display:flex; gap:8px;">
-                <input type="text" id="smart-search" oninput="runSmartFilter()" placeholder="ابحث..." class="inp-field" style="margin-bottom:0; flex:1;">
-                <select id="cat-filter" onchange="setCategory(this.value)" class="inp-field" style="width:auto; margin-bottom:0; padding: 5px;">
-                    <option value="الكل">الكل</option>
-                    <option value="تقنية">تقنية</option>
-                    <option value="رياضة">رياضة</option>
-                    <option value="أكواد">أكواد</option>
-                </select>
-            </div>
-            <div id="posts-display-grid" class="posts-grid">جاري التحميل...</div>
+            <input type="text" id="smart-search" oninput="renderPosts()" placeholder="ابحث في الأخبار..." class="inp-field">
+            <div id="posts-display-grid" class="posts-grid"></div>
         </section>
 
         <section id="sec-write" class="section">
-            <div class="article-full-card">
-                <h4 style="color:var(--p); margin-bottom:15px;">✍️ نشر مقال جديد</h4>
-                <input type="text" id="p-title" class="inp-field" placeholder="العنوان...">
-                <select id="new-post-category" class="inp-field">
-                    <option value="تقنية">⚙️ تقنية</option>
-                    <option value="أكواد">💻 برمجة</option>
-                    <option value="رياضة">⚽ رياضة</option>
-                    <option value="عام">🌍 عام</option>
-                </select>
+            <div style="max-width:800px; margin:auto; background:var(--card); padding:20px; border-radius:15px; border:1px solid var(--border);">
+                <h3 style="color:var(--p)">✍️ لوحة تحكم الأدمن</h3><br>
+                <input type="text" id="p-title" class="inp-field" placeholder="عنوان الخبر...">
                 <input type="file" id="img-upload" class="inp-field" onchange="uploadImageHandler(this)">
-                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:150px; background:rgba(0,0,0,0.3);" placeholder="المحتوى..."></div>
-                <button onclick="publishPost()" class="btn-main">نشر الآن</button>
+                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:200px; background:rgba(0,0,0,0.2);" placeholder="اكتب التفاصيل هنا..."></div>
+                <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:10px; font-weight:bold; cursor:pointer;">نشر الخبر الآن</button>
             </div>
         </section>
 
         <section id="sec-settings" class="section">
-            <div class="article-full-card" style="text-align:center;">
-                <div id="user-avatar-big" style="width:70px; height:70px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size: 2rem; margin: 0 auto 15px;">?</div>
-                <h3 id="user-name-display">مستخدم زمرد</h3>
-                <p id="user-email-display" style="opacity:0.6; font-size:0.8rem; margin-bottom:20px;"></p>
-                <button onclick="logout()" style="background:#ef4444; border:none; padding:10px 20px; border-radius:8px; color:white; cursor:pointer;">تسجيل الخروج</button>
+            <div style="text-align:center; background:var(--card); padding:30px; border-radius:15px; border:1px solid var(--border);">
+                <h3 id="profile-name">زائر</h3>
+                <p id="profile-email" style="opacity:0.6; margin-bottom:20px;"></p>
+                <button onclick="logout()" style="background:#ef4444; border:none; padding:10px 20px; color:white; border-radius:8px; cursor:pointer;">تسجيل الخروج</button>
+            </div>
+        </section>
+
+        <section id="sec-contact" class="section">
+            <div style="text-align:center; background:var(--card); padding:30px; border-radius:15px; border:1px solid var(--border);">
+                <h2>براء عمر</h2>
+                <p>للمقاولات والاتصالات والبرمجة</p><br>
+                <a href="https://wa.me/201273740256" style="display:inline-block; padding:10px 25px; background:#25d366; color:white; border-radius:50px; text-decoration:none;"><i class="fa-brands fa-whatsapp"></i> واتساب مباشر</a>
             </div>
         </section>
     </main>
 
     <div id="article-view">
-        <button onclick="closeArticle()" style="background:none; border:none; color:var(--p); cursor:pointer; margin-bottom:15px;"><i class="fa fa-arrow-right"></i> رجوع</button>
-        <div id="full-article-data" class="article-full-card"></div>
-    </div>
-
-    <div id="zomerd-chat-wrapper">
-        <div id="chat-btn-main" onclick="alert('المساعد قيد التطوير حالياً')"><i class="fa-solid fa-robot"></i></div>
+        <button onclick="closeArticle()" style="color:var(--p); background:none; border:none; cursor:pointer; font-size:1.1rem; margin-bottom:15px;"><i class="fa fa-arrow-right"></i> عودة</button>
+        <div id="full-article-data" style="max-width:800px; margin:auto; background:var(--card); padding:20px; border-radius:15px; border:1px solid var(--border);"></div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -203,75 +163,66 @@
         const db = firebase.firestore();
         const ADMIN_EMAIL = "bo2584668@gmail.com";
         
-        let user = null;
+        let user = JSON.parse(localStorage.getItem('zomerd_user')) || null;
         let allPosts = [];
-        let currentCat = 'الكل';
         let uploadedImageUrl = "";
+
+        function toggleMenu() { document.getElementById('main-aside').classList.toggle('open'); }
+        function showLogin() { document.getElementById('login-modal').style.display = 'flex'; }
+        function hideLogin() { document.getElementById('login-modal').style.display = 'none'; }
 
         function onGoogleLogin(res) {
             user = JSON.parse(atob(res.credential.split('.')[1]));
             localStorage.setItem('zomerd_user', JSON.stringify(user));
-            startApp();
+            location.reload();
         }
 
-        function startApp() {
-            const saved = localStorage.getItem('zomerd_user');
-            if(saved) user = JSON.parse(saved);
-            if(!user) return;
-
-            document.getElementById('login-overlay').style.display = 'none';
-            document.getElementById('app-sidebar').style.display = 'flex';
-            document.getElementById('app-main').style.display = 'block';
-            document.getElementById('user-avatar').innerText = user.given_name[0];
-            document.getElementById('user-avatar-big').innerText = user.given_name[0];
-            document.getElementById('user-name-display').innerText = user.name;
-            document.getElementById('user-email-display').innerText = user.email;
-
-            if(user.email === ADMIN_EMAIL) document.getElementById('nav-admin-only').style.display = 'flex';
-            
-            particlesJS('particles-js', { "particles": { "number": { "value": 30 }, "color": { "value": "#00d2ff" }, "line_linked": { "enable": true, "color": "#00d2ff" }, "move": { "speed": 1 } } });
-            
-            animateValue("clients", 0, 1500, 2000);
-            animateValue("projects", 0, 320, 2000);
-            animateValue("experience", 0, 5000, 2000);
-            
+        function initApp() {
+            if(user) {
+                document.getElementById('btn-login-aside').style.display = 'none';
+                document.getElementById('header-user').style.display = 'flex';
+                document.getElementById('user-avatar').innerText = user.given_name[0];
+                document.getElementById('profile-name').innerText = user.name;
+                document.getElementById('profile-email').innerText = user.email;
+                if(user.email === ADMIN_EMAIL) document.getElementById('nav-admin-only').style.display = 'flex';
+            }
+            particlesJS('particles-js', { "particles": { "number": { "value": 30 }, "color": { "value": "#00d2ff" }, "move": { "speed": 1 } } });
             listenToPosts();
-            setInterval(() => {
-                const now = new Date();
-                document.getElementById('live-clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-            }, 1000);
+            setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}); }, 1000);
         }
 
         async function uploadImageHandler(input) {
             const file = input.files[0];
-            if (!file) return;
             const formData = new FormData();
             formData.append("image", file);
-            try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d`, { method: "POST", body: formData });
-                const data = await res.json();
-                if (data.success) { uploadedImageUrl = data.data.url; alert("✅ تم رفع الصورة"); }
-            } catch (e) { alert("فشل الرفع"); }
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d`, { method: "POST", body: formData });
+            const data = await res.json();
+            uploadedImageUrl = data.data.url;
+            alert("تم رفع الصورة بنجاح");
         }
 
         async function publishPost() {
             const title = document.getElementById('p-title').value;
             const content = document.getElementById('p-body').innerHTML;
-            const cat = document.getElementById('new-post-category').value;
-            if(!title || !content) return alert("اكمل البيانات");
+            if(!title || !content || user.email !== ADMIN_EMAIL) return;
             await db.collection("posts").add({
-                title, content, category: cat, image: uploadedImageUrl,
-                author: user.name, likes: 0, views: 0, comments: [],
+                title, content, image: uploadedImageUrl,
+                author: user.name, likes: 0, views: 0,
                 time: firebase.firestore.FieldValue.serverTimestamp()
             });
-            alert("تم النشر");
-            nav('feed');
+            alert("تم النشر بنجاح يا براء!");
+            nav('home');
         }
 
         function listenToPosts() {
             db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
                 allPosts = [];
-                snap.forEach(doc => allPosts.push({id: doc.id, ...doc.data()}));
+                let tickerContent = "";
+                snap.forEach(doc => {
+                    allPosts.push({id: doc.id, ...doc.data()});
+                    tickerContent += `<span>🔥 ${doc.data().title}</span>`;
+                });
+                document.getElementById('breaking-ticker').innerHTML = tickerContent;
                 renderPosts();
             });
         }
@@ -280,23 +231,14 @@
             const grid = document.getElementById('posts-display-grid');
             const term = document.getElementById('smart-search').value.toLowerCase();
             grid.innerHTML = '';
-            
-            const filtered = allPosts.filter(p => {
-                const matchCat = currentCat === 'الكل' || p.category === currentCat;
-                const matchSearch = p.title.toLowerCase().includes(term);
-                return matchCat && matchSearch;
-            });
-
-            filtered.forEach(p => {
+            allPosts.filter(p => p.title.toLowerCase().includes(term)).forEach(p => {
                 grid.innerHTML += `
                     <div class="post-card" onclick="openArticle('${p.id}')">
-                        <div class="post-badge">${p.category || 'عام'}</div>
                         <img src="${p.image || 'https://via.placeholder.com/300'}" class="post-img">
                         <div class="post-details">
                             <h3>${p.title}</h3>
-                            <div style="font-size:0.7rem; color:var(--p); display:flex; gap:8px;">
-                                <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
-                                <span><i class="fa fa-heart"></i> ${p.likes || 0}</span>
+                            <div style="font-size:0.7rem; color:var(--p); margin-top:5px;">
+                                <i class="fa fa-eye"></i> ${p.views || 0} | <i class="fa fa-heart"></i> ${p.likes || 0}
                             </div>
                         </div>
                     </div>`;
@@ -304,45 +246,32 @@
         }
 
         async function openArticle(id) {
-            const doc = await db.collection("posts").doc(id).get();
-            const p = doc.data();
+            if(!user) { showLogin(); return; }
+            const p = allPosts.find(x => x.id === id);
             db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
-            const view = document.getElementById('full-article-data');
-            view.innerHTML = `
-                <img src="${p.image}" class="full-img">
-                <h2 style="color:var(--p); font-size:1.2rem;">${p.title}</h2>
-                <div style="margin:15px 0; font-size:0.9rem; line-height:1.6;">${p.content}</div>
-                <button onclick="likePost('${id}')" style="background:var(--p); border:none; padding:8px 15px; border-radius:8px; font-weight:bold;">❤️ إعجاب (${p.likes || 0})</button>
-                <div style="margin-top:20px;">
-                    <input type="text" id="com-inp" class="inp-field" placeholder="تعليق...">
-                    <button onclick="addComment('${id}')" style="background:white; border:none; padding:8px; border-radius:8px; font-size:0.8rem;">إرسال</button>
-                    <div style="margin-top:15px;">${(p.comments || []).map(c => `<div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:8px; margin-bottom:5px; font-size:0.8rem;"><b>${c.u}:</b> ${c.t}</div>`).join('')}</div>
-                </div>
+            document.getElementById('full-article-data').innerHTML = `
+                <img src="${p.image}" style="width:100%; border-radius:10px; margin-bottom:15px;">
+                <h2 style="color:var(--p)">${p.title}</h2>
+                <p style="font-size:0.8rem; opacity:0.6; margin:10px 0;">بواسطة: ${p.author}</p>
+                <div style="line-height:1.7; margin:20px 0; border-top:1px solid var(--border); padding-top:15px;">${p.content}</div>
+                <button onclick="likePost('${id}')" style="background:var(--p); border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">❤️ أعجبني</button>
             `;
             document.getElementById('article-view').style.display = 'block';
         }
 
+        async function likePost(id) { await db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) }); }
         function closeArticle() { document.getElementById('article-view').style.display = 'none'; }
-        function setCategory(cat) { currentCat = cat; renderPosts(); }
-        function runSmartFilter() { renderPosts(); }
+        
         function nav(id, e) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
             if(e) e.currentTarget.classList.add('active');
+            if(window.innerWidth <= 768) toggleMenu();
         }
-        function animateValue(id, start, end, duration) {
-            let obj = document.getElementById(id);
-            let current = start;
-            let increment = end > start ? 10 : -10;
-            let timer = setInterval(() => {
-                current += increment;
-                obj.innerHTML = current;
-                if (current >= end) { obj.innerHTML = end; clearInterval(timer); }
-            }, 20);
-        }
+        
         function logout() { localStorage.clear(); location.reload(); }
-        window.onload = startApp;
+        window.onload = initApp;
     </script>
 </body>
 </html>
