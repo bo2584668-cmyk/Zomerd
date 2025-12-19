@@ -258,6 +258,37 @@
             `;
             document.getElementById('article-view').style.display = 'block';
         }
+        // فحص هل المستخدم هو براء عمر لإظهار زر الحذف
+let deleteButton = "";
+if (user && user.email === ADMIN_EMAIL) {
+    deleteButton = `
+        <button onclick="deletePost('${id}')" style="background:#ef4444; color:white; border:none; padding:12px; border-radius:10px; width:100%; font-weight:bold; cursor:pointer; margin-top:15px;">
+            <i class="fa fa-trash"></i> حذف المقال نهائياً
+        </button>
+    `;
+}
+
+// ثم أضف متغير deleteButton داخل الـ innerHTML في المكان الذي تريده
+document.getElementById('full-article-data').innerHTML = `
+    ${deleteButton}
+`;
+        }
+        async function deletePost(postId) {
+    // التأكد أن المستخدم هو براء عمر (الأدمن)
+    if (user && user.email === ADMIN_EMAIL) {
+        if (confirm("هل أنت متأكد من حذف هذا المقال نهائياً؟")) {
+            try {
+                await db.collection("posts").doc(postId).delete();
+                alert("تم حذف المقال بنجاح");
+                closeArticle(); // لإغلاق نافذة العرض بعد الحذف
+            } catch (error) {
+                alert("حدث خطأ أثناء الحذف: " + error.message);
+            }
+        }
+    } else {
+        alert("عذراً، هذه الصلاحية للمدير فقط!");
+    }
+        }
 
         async function likePost(id) { await db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) }); }
         function closeArticle() { document.getElementById('article-view').style.display = 'none'; }
