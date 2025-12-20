@@ -1,51 +1,37 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-   
     <meta charset="UTF-8" />
-<meta name="google-site-verification" content="ekcWmXSq72nz19tuTk6XwuO6PcUH8lh-ev_41u0Zww0" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <title>زمرد نت | براء عمر</title>
     
+    <meta name="description" content="زمرد نت - منصة براء عمر للأخبار والمقالات الحصرية">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5562460683071642" crossorigin="anonymous"></script>
 
     <style>
-        :root {
-            --p: #00d2ff; --bg: #0b0f19; --card: #151c2c; --txt: #f1f5f9; --dim: #94a3b8; --border: rgba(255,255,255,0.05);
-        }
-        
+        :root { --p: #00d2ff; --bg: #0b0f19; --card: #151c2c; --txt: #f1f5f9; --dim: #94a3b8; --border: rgba(255,255,255,0.05); }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; transition: 0.3s; }
         body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; width: 100vw; }
         #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
-        
-        /* القائمة الجانبية */
         aside { width: 260px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; }
-        @media (max-width: 768px) {
-            aside { position: fixed; right: -260px; height: 100%; top: 0; }
-            aside.open { right: 0; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
-        }
-
+        @media (max-width: 768px) { aside { position: fixed; right: -260px; height: 100%; top: 0; } aside.open { right: 0; box-shadow: -10px 0 30px rgba(0,0,0,0.5); } }
         .nav-link { padding: 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--dim); margin: 5px 10px; text-decoration: none; }
         .nav-link.active { background: var(--p); color: black; font-weight: bold; }
-
-        main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; position: relative; }
         header { height: 60px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
-
         .section { padding: 20px; display: none; max-width: 1200px; margin: 0 auto; width: 100%; }
         .section.active { display: block; animation: fadeIn 0.4s; }
-
         .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
         @media (min-width: 768px) { .posts-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); } }
-        
         .post-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; }
         .post-img { width: 100%; height: 130px; object-fit: cover; }
-        
         .inp-field { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.3); color: white; margin-bottom: 10px; outline: none; }
         #article-view { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 20px; }
-        
+        .ad-container { text-align: center; margin: 15px 0; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 10px; overflow: hidden;}
+        .btn-p { background: var(--p); color: black; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
@@ -66,6 +52,8 @@
         <nav>
             <div class="nav-link active" onclick="nav('home', event)"><i class="fa-solid fa-house"></i> الرئيسية</div>
             <div id="nav-admin" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa-solid fa-plus-circle"></i> نشر مقال</div>
+            <div class="nav-link" onclick="nav('about', event)"><i class="fa-solid fa-circle-info"></i> من نحن</div>
+            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-envelope"></i> اتصل بنا</div>
             <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-user-cog"></i> الإعدادات</div>
             <div id="btn-login-aside" class="nav-link" onclick="showLogin()" style="color:var(--p)"><i class="fa-solid fa-right-to-bracket"></i> دخول</div>
         </nav>
@@ -77,61 +65,44 @@
             <div id="sec-title" style="font-weight:900; color:var(--p)">الرئيسية</div>
             <div id="header-user" style="display:none; align-items:center; gap:10px;">
                 <div id="user-avatar" style="width:30px; height:30px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">?</div>
- <main>
-    <div style="text-align: center; margin: 10px 0; background: var(--card); padding: 5px; border-bottom: 1px solid var(--border);">
-        <script type="text/javascript">
-            atOptions = {
-                'key' : 'f1d0d3681c28597a8ccf5af580396db5',
-                'format' : 'iframe',
-                'height' : 60,
-                'width' : 468,
-                'params' : {}
-            };
-        </script>
-       
-        <script type="text/javascript" src="https://www.highperformanceformat.com/f1d0d3681c28597a8ccf5af580396db5/invoke.js"></script>
- <script
-  async="async"
-  data-cfasync="false"
-  src="https://pl28296834.effectivegatecpm.com/5d612164a6306a2a5f00ee74da94386c/invoke.js"
-></script>
-<div id="container-5d612164a6306a2a5f00ee74da94386c"></div>
-    </div>
-
-    <header>
-        </header>
-    ...
-2. لماذا هذا
-      <script
-  type="text/javascript"
-  src="https://pl28296683.effectivegatecpm.com/ca/a3/e6/caa3e6adc78c85d8d98cac3fb3d7817f.js"
-></script>
             </div>
-    
         </header>
+
+        <div class="ad-container">
+            <script type="text/javascript">
+                atOptions = { 'key' : 'f1d0d3681c28597a8ccf5af580396db5', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };
+            </script>
+            <script type="text/javascript" src="https://www.highperformanceformat.com/f1d0d3681c28597a8ccf5af580396db5/invoke.js"></script>
+        </div>
 
         <section id="sec-home" class="section active">
             <input type="text" id="smart-search" oninput="renderPosts()" placeholder="ابحث في الأخبار..." class="inp-field">
             <div id="posts-display-grid" class="posts-grid"></div>
-  <script
-  type="text/javascript"
-  src="https://pl28296683.effectivegatecpm.com/ca/a3/e6/caa3e6adc78c85d8d98cac3fb3d7817f.js"
-></script>
-    <script
-  async="async"
-  data-cfasync="false"
-  src="https://pl28296834.effectivegatecpm.com/5d612164a6306a2a5f00ee74da94386c/invoke.js"
-></script>
-<div id="container-5d612164a6306a2a5f00ee74da94386c"></div>
         </section>
 
-        
+        <section id="sec-about" class="section">
+            <div style="background:var(--card); padding:30px; border-radius:15px; border:1px solid var(--border); line-height:1.8;">
+                <h2 style="color:var(--p); margin-bottom:15px;">من نحن</h2>
+                <p>مرحباً بكم في <b>زمرد نت</b>، المنصة الإخبارية التي أسسها <b>براء عمر</b>. نحن نهدف إلى تقديم محتوى تقني وإخباري حصري يتميز بالدقة والسرعة. نسعى دائماً لنكون المصدر الأول للمعلومة للمستخدم العربي المحترف.</p>
+            </div>
+        </section>
+
+        <section id="sec-contact" class="section">
+            <div style="text-align:center; background:var(--card); padding:30px; border-radius:15px; border:1px solid var(--border);">
+                <h2 style="color:var(--p); margin-bottom:15px;">اتصل بنا</h2>
+                <p style="margin-bottom:20px;">لديك استفسار أو ترغب في الإعلان معنا؟ تواصل معنا مباشرة:</p>
+                <a href="https://wa.me/201273740256" target="_blank" style="display:inline-flex; align-items:center; gap:10px; background:#25d366; color:white; padding:15px 30px; border-radius:10px; text-decoration:none; font-weight:bold; font-size:1.1rem;">
+                    <i class="fa-brands fa-whatsapp"></i> تواصل عبر واتساب
+                </a>
+            </div>
+        </section>
+
         <section id="sec-write" class="section">
             <div style="max-width:800px; margin:auto; background:var(--card); padding:20px; border-radius:15px; border:1px solid var(--border);">
                 <input type="text" id="p-title" class="inp-field" placeholder="عنوان المقال...">
                 <input type="file" id="img-upload" class="inp-field" onchange="uploadImageHandler(this)">
                 <div id="p-body" class="inp-field" contenteditable="true" style="min-height:200px;"></div>
-                <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:10px; font-weight:bold;">نشر الآن</button>
+                <button onclick="publishPost()" class="btn-p">نشر الآن</button>
             </div>
         </section>
 
@@ -139,20 +110,8 @@
             <div style="text-align:center; background:var(--card); padding:30px; border-radius:15px; border:1px solid var(--border);">
                 <h3 id="profile-name">زائر</h3>
                 <p id="profile-email" style="opacity:0.6; margin-bottom:20px;"></p>
-         
-                <button onclick="logout()" style="background:#ef4444; color:white; border:none; padding:10px 20px; border-radius:8px;">خروج</button>
-         <script
-  type="text/javascript"
-  src="https://pl28296683.effectivegatecpm.com/ca/a3/e6/caa3e6adc78c85d8d98cac3fb3d7817f.js"
-></script>
-     <script
-  async="async"
-  data-cfasync="false"
-  src="https://pl28296834.effectivegatecpm.com/5d612164a6306a2a5f00ee74da94386c/invoke.js"
-></script>
-<div id="container-5d612164a6306a2a5f00ee74da94386c"></div>   
+                <button onclick="logout()" style="background:#ef4444; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer;">خروج</button>
             </div>
-     
         </section>
     </main>
 
@@ -165,6 +124,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <script type="text/javascript" src="https://pl28296683.effectivegatecpm.com/ca/a3/e6/caa3e6adc78c85d8d98cac3fb3d7817f.js"></script>
 
     <script>
         const firebaseConfig = {
@@ -183,7 +144,6 @@
         let allPosts = [];
         let uploadedImageUrl = "";
 
-        // دخول جوجل
         function onGoogleLogin(res) {
             user = JSON.parse(atob(res.credential.split('.')[1]));
             localStorage.setItem('zomerd_user', JSON.stringify(user));
@@ -247,60 +207,50 @@
             });
         }
 
-        // دالة فتح المقال مع الإعلانات والحذف
         async function openArticle(id) {
             if(!user) { showLogin(); return; }
             const p = allPosts.find(x => x.id === id);
             db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
             
-            // كود الإعلان
-            const adUnit = `
-                <div style="margin:20px 0; text-align:center;">
-                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5562460683071642" data-ad-slot="8091582663" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                    <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
-                </div>`;
-
             let adminTools = "";
             if (user && user.email === ADMIN_EMAIL) {
-                adminTools = `
-                    <button onclick="deletePost('${id}')" style="width: 100%; background: linear-gradient(45deg, #ff416c, #ff4b2b); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top:20px;">
-                        🗑️ حذف المقال نهائياً
-                    </button>`;
+                adminTools = `<button onclick="deletePost('${id}')" style="width: 100%; background: linear-gradient(45deg, #ff416c, #ff4b2b); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top:20px;">🗑️ حذف المقال نهائياً</button>`;
             }
 
             document.getElementById('full-article-data').innerHTML = `
                 <img src="${p.image}" style="width:100%; border-radius:15px;">
                 <h1 style="margin:20px 0; color:var(--p);">${p.title}</h1>
-                
-                ${adUnit} <div style="line-height:1.8; color:#cbd5e1;">${p.content}</div>
-                
+                <div style="line-height:1.8; color:#cbd5e1;">${p.content}</div>
                 <button onclick="likePost('${id}')" style="margin-top:20px; background:var(--p); border:none; padding:10px; border-radius:8px; width:100%; font-weight:bold;">❤️ أعجبني</button>
-
-                ${adUnit} ${adminTools}
+                ${adminTools}
             `;
             document.getElementById('article-view').style.display = 'block';
-            
-            // تفعيل الإعلان تقنياً
-            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
         }
 
-        async function deletePost(postId) {
+        function deletePost(postId) {
             if (user.email !== ADMIN_EMAIL) return;
-            if (!confirm("هل أنت متأكد من الحذف؟")) return;
-            await db.collection("posts").doc(postId).delete();
-            alert("تم الحذف");
-            closeArticle();
+            if (!confirm("هل أنت متأكد؟")) return;
+            db.collection("posts").doc(postId).delete().then(() => { alert("تم الحذف"); closeArticle(); });
         }
 
-        async function likePost(id) { 
-            await db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) }); 
+        function likePost(id) { 
+            db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) }); 
             alert("شكراً لإعجابك!");
         }
 
         function closeArticle() { document.getElementById('article-view').style.display = 'none'; }
         function nav(id, e) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            sections.forEach(s => s.classList.remove('active'));
+            navLinks.forEach(l => l.classList.remove('active'));
+            
             document.getElementById('sec-' + id).classList.add('active');
+            if(e) e.currentTarget.classList.add('active');
+            
+            document.getElementById('sec-title').innerText = id === 'home' ? 'الرئيسية' : (id === 'about' ? 'من نحن' : (id === 'contact' ? 'اتصل بنا' : 'الإعدادات'));
+            
             if(window.innerWidth <= 768) toggleMenu();
         }
         function toggleMenu() { document.getElementById('main-aside').classList.toggle('open'); }
