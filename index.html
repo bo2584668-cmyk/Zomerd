@@ -5,135 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <title>زمرد نت | براء عمر</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5562460683071642" crossorigin="anonymous"></script>
 
     <style>
         :root {
             --p: #00d2ff; --bg: #0b0f19; --card: #151c2c; --txt: #f1f5f9; --dim: #94a3b8; --border: rgba(255,255,255,0.05);
-            --main-glow: rgba(0, 210, 255, 0.6);
         }
         
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; transition: 0.3s; }
         body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; width: 100vw; }
-
         #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
         
-        /* شريط الأخبار المتحرك */
-        .breaking-news { background: rgba(0, 210, 255, 0.1); border-bottom: 1px solid var(--p); height: 35px; display: flex; align-items: center; overflow: hidden; position: relative; z-index: 100; }
-        .breaking-label { background: var(--p); color: #000; padding: 0 15px; font-weight: bold; font-size: 0.8rem; height: 100%; display: flex; align-items: center; z-index: 2; }
-        .ticker-wrapper { flex: 1; overflow: hidden; }
-        .ticker { display: inline-block; white-space: nowrap; animation: ticker 30s linear infinite; }
-        .ticker span { margin-right: 50px; color: var(--p); font-size: 0.85rem; }
-        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
         /* القائمة الجانبية */
-        aside { width: 260px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; transition: 0.4s; }
-        
-        /* تعديلات الموبايل (القائمة مخفية) */
+        aside { width: 260px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; }
         @media (max-width: 768px) {
             aside { position: fixed; right: -260px; height: 100%; top: 0; }
             aside.open { right: 0; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
-            main { width: 100vw !important; }
-            .menu-btn { display: block !important; }
         }
 
-        .menu-btn { display: none; font-size: 1.5rem; color: var(--p); cursor: pointer; background: none; border: none; }
-        .logo-side { padding: 25px; text-align: center; color: var(--p); border-bottom: 1px solid var(--border); }
-        nav { flex: 1; padding: 10px; }
-        .nav-link { padding: 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--dim); margin-bottom: 5px; text-decoration: none; }
+        .nav-link { padding: 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--dim); margin: 5px 10px; text-decoration: none; }
         .nav-link.active { background: var(--p); color: black; font-weight: bold; }
 
-        main { flex: 1; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
+        main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
         header { height: 60px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
 
         .section { padding: 20px; display: none; max-width: 1200px; margin: 0 auto; width: 100%; }
         .section.active { display: block; animation: fadeIn 0.4s; }
 
-        /* نظام تسجيل الدخول */
-        #login-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .login-box { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--p); text-align: center; max-width: 320px; width: 90%; }
-
-        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 15px; }
-        @media (min-width: 768px) { .posts-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; } }
+        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+        @media (min-width: 768px) { .posts-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); } }
         
         .post-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; }
-        .post-img { width: 100%; height: 120px; object-fit: cover; }
-        .post-details { padding: 10px; }
-        .post-details h3 { font-size: 0.9rem; color: #fff; }
-
+        .post-img { width: 100%; height: 130px; object-fit: cover; }
+        
         .inp-field { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,0.3); color: white; margin-bottom: 10px; outline: none; }
-        #article-view { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 15px; }
+        #article-view { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; overflow-y: auto; padding: 20px; }
+        
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
-   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5562460683071642"
-     crossorigin="anonymous"></script>
     <div id="particles-js"></div>
 
-    <div id="login-modal">
-        <div class="login-box">
+    <div id="login-modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+        <div style="background:var(--card); padding:30px; border-radius:20px; border:1px solid var(--p); text-align:center;">
             <h2 style="color:var(--p)">دخول المحترفين</h2>
-            <p style="font-size: 0.8rem; margin: 15px 0; opacity: 0.8;">سجل دخولك لمشاهدة المقالات كاملة والتفاعل</p>
             <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="onGoogleLogin"></div>
             <div class="g_id_signin" data-type="standard"></div>
-            <button onclick="hideLogin()" style="margin-top: 20px; background: none; border: 1px solid var(--border); color: white; padding: 5px 15px; border-radius: 5px;">إغلاق</button>
+            <button onclick="hideLogin()" style="margin-top:15px; background:none; color:white; border:1px solid var(--border); padding:5px 10px; border-radius:5px;">إغلاق</button>
         </div>
     </div>
 
     <aside id="main-aside">
-        <div class="logo-side"><h2>زمرد نت</h2></div>
+        <div style="padding:25px; text-align:center; color:var(--p); border-bottom:1px solid var(--border);"><h2>زمرد نت</h2></div>
         <nav>
             <div class="nav-link active" onclick="nav('home', event)"><i class="fa-solid fa-house"></i> الرئيسية</div>
-            <div id="nav-admin-only" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa-solid fa-plus-circle"></i> نشر مقال</div>
+            <div id="nav-admin" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa-solid fa-plus-circle"></i> نشر مقال</div>
             <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-user-cog"></i> الإعدادات</div>
-            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-comment-dots"></i> تواصل</div>
-            <div id="btn-login-aside" class="nav-link" onclick="showLogin()" style="color:var(--p)"><i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول</div>
+            <div id="btn-login-aside" class="nav-link" onclick="showLogin()" style="color:var(--p)"><i class="fa-solid fa-right-to-bracket"></i> دخول</div>
         </nav>
     </aside>
 
     <main>
-        <div class="breaking-news">
-            <div class="ticker-wrapper"><div class="ticker" id="breaking-ticker"><span>جاري جلب آخر الأخبار...</span></div></div>
-  
-            <div class="breaking-label">عاجل</div>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5562460683071642"
-     crossorigin="anonymous"></script>
-<!-- Nebo photo -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-5562460683071642"
-     data-ad-slot="8091582663"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5562460683071642"
-     crossorigin="anonymous"></script>
-        </div>
-
         <header>
-            <div style="display:flex; align-items:center; gap:15px;">
-                <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
-                <div id="sec-title" style="font-weight:900; color:var(--p)">الرئيسية</div>
-            </div>
+            <button onclick="toggleMenu()" style="background:none; border:none; color:var(--p); font-size:1.5rem;"><i class="fa-solid fa-bars"></i></button>
+            <div id="sec-title" style="font-weight:900; color:var(--p)">الرئيسية</div>
             <div id="header-user" style="display:none; align-items:center; gap:10px;">
-                <span id="live-clock" style="font-family:monospace; color:var(--p); font-size:0.8rem;">00:00</span>
-       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5562460683071642"
-     crossorigin="anonymous"></script>
-<!-- Nebo photo -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-5562460683071642"
-     data-ad-slot="8091582663"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>         <div id="user-avatar" style="width:30px; height:30px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.8rem;">?</div> 
-       
+                <div id="user-avatar" style="width:30px; height:30px; background:var(--p); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">?</div>
             </div>
         </header>
 
@@ -144,13 +85,10 @@
 
         <section id="sec-write" class="section">
             <div style="max-width:800px; margin:auto; background:var(--card); padding:20px; border-radius:15px; border:1px solid var(--border);">
-                <h3 style="color:var(--p)">✍️ لوحة تحكم الأدمن</h3><br>
-                <input type="text" id="p-title" class="inp-field" placeholder="عنوان الخبر...">
+                <input type="text" id="p-title" class="inp-field" placeholder="عنوان المقال...">
                 <input type="file" id="img-upload" class="inp-field" onchange="uploadImageHandler(this)">
-                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:200px; background:rgba(0,0,0,0.2);" placeholder="اكتب التفاصيل هنا..."></div>
-                <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:10px; font-weight:bold; cursor:pointer;">نشر الخبر الآن</button>
-     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5562460683071642"
-     crossorigin="anonymous"></script> 
+                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:200px;"></div>
+                <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--p); border:none; border-radius:10px; font-weight:bold;">نشر الآن</button>
             </div>
         </section>
 
@@ -158,21 +96,13 @@
             <div style="text-align:center; background:var(--card); padding:30px; border-radius:15px; border:1px solid var(--border);">
                 <h3 id="profile-name">زائر</h3>
                 <p id="profile-email" style="opacity:0.6; margin-bottom:20px;"></p>
-                <button onclick="logout()" style="background:#ef4444; border:none; padding:10px 20px; color:white; border-radius:8px; cursor:pointer;">تسجيل الخروج</button>
-            </div>
-        </section>
-
-        <section id="sec-contact" class="section">
-            <div style="text-align:center; background:var(--card); padding:30px; border-radius:15px; border:1px solid var(--border);">
-                <h2>براء عمر</h2>
-                <p>للمقاولات والاتصالات والبرمجة</p><br>
-                <a href="https://wa.me/201273740256" style="display:inline-block; padding:10px 25px; background:#25d366; color:white; border-radius:50px; text-decoration:none;"><i class="fa-brands fa-whatsapp"></i> واتساب مباشر</a>
+                <button onclick="logout()" style="background:#ef4444; color:white; border:none; padding:10px 20px; border-radius:8px;">خروج</button>
             </div>
         </section>
     </main>
 
     <div id="article-view">
-        <button onclick="closeArticle()" style="color:var(--p); background:none; border:none; cursor:pointer; font-size:1.1rem; margin-bottom:15px;"><i class="fa fa-arrow-right"></i> عودة</button>
+        <button onclick="closeArticle()" style="color:var(--p); background:none; border:none; cursor:pointer; margin-bottom:20px;"><i class="fa fa-arrow-right"></i> عودة</button>
         <div id="full-article-data" style="max-width:800px; margin:auto; background:var(--card); padding:20px; border-radius:15px; border:1px solid var(--border);"></div>
     </div>
 
@@ -198,10 +128,7 @@
         let allPosts = [];
         let uploadedImageUrl = "";
 
-        function toggleMenu() { document.getElementById('main-aside').classList.toggle('open'); }
-        function showLogin() { document.getElementById('login-modal').style.display = 'flex'; }
-        function hideLogin() { document.getElementById('login-modal').style.display = 'none'; }
-
+        // دخول جوجل
         function onGoogleLogin(res) {
             user = JSON.parse(atob(res.credential.split('.')[1]));
             localStorage.setItem('zomerd_user', JSON.stringify(user));
@@ -215,13 +142,10 @@
                 document.getElementById('user-avatar').innerText = user.given_name[0];
                 document.getElementById('profile-name').innerText = user.name;
                 document.getElementById('profile-email').innerText = user.email;
-                if(user.email === ADMIN_EMAIL) document.getElementById('nav-admin-only').style.display = 'flex';
+                if(user.email === ADMIN_EMAIL) document.getElementById('nav-admin').style.display = 'flex';
             }
             particlesJS('particles-js', { "particles": { "number": { "value": 30 }, "color": { "value": "#00d2ff" }, "move": { "speed": 1 } } });
             listenToPosts();
-            setInterval(() => { 
-                document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}); 
-            }, 1000);
         }
 
         async function uploadImageHandler(input) {
@@ -231,7 +155,7 @@
             const res = await fetch(`https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d`, { method: "POST", body: formData });
             const data = await res.json();
             uploadedImageUrl = data.data.url;
-            alert("تم رفع الصورة بنجاح");
+            alert("تم رفع الصورة");
         }
 
         async function publishPost() {
@@ -243,19 +167,14 @@
                 author: user.name, likes: 0, views: 0,
                 time: firebase.firestore.FieldValue.serverTimestamp()
             });
-            alert("تم النشر بنجاح يا براء!");
+            alert("تم النشر بنجاح");
             nav('home');
         }
 
         function listenToPosts() {
             db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
                 allPosts = [];
-                let tickerContent = "";
-                snap.forEach(doc => {
-                    allPosts.push({id: doc.id, ...doc.data()});
-                    tickerContent += `<span>🔥 ${doc.data().title}</span>`;
-                });
-                document.getElementById('breaking-ticker').innerHTML = tickerContent;
+                snap.forEach(doc => allPosts.push({id: doc.id, ...doc.data()}));
                 renderPosts();
             });
         }
@@ -268,99 +187,70 @@
                 grid.innerHTML += `
                     <div class="post-card" onclick="openArticle('${p.id}')">
                         <img src="${p.image || 'https://via.placeholder.com/300'}" class="post-img">
-                        <div class="post-details">
-                            <h3>${p.title}</h3>
-                            <div style="font-size:0.7rem; color:var(--p); margin-top:5px;">
-                                <i class="fa fa-eye"></i> ${p.views || 0} | <i class="fa fa-heart"></i> ${p.likes || 0}
-                            </div>
-                        </div>
+                        <div style="padding:10px;"><h3>${p.title}</h3></div>
                     </div>`;
             });
         }
 
+        // دالة فتح المقال مع الإعلانات والحذف
         async function openArticle(id) {
             if(!user) { showLogin(); return; }
             const p = allPosts.find(x => x.id === id);
             db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
             
+            // كود الإعلان
+            const adUnit = `
+                <div style="margin:20px 0; text-align:center;">
+                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5562460683071642" data-ad-slot="8091582663" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                    <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
+                </div>`;
+
             let adminTools = "";
             if (user && user.email === ADMIN_EMAIL) {
                 adminTools = `
-                    <div style="margin-top: 25px; padding-top: 20px; border-top: 2px dashed rgba(239, 68, 68, 0.2);">
-                        <p style="color: #ef4444; font-size: 0.8rem; margin-bottom: 10px; font-weight: bold;">
-                            <i class="fas fa-user-shield"></i> لوحة تحكم الأدمن:
-                        </p>
-                        <button onclick="deletePost('${id}')" 
-                            style="width: 100%; background: linear-gradient(45deg, #ff416c, #ff4b2b); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3); display: flex; align-items: center; justify-content: center; gap: 10px;">
-                            <i class="fas fa-trash-alt"></i> حذف هذا المنشور نهائياً
-                        </button>
-                    </div>
-                `;
+                    <button onclick="deletePost('${id}')" style="width: 100%; background: linear-gradient(45deg, #ff416c, #ff4b2b); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top:20px;">
+                        🗑️ حذف المقال نهائياً
+                    </button>`;
             }
 
             document.getElementById('full-article-data').innerHTML = `
-                <img src="${p.image}" style="width:100%; border-radius:15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
-                <h1 style="margin:20px 0; color:var(--p); font-size: 1.5rem;">${p.title}</h1>
-                <div style="line-height:1.8; color:#cbd5e1;">${p.content}</div>
-                ${adminTools}
-                <button onclick="likePost('${id}')" style="margin-top:15px; background:var(--p); border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">❤️ أعجبني</button>
+                <img src="${p.image}" style="width:100%; border-radius:15px;">
+                <h1 style="margin:20px 0; color:var(--p);">${p.title}</h1>
+                
+                ${adUnit} <div style="line-height:1.8; color:#cbd5e1;">${p.content}</div>
+                
+                <button onclick="likePost('${id}')" style="margin-top:20px; background:var(--p); border:none; padding:10px; border-radius:8px; width:100%; font-weight:bold;">❤️ أعجبني</button>
+
+                ${adUnit} ${adminTools}
             `;
             document.getElementById('article-view').style.display = 'block';
+            
+            // تفعيل الإعلان تقنياً
+            try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e){}
         }
 
         async function deletePost(postId) {
-            // 1. حماية أمنية: التأكد من هوية براء عمر
-            if (!user || user.email !== ADMIN_EMAIL) {
-                alert("⚠️ صلاحية غير مصرح بها!");
-                return;
-            }
-
-            // 2. طلب تأكيد بشكل احترافي
-            if (!confirm("هل أنت متأكد من حذف هذا المقال نهائياً من قاعدة البيانات؟")) return;
-
-            try {
-                // 3. تأثير بصري: تغيير شكل الزر أثناء الحذف
-                const btn = event.target.closest('button');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ الحذف...';
-                btn.disabled = true;
-
-                // 4. الحذف من Firebase
-                await db.collection("posts").doc(postId).delete();
-
-                // 5. نجاح الحذف
-                alert("✅ تم حذف المنشور بنجاح");
-                
-                // 6. تحديث الواجهة فوراً دون إعادة تحميل الصفحة
-                closeArticle(); // إغلاق المقال
-                
-                // إزالة بطاقة المنشور من الشبكة الرئيسية بتأثير اختفاء
-                const postCard = document.querySelector(`[onclick="openArticle('${postId}')"]`);
-                if (postCard) {
-                    postCard.style.transform = "scale(0)";
-                    postCard.style.opacity = "0";
-                    setTimeout(() => postCard.remove(), 300);
-                }
-
-            } catch (error) {
-                console.error("Error:", error);
-                alert("❌ فشل الحذف: " + error.message);
-            }
+            if (user.email !== ADMIN_EMAIL) return;
+            if (!confirm("هل أنت متأكد من الحذف؟")) return;
+            await db.collection("posts").doc(postId).delete();
+            alert("تم الحذف");
+            closeArticle();
         }
 
         async function likePost(id) { 
             await db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) }); 
+            alert("شكراً لإعجابك!");
         }
+
         function closeArticle() { document.getElementById('article-view').style.display = 'none'; }
-        
         function nav(id, e) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
-            if(e) e.currentTarget.classList.add('active');
             if(window.innerWidth <= 768) toggleMenu();
         }
-        
+        function toggleMenu() { document.getElementById('main-aside').classList.toggle('open'); }
+        function showLogin() { document.getElementById('login-modal').style.display = 'flex'; }
+        function hideLogin() { document.getElementById('login-modal').style.display = 'none'; }
         function logout() { localStorage.clear(); location.reload(); }
         window.onload = initApp;
     </script>
