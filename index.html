@@ -1016,18 +1016,7 @@ async function loadRequests() {
     });
 }
 
-async function approvePublisher(email) {
-    try {
-        // 1. ترقية المستخدم في قاعدة البيانات
-        await db.collection("users").doc(email).update({ isPublisher: true });
-        // 2. حذف الطلب
-        await db.collection("requests").doc(email).delete();
-        showToast("تمت الموافقة وتفعيل صلاحية الناشر");
-        loadRequests();
-    } catch (e) {
-        showToast("حدث خطأ ما");
-    }
-}
+
             async function approvePublisher(email) {
     try {
         // 1. استخدام set مع merge لضمان إنشاء السجل حتى لو لم يكن موجوداً
