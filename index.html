@@ -1208,6 +1208,38 @@ async function updateUI() {
             currentUser.isPublisher = userDoc.data().isPublisher || false;
             localStorage.setItem('zomerd_user', JSON.stringify(currentUser));
         }
+        function renderPosts() {
+    const grid = document.getElementById('posts-display-grid');
+    grid.innerHTML = '';
+    
+    allPosts.forEach(p => {
+        // التحقق من أنك الآدمن
+        const isAdmin = user && user.email === ADMIN_EMAIL;
+        
+        const card = document.createElement('div');
+        card.className = 'post-card';
+        
+        // هنا نقوم بدمج زر الحذف إذا كنت آدمن
+        card.innerHTML = `
+            ${isAdmin ? `
+                <div class="admin-actions">
+                    <button class="btn-del" onclick="deletePost('${p.id}', event)">
+                        <i class="fa fa-trash"></i> حذف
+                    </button>
+                </div>
+            ` : ''}
+            <div class="post-img-wrapper">
+                <img src="${p.image || 'https://via.placeholder.com/400'}" class="post-img">
+            </div>
+            <div style="padding:15px;">
+                <h3>${p.title}</h3>
+                <p style="font-size:0.8rem; opacity:0.6;">${p.category}</p>
+            </div>
+        `;
+        card.onclick = () => openArticle(p.id);
+        grid.appendChild(card);
+    });
+        }
 function fetchPosts() {
             db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
                 allPosts = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
