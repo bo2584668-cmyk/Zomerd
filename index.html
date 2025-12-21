@@ -249,34 +249,7 @@
         #color-picker button.active {
             border-color: black;
         }
-/* تنسيق بطاقة المنشور لتسمح بوضع زر فوقها */
-.post-card { position: relative; overflow: hidden; }
 
-/* تصميم زر الحذف الاحترافي */
-.admin-delete-btn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 50;
-    background: rgba(255, 59, 48, 0.9);
-    color: white;
-    border: none;
-    width: 35px;
-    height: 35px;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(4px);
-    transition: 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.admin-delete-btn:hover {
-    background: #ff3b30;
-    transform: scale(1.1);
-}
     </style>
 </head>
 <body>
@@ -780,28 +753,16 @@
             db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) }); 
             showToast("شكراً لإعجابك!");
         }
-        function listenToPosts() {
-    db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
-        allPosts = [];
-        snap.forEach(doc => allPosts.push({id: doc.id, ...doc.data()}));
-        renderPosts(); // تأكد من وجود هذا السطر هنا
-    });
-        }
-function renderPosts() {
+       function renderPosts() {
     const grid = document.getElementById('posts-display-grid');
-    const term = document.getElementById('smart-search').value.toLowerCase();
+    if (!grid) return;
     grid.innerHTML = '';
 
-    let filtered = allPosts.filter(p => {
-        const matchSearch = p.title.toLowerCase().includes(term);
-        const matchCategory = (currentCategory === 'all') || (p.category && p.category === currentCategory);
-        return matchSearch && matchCategory;
-    }
-                                   
-
-    filtered.forEach((p, index) => {
-        // التحقق من الأدمن ليظهر الزر له فقط
+    allPosts.forEach((p, index) => {
+        // التحقق إذا كان المستخدم الحالي هو الأدمن
         const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+        
+        // إنشاء زر الحذف (يظهر فقط للأدمن)
         const deleteBtn = isAdmin ? `
             <button class="admin-delete-btn" title="حذف المقال" onclick="deletePost('${p.id}', event)">
                 <i class="fa-solid fa-trash"></i>
@@ -815,29 +776,46 @@ function renderPosts() {
                 </div>
                 <div class="post-content">
                     <h3 class="post-title" style="color:${p.textColor || 'var(--txt)'}">${p.title}</h3>
-                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; opacity:0.6;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; opacity:0.6; margin-top:10px;">
                         <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
-                        <span><i class="fa fa-user"></i> ${p.author || 'براء'}</span>
+                        <span><i class="fa fa-user"></i> ${p.author || 'ناشر'}</span>
                     </div>
                 </div>
             </div>`;
-}
-    async function deletePost(id, event) {
-    if (event) event.stopPropagation(); // يمنع فتح المقال عند الضغط على الحذف
+    });
+       } 
+function renderPosts() {
+    const grid = document.getElementById('posts-display-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
 
-    if (confirm("⚠️ هل أنت متأكد من حذف هذا المقال نهائياً؟")) {
-        try {
-            await db.collection("posts").doc(id).delete();
-            showToast("تم الحذف بنجاح ✅");
-            
-            // تحديث البيانات تلقائياً
-            if (typeof fetchPosts === "function") fetchPosts();
-        } catch (e) {
-            showToast("حدث خطأ أثناء الحذف ❌");
-        }
-    }
-    }
-                     // التنقل بين الأقسام
+    allPosts.forEach((p, index) => {
+        // التحقق إذا كان المستخدم الحالي هو الأدمن
+        const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+        
+        // إنشاء زر الحذف (يظهر فقط للأدمن)
+        const deleteBtn = isAdmin ? `
+            <button class="admin-delete-btn" title="حذف المقال" onclick="deletePost('${p.id}', event)">
+                <i class="fa-solid fa-trash"></i>
+            </button>` : "";
+
+        grid.innerHTML += `
+            <div class="post-card animate__animated animate__fadeInUp" style="animation-delay: ${index * 0.1}s" onclick="openArticle('${p.id}')">
+                ${deleteBtn}
+                <div class="post-img-wrapper">
+                    <img src="${p.image || 'https://via.placeholder.com/600x400'}" class="post-img" loading="lazy">
+                </div>
+                <div class="post-content">
+                    <h3 class="post-title" style="color:${p.textColor || 'var(--txt)'}">${p.title}</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; opacity:0.6; margin-top:10px;">
+                        <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
+                        <span><i class="fa fa-user"></i> ${p.author || 'ناشر'}</span>
+                    </div>
+                </div>
+            </div>`;
+    
+}
+        // التنقل بين الأقسام
         function nav(id, e) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
