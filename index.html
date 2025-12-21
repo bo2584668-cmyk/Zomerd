@@ -343,45 +343,7 @@
                 <div class="post-card skeleton" style="height:350px;"></div>
                 <div class="post-card skeleton" style="height:350px;"></div>
                 <div class="post-card skeleton" style="height:350px;"></div>
-       function renderPosts() {
-    const grid = document.getElementById('posts-display-grid');
-    const term = document.getElementById('smart-search').value.toLowerCase();
-    grid.innerHTML = '';
-
-    let filtered = allPosts.filter(p => {
-        const matchSearch = p.title.toLowerCase().includes(term);
-        const matchCategory = (currentCategory === 'all') || (p.category && p.category === currentCategory);
-        return matchSearch && matchCategory;
-    });
-
-    filtered.forEach((p, index) => {
-        // تحقق إذا كان المستخدم الحالي هو الأدمن
-        const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
-        
-        // كود زر الحذف (يظهر فقط للأدمن)
-        const deleteBtn = isAdmin ? `
-            <button onclick="deletePost('${p.id}', event)" 
-                style="position:absolute; top:10px; left:10px; z-index:10; background:rgba(255,0,0,0.8); color:white; border:none; width:35px; height:35px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.3s;"
-                onmouseover="this.style.background='red'" 
-                onmouseout="this.style.background='rgba(255,0,0,0.8)'">
-                <i class="fa fa-trash"></i>
-            </button>` : "";
-
-        grid.innerHTML += `
-            <div class="post-card animate__animated animate__fadeInUp" style="position:relative; animation-delay: ${index * 0.1}s" onclick="openArticle('${p.id}')">
-                ${deleteBtn}
-                <div class="post-img-wrapper">
-                    <img src="${p.image || 'https://via.placeholder.com/600x400'}" class="post-img" loading="lazy">
-                </div>
-                <div class="post-content">
-                    <h3 class="post-title">${p.title}</h3>
-                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; opacity:0.6;">
-                        <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
-                        <span><i class="fa fa-user"></i> ${p.author || 'ناشر'}</span>
-                    </div>
-                </div>
-            </div>`;
-    });
+       
 }  
             </div>
         </section>
@@ -941,7 +903,46 @@
     }
   }
         }
+function renderPosts() {
+    const grid = document.getElementById('posts-display-grid');
+    const term = document.getElementById('smart-search').value.toLowerCase();
+    grid.innerHTML = '';
 
+    let filtered = allPosts.filter(p => {
+        const matchSearch = p.title.toLowerCase().includes(term);
+        const matchCategory = (currentCategory === 'all') || (p.category && p.category === currentCategory);
+        return matchSearch && matchCategory;
+    });
+
+    filtered.forEach((p, index) => {
+        // تحقق إذا كان المستخدم الحالي هو الأدمن
+        const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+        
+        // كود زر الحذف (يظهر فقط للأدمن)
+        const deleteBtn = isAdmin ? `
+            <button onclick="deletePost('${p.id}', event)" 
+                style="position:absolute; top:10px; left:10px; z-index:10; background:rgba(255,0,0,0.8); color:white; border:none; width:35px; height:35px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.3s;"
+                onmouseover="this.style.background='red'" 
+                onmouseout="this.style.background='rgba(255,0,0,0.8)'">
+                <i class="fa fa-trash"></i>
+            </button>` : "";
+
+        grid.innerHTML += `
+            <div class="post-card animate__animated animate__fadeInUp" style="position:relative; animation-delay: ${index * 0.1}s" onclick="openArticle('${p.id}')">
+                ${deleteBtn}
+                <div class="post-img-wrapper">
+                    <img src="${p.image || 'https://via.placeholder.com/600x400'}" class="post-img" loading="lazy">
+                </div>
+                <div class="post-content">
+                    <h3 class="post-title">${p.title}</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; opacity:0.6;">
+                        <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
+                        <span><i class="fa fa-user"></i> ${p.author || 'ناشر'}</span>
+                    </div>
+                </div>
+            </div>`;
+    });
+}
         window.onload = initApp;
     </script>
 </body>
