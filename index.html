@@ -3,99 +3,166 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-    <title>زمرد نت | إدارة المحتوى الاحترافية</title>
+    <title>زمرد نت | المنصة العالمية للأخبار</title>
     
+    <meta name="description" content="زمرد نت - بوابتك للأخبار التقنية والحصرية">
+    <meta name="theme-color" content="#00d2ff">
+    <link rel="manifest" href="/manifest.json">
+
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5562460683071642" crossorigin="anonymous"></script>
+
     <style>
         :root { 
             --p: #00d2ff; --bg: #0b0f19; --card: rgba(21, 28, 44, 0.7); 
             --txt: #f1f5f9; --dim: #94a3b8; --border: rgba(255,255,255,0.08); 
             --glass: blur(15px); --grad: linear-gradient(135deg, #00d2ff, #3a7bd5);
         }
+        body.light {
+            --p: #0891b2; --bg: #f8fafc; --card: rgba(245, 245, 250, 0.9);
+            --txt: #0f172a; --dim: #64748b; --border: rgba(0, 0, 0, 0.08);
+            --glass: blur(15px); --grad: linear-gradient(135deg, #0ea5e9, #3b82f6);
+        }
 
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; }
-        body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; }
+        body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; width: 100vw; transition: background 0.3s, color 0.3s; }
         
-        aside { width: 300px; background: var(--card); backdrop-filter: var(--glass); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; transition: 0.4s; }
-        main { flex: 1; overflow-y: auto; scroll-behavior: smooth; }
+        #read-progress { position: fixed; top: 0; left: 0; height: 4px; background: var(--grad); width: 0%; z-index: 9999; transition: width 0.2s; }
+        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
         
-        .nav-link { padding: 16px 20px; border-radius: 15px; cursor: pointer; display: flex; align-items: center; gap: 15px; color: var(--dim); margin: 8px 15px; text-decoration: none; transition: 0.3s; }
-        .nav-link:hover { background: rgba(0, 210, 255, 0.1); color: var(--p); }
-        .nav-link.active { background: var(--grad); color: #000; font-weight: bold; }
+        aside { 
+            width: 300px; background: var(--card); backdrop-filter: var(--glass); 
+            border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-        .section { padding: 30px; display: none; max-width: 1200px; margin: 0 auto; }
-        .section.active { display: block; animation: fadeIn 0.5s; }
+        @media (max-width: 992px) { aside { position: fixed; right: -300px; height: 100%; } aside.open { right: 0; } }
 
-        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .post-card { background: var(--card); border-radius: 20px; overflow: hidden; border: 1px solid var(--border); transition: 0.3s; position: relative; }
-        .post-card:hover { transform: translateY(-5px); border-color: var(--p); }
+        .nav-link { 
+            padding: 16px 20px; border-radius: 15px; cursor: pointer; display: flex; align-items: center; 
+            gap: 15px; color: var(--dim); margin: 8px 15px; text-decoration: none; position: relative;
+            overflow: hidden; user-select: none;
+        }
+        .nav-link:hover { background: rgba(0, 210, 255, 0.1); color: var(--p); transform: translateX(-5px); }
+        .nav-link.active { background: var(--grad); color: #000; font-weight: bold; box-shadow: 0 10px 20px rgba(0,210,255,0.2); }
+
+        main { flex: 1; overflow-y: auto; position: relative; scroll-behavior: smooth; }
         
-        /* أدوات الإدارة */
-        .admin-tools { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 20; }
+        header { 
+            height: 80px; padding: 0 30px; display: flex; align-items: center; justify-content: space-between; 
+            background: rgba(11, 15, 25, 0.8); backdrop-filter: var(--glass); 
+            border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
+        }
+
+        .section { padding: 30px; display: none; max-width: 1400px; margin: 0 auto; width: 100%; }
+        .section.active { display: block; animation: fadeInRight 0.5s; }
+
+        #category-bar { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-right: 15px; }
+        #category-bar button {
+            background: rgba(255,255,255,0.05); border: none; border-radius: 15px;
+            padding: 10px 20px; font-weight: 700; cursor: pointer; white-space: nowrap;
+            color: var(--dim); transition: 0.3s;
+        }
+        #category-bar button.active { background: var(--grad); color: black; }
+
+        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+        .post-card { 
+            background: var(--card); border-radius: 24px; overflow: hidden; border: 1px solid var(--border); 
+            cursor: pointer; position: relative; transition: 0.4s; backdrop-filter: var(--glass);
+        }
+        .post-card:hover { transform: translateY(-10px); border-color: var(--p); }
+        .post-img-wrapper { position: relative; height: 200px; overflow: hidden; }
+        .post-img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .admin-actions { position: absolute; top: 10px; right: 10px; z-index: 20; display: flex; gap: 5px; }
         .btn-del { background: #ff4757; color: white; border: none; padding: 8px; border-radius: 10px; cursor: pointer; }
-        .status-tag { padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: bold; }
-        .tag-pending { background: #ffa502; color: #000; }
-        .tag-approved { background: #2ed573; color: #fff; }
 
-        .inp-field { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 15px; border-radius: 15px; color: white; margin-bottom: 20px; }
-        
-        #toast-msg { position: fixed; bottom: 20px; right: 20px; background: var(--grad); color: #000; padding: 15px 25px; border-radius: 12px; font-weight: bold; z-index: 10000; display: none; }
+        .inp-field { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid var(--border); background: transparent; color: var(--txt); margin-bottom: 20px; }
+
+        #toast-msg { position: fixed; bottom: 20px; right: 20px; background: var(--grad); color: black; padding: 15px 25px; border-radius: 12px; font-weight: bold; z-index: 10000; display: none; }
+
+        #article-view { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: none; overflow-y: auto; transition: 0.3s; }
     </style>
 </head>
 <body>
-
+    <div id="read-progress"></div>
+    <div id="particles-js"></div>
     <div id="toast-msg"></div>
 
-    <aside>
-        <div style="padding:30px; text-align:center;">
-            <h2 style="color:var(--p)">زمرد<span style="color:#fff">نت</span></h2>
+    <aside id="main-aside">
+        <div style="padding:40px 20px; text-align:center;">
+            <h1 style="color:var(--p); font-weight: 900; font-size: 2.2rem;">زمرد<span style="color:white">نت</span></h1>
         </div>
-        <nav>
-            <div class="nav-link active" onclick="nav('home')"><i class="fa fa-home"></i> الرئيسية</div>
-            <div id="nav-publish" class="nav-link" style="display:none;" onclick="nav('write')"><i class="fa fa-pen"></i> استوديو النشر</div>
-            <div id="nav-requests" class="nav-link" style="display:none;" onclick="nav('requests')"><i class="fa fa-users-cog"></i> طلبات الناشرين</div>
-            <div class="nav-link" onclick="nav('settings')"><i class="fa fa-cog"></i> الإعدادات</div>
+        <nav style="flex: 1;">
+            <div class="nav-link active" onclick="nav('home', event)"><i class="fa-solid fa-bolt"></i> آخر الأخبار</div>
+            <div id="nav-admin" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa-solid fa-pen-nib"></i> استوديو الإدارة</div>
+            <div class="nav-link" onclick="nav('about', event)"><i class="fa-solid fa-shapes"></i> عن المنصة</div>
+            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-paper-plane"></i> الإعلانات والتواصل</div>
+            <div class="nav-link" onclick="nav('requests', event)" id="nav-requests" style="display:none;"><i class="fa-solid fa-inbox"></i> طلبات الناشرين</div>
+            <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-user-gear"></i> حسابي</div>
         </nav>
-        <div id="login-btn" class="nav-link" onclick="showLogin()" style="margin-top:auto; color:var(--p)"><i class="fa fa-sign-in-alt"></i> تسجيل دخول</div>
+        <div id="login-trigger" class="nav-link" onclick="showLogin()" style="color:var(--p); margin-bottom:30px; border: 1px dashed var(--p);"><i class="fa-solid fa-id-badge"></i> تسجيل الدخول</div>
     </aside>
 
-    <main>
+    <main id="scroll-main">
+        <header>
+            <button onclick="toggleMenu()" style="background:none; border:none; color:var(--p); font-size:1.6rem; cursor:pointer;"><i class="fa-solid fa-bars-staggered"></i></button>
+            <div id="sec-title" style="font-weight:900; font-size:1.2rem; color:var(--p)">الأخبار العاجلة</div>
+            <div id="header-profile" style="display:none;">
+                <span id="user-name-head"></span>
+            </div>
+        </header>
+
         <section id="sec-home" class="section active">
-            <h2 style="margin-bottom:20px;">آخر الأخبار المعتمدة</h2>
+            <div id="category-bar">
+                <button class="active" onclick="filterCategory('all', event)">الكل</button>
+                <button onclick="filterCategory('تقنية', event)">تقنية</button>
+                <button onclick="filterCategory('أخبار', event)">أخبار</button>
+            </div>
             <div id="posts-display-grid" class="posts-grid"></div>
         </section>
 
         <section id="sec-write" class="section">
-            <div style="max-width:800px; margin:auto; background:var(--card); padding:30px; border-radius:20px;">
-                <h3>إنشاء مقال جديد</h3>
-                <p style="font-size: 0.8rem; color: #ffa502; margin-bottom: 15px;">* المقالات تخضع لمراجعة الإدارة قبل النشر العام.</p>
-                <input type="text" id="p-title" class="inp-field" placeholder="عنوان المقال">
-                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:300px;"></div>
-                <button onclick="publishPost()" style="width:100%; padding:15px; background:var(--grad); border:none; border-radius:15px; font-weight:900; cursor:pointer;">إرسال للنشر</button>
-            </div>
+             <div style="max-width:900px; margin:auto; background:var(--card); padding:40px; border-radius:30px;">
+                <h2>إنشاء محتوى جديد</h2>
+                <input type="text" id="p-title" class="inp-field" placeholder="العنوان الرئيسي للمقال...">
+                <select id="p-category" class="inp-field">
+                    <option value="تقنية">تقنية</option>
+                    <option value="أخبار">أخبار</option>
+                    <option value="مقالات">مقالات</option>
+                </select>
+                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:400px;"></div>
+                <button onclick="publishPost()" style="width:100%; padding:20px; background:var(--grad); border:none; border-radius:15px; font-weight:900; cursor:pointer;">نشر المقال</button>
+             </div>
         </section>
 
         <section id="sec-requests" class="section">
-            <h3>طلبات الانضمام لفريق الناشرين</h3>
-            <div id="request-list" style="margin-top:20px;"></div>
+            <div style="max-width:900px; margin:auto;">
+                <h2>طلبات الناشرين</h2>
+                <div id="request-list"></div>
+            </div>
         </section>
 
         <section id="sec-settings" class="section">
-            <div style="text-align:center; padding:40px;">
-                <button onclick="requestToBePublisher()" id="btn-req-pub" style="padding:15px 30px; background:var(--p); border:none; border-radius:15px; font-weight:bold; cursor:pointer;">طلب صلاحية "ناشر"</button>
-                <div id="pub-status" style="margin-top:15px; font-weight:bold;"></div>
+            <div style="max-width:600px; margin:auto; text-align:center;">
+                <button id="request-publisher-btn" onclick="requestPublisher()" style="padding:15px; background:var(--p); border:none; border-radius:15px; width:100%; cursor:pointer; font-weight:bold;">طلب أن أكون ناشر</button>
+                <button onclick="logout()" style="margin-top:20px; padding:15px; background:#ff4757; color:white; border:none; border-radius:15px; width:100%; cursor:pointer;">تسجيل الخروج</button>
             </div>
         </section>
     </main>
 
-    <div id="login-modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:2000; display:none; align-items:center; justify-content:center;">
-        <div style="background:var(--card); padding:40px; border-radius:25px; text-align:center; border:1px solid var(--p);">
-            <h3>تسجيل الدخول</h3>
-            <p>لأغراض التجربة، سيتم اعتبارك آدمن إذا كان بريدك مطابقاً.</p>
-            <div id="g_id_onload" data-client_id="YOUR_GOOGLE_ID" data-callback="onGoogleLogin"></div>
+    <div id="article-view">
+        <button onclick="closeArticle()" style="margin:20px; padding:10px 20px;">إغلاق</button>
+        <div id="full-article-data" style="max-width:800px; margin:auto; padding:20px;"></div>
+    </div>
+
+    <div id="login-modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; display:none; align-items:center; justify-content:center;">
+        <div style="background:var(--card); padding:40px; border-radius:30px; text-align:center;">
+            <h2>تسجيل الدخول</h2>
+            <div id="g_id_onload" data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com" data-callback="onGoogleLogin"></div>
             <div class="g_id_signin" data-type="standard"></div>
         </div>
     </div>
@@ -105,7 +172,6 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
-        // إعدادات Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAt16kYfN4cNHfTwbdr3KOGbcQJlmE45tg",
             authDomain: "zomerd-new.firebaseapp.com",
@@ -118,152 +184,143 @@
         const db = firebase.firestore();
         const ADMIN_EMAIL = "bo2584668@gmail.com";
 
-        let user = JSON.parse(localStorage.getItem('user')) || null;
+        let user = JSON.parse(localStorage.getItem('zomerd_user')) || null;
+        let allPosts = [];
 
-        // 1. نظام التنقل (Navigation)
-        function nav(secId) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById('sec-' + secId).classList.add('active');
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        }
-
-        // 2. نظام التنبيهات (Notifications)
         function showToast(msg) {
             const t = document.getElementById('toast-msg');
-            t.innerText = msg;
-            t.style.display = 'block';
+            t.innerText = msg; t.style.display = 'block';
             setTimeout(() => t.style.display = 'none', 3000);
         }
 
-        // 3. جلب المنشورات (Logic للموافقة والحذف)
+        function nav(id, e) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('sec-' + id).classList.add('active');
+            if(e) {
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+            }
+        }
+
+        // دالة جلب المنشورات مع إضافة زر الحذف للآدمن
         function fetchPosts() {
             db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
-                const grid = document.getElementById('posts-display-grid');
-                grid.innerHTML = '';
-                
-                snap.forEach(doc => {
-                    const p = doc.data();
-                    const isAdmin = user && user.email === ADMIN_EMAIL;
-                    
-                    // المستخدم العادي يرى المعتمد فقط. الآدمن يرى كل شيء.
-                    if (p.status === 'approved' || isAdmin) {
-                        const card = document.createElement('div');
-                        card.className = 'post-card animate__animated animate__fadeIn';
-                        
-                        let adminButtons = '';
-                        if (isAdmin) {
-                            adminButtons = `
-                                <div class="admin-tools">
-                                    ${p.status === 'pending' ? `<button onclick="approvePost('${doc.id}')" style="background:#2ed573; border:none; padding:8px; border-radius:10px; color:white;"><i class="fa fa-check"></i></button>` : ''}
-                                    <button onclick="deletePost('${doc.id}')" class="btn-del"><i class="fa fa-trash"></i></button>
-                                </div>
-                                <span class="status-tag tag-${p.status}">${p.status === 'approved' ? 'منشور' : 'مراجعة'}</span>
-                            `;
-                        }
-
-                        card.innerHTML = `
-                            ${adminButtons}
-                            <div style="padding:20px;">
-                                <h4>${p.title}</h4>
-                                <p style="font-size:0.8rem; opacity:0.6;">بواسطة: ${p.author}</p>
-                            </div>
-                        `;
-                        grid.appendChild(card);
-                    }
-                });
+                allPosts = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
+                renderPosts();
             });
         }
 
-        // 4. وظائف التحكم (الآدمن فقط)
-        async function deletePost(id) {
-            if(confirm("حذف هذا المقال نهائياً؟")) {
+        function renderPosts() {
+            const grid = document.getElementById('posts-display-grid');
+            grid.innerHTML = '';
+            
+            allPosts.forEach(p => {
+                const isAdmin = user && user.email === ADMIN_EMAIL;
+                // إظهار المقالات المعتمدة للكل، والمعلقة للآدمن فقط
+                if (p.status === 'approved' || isAdmin) {
+                    const card = document.createElement('div');
+                    card.className = 'post-card animate__animated animate__fadeIn';
+                    card.innerHTML = `
+                        ${isAdmin ? `<div class="admin-actions"><button class="btn-del" onclick="deletePost('${p.id}', event)"><i class="fa fa-trash"></i></button> ${p.status === 'pending' ? `<button onclick="approvePost('${p.id}', event)" style="background:green; color:white; border:none; padding:8px; border-radius:10px;">قبول</button>` : ''}</div>` : ''}
+                        <div class="post-img-wrapper"><img src="${p.image || 'https://via.placeholder.com/400'}" class="post-img"></div>
+                        <div style="padding:15px;">
+                            <h3>${p.title}</h3>
+                            <p style="font-size:0.8rem; opacity:0.6;">${p.category} | ${p.status === 'pending' ? 'قيد المراجعة' : ''}</p>
+                        </div>
+                    `;
+                    card.onclick = () => openArticle(p.id);
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        // دالة حذف المنشور
+        async function deletePost(id, e) {
+            e.stopPropagation();
+            if(confirm("هل تريد حذف هذا المنشور نهائياً؟")) {
                 await db.collection("posts").doc(id).delete();
                 showToast("تم الحذف بنجاح");
             }
         }
 
-        async function approvePost(id) {
+        // دالة قبول المنشور
+        async function approvePost(id, e) {
+            e.stopPropagation();
             await db.collection("posts").doc(id).update({ status: 'approved' });
-            showToast("تمت الموافقة ونشر المقال");
+            showToast("تم قبول ونشر المقال");
         }
 
-        // 5. نظام الناشرين (Publisher System)
-        async function requestToBePublisher() {
-            if(!user) return showToast("سجل دخولك أولاً");
-            await db.collection("requests").doc(user.email).set({
-                name: user.name,
-                email: user.email,
-                time: firebase.firestore.FieldValue.serverTimestamp(),
-                status: 'pending'
+        // نظام الناشرين والموافقة
+        async function requestPublisher() {
+            if(!user) return showLogin();
+            await db.collection("publisher_requests").doc(user.email).set({
+                name: user.name, email: user.email, status: 'pending'
             });
             showToast("تم إرسال طلبك للإدارة");
         }
 
-        // 6. لوحة إدارة الطلبات (للآدمن فقط)
         function fetchRequests() {
             if(user?.email !== ADMIN_EMAIL) return;
-            db.collection("requests").where("status", "==", "pending").onSnapshot(snap => {
+            db.collection("publisher_requests").where("status", "==", "pending").onSnapshot(snap => {
                 const list = document.getElementById('request-list');
                 list.innerHTML = '';
                 snap.forEach(doc => {
                     const r = doc.data();
-                    list.innerHTML += `
-                        <div style="background:var(--card); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                            <span>${r.name} (${r.email})</span>
-                            <button onclick="acceptPublisher('${doc.id}')" style="background:var(--p); border:none; padding:10px 20px; border-radius:10px; font-weight:bold;">موافقة كـ ناشر</button>
-                        </div>
-                    `;
+                    list.innerHTML += `<div style="padding:15px; background:var(--card); margin-bottom:10px; border-radius:15px; display:flex; justify-content:space-between;">
+                        <span>${r.name} (${r.email})</span>
+                        <button onclick="acceptPublisher('${r.email}')" style="background:var(--p); border:none; padding:10px; border-radius:10px;">موافقة</button>
+                    </div>`;
                 });
             });
         }
 
         async function acceptPublisher(email) {
-            await db.collection("requests").doc(email).update({ status: 'approved' });
-            await db.collection("users").doc(email).set({ role: 'publisher' }, { merge: true });
-            showToast("تم تعيين المستخدم كناشر");
+            await db.collection("publisher_requests").doc(email).update({ status: 'approved' });
+            await db.collection("users").doc(email).set({ isPublisher: true }, { merge: true });
+            showToast("تم تعيين المستخدم كناشر بنجاح");
         }
 
-        // 7. النشر (Publish Logic)
         async function publishPost() {
             const title = document.getElementById('p-title').value;
             const body = document.getElementById('p-body').innerHTML;
+            const cat = document.getElementById('p-category').value;
             
-            if(!title || body.length < 20) return showToast("المقال قصير جداً!");
-
             const postData = {
-                title: title,
-                content: body,
-                author: user.name,
-                email: user.email,
+                title, content: body, category: cat,
+                author: user.name, email: user.email,
                 time: firebase.firestore.FieldValue.serverTimestamp(),
-                // الآدمن ينشر فوراً، الناشر ينتظر الموافقة
-                status: (user.email === ADMIN_EMAIL) ? 'approved' : 'pending'
+                status: user.email === ADMIN_EMAIL ? 'approved' : 'pending'
             };
-
             await db.collection("posts").add(postData);
-            showToast(user.email === ADMIN_EMAIL ? "تم النشر بنجاح" : "تم الإرسال للمراجعة");
+            showToast("تم النشر بنجاح (بانتظار المراجعة إذا كنت ناشراً)");
             nav('home');
         }
 
-        // 8. التحقق من الصلاحيات (Permissions Check)
+        // التحقق من الصلاحيات عند الدخول
         async function checkPermissions() {
             if(!user) return;
-            
-            // الآدمن يرى كل شيء
             if(user.email === ADMIN_EMAIL) {
-                document.getElementById('nav-publish').style.display = 'flex';
+                document.getElementById('nav-admin').style.display = 'flex';
                 document.getElementById('nav-requests').style.display = 'flex';
                 return;
             }
-
-            // التحقق من صلاحية الناشر
-            const userDoc = await db.collection("users").doc(user.email).get();
-            if(userDoc.exists && userDoc.data().role === 'publisher') {
-                document.getElementById('nav-publish').style.display = 'flex';
+            // التحقق من قاعدة البيانات هل هو ناشر؟
+            const doc = await db.collection("users").doc(user.email).get();
+            if(doc.exists && doc.data().isPublisher) {
+                document.getElementById('nav-admin').style.display = 'flex';
             }
         }
 
-        // تشغيل النظام عند التحميل
+        function onGoogleLogin(res) {
+            const payload = JSON.parse(atob(res.credential.split('.')[1]));
+            user = { name: payload.name, email: payload.email };
+            localStorage.setItem('zomerd_user', JSON.stringify(user));
+            location.reload();
+        }
+
+        function showLogin() { document.getElementById('login-modal').style.display = 'flex'; }
+        function logout() { localStorage.removeItem('zomerd_user'); location.reload(); }
+
         window.onload = () => {
             fetchPosts();
             if(user) {
@@ -271,17 +328,6 @@
                 fetchRequests();
             }
         };
-
-        // وظيفة تجريبية لتسجيل الدخول (لأغراض الكود الكامل)
-        function onGoogleLogin(response) {
-            const base64Url = response.credential.split('.')[1];
-            const payload = JSON.parse(window.atob(base64Url));
-            user = { name: payload.name, email: payload.email };
-            localStorage.setItem('user', JSON.stringify(user));
-            location.reload();
-        }
-        
-        function showLogin() { document.getElementById('login-modal').style.display = 'flex'; }
     </script>
 </body>
 </html>
