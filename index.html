@@ -249,42 +249,7 @@
         #color-picker button.active {
             border-color: black;
         }
-/* تنسيق حاوية البطاقة لجعل الزر يتموضع بداخلها */
-.post-card {
-    position: relative;
-    overflow: hidden;
-}
 
-/* استايل زر الحذف */
-.admin-delete-btn {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    z-index: 100;
-    background: rgba(255, 59, 48, 0.9); /* لون أحمر زاهي وشفاف قليلاً */
-    color: white;
-    border: none;
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
-}
-
-.admin-delete-btn:hover {
-    background: #ff3b30;
-    transform: scale(1.1) rotate(10deg);
-    box-shadow: 0 6px 20px rgba(255, 59, 48, 0.4);
-}
-
-.admin-delete-btn i {
-    font-size: 1.1rem;
-}
     </style>
 </head>
 <body>
@@ -343,8 +308,6 @@
                 <div class="post-card skeleton" style="height:350px;"></div>
                 <div class="post-card skeleton" style="height:350px;"></div>
                 <div class="post-card skeleton" style="height:350px;"></div>
-       
-}  
             </div>
         </section>
 
@@ -877,31 +840,6 @@
             } catch(e) {
                 showToast('حدث خطأ أثناء رفض الطلب.');
             }
-  async function deletePost(postId, event) {
-    // منع فتح المقال عند الضغط على زر الحذف
-    if (event) event.stopPropagation();
-
-    // تأكيد الحذف
-    const confirmDelete = confirm("⚠️ هل أنت متأكد من حذف هذا المقال نهائياً؟ لا يمكن التراجع عن هذه الخطوة.");
-    
-    if (confirmDelete) {
-        try {
-            showToast("جاري الحذف...");
-            
-            // الحذف من قاعدة البيانات
-            await db.collection("posts").doc(postId).delete();
-            
-            showToast("تم حذف المنشور بنجاح ✅");
-            
-            // تحديث القائمة فوراً دون إعادة تحميل الصفحة
-            fetchPosts(); 
-            
-        } catch (error) {
-            console.error("Error deleting post: ", error);
-            showToast("عذراً، حدث خطأ أثناء الحذف ❌");
-        }
-    }
-  }
         }
 function renderPosts() {
     const grid = document.getElementById('posts-display-grid');
@@ -942,6 +880,30 @@ function renderPosts() {
                 </div>
             </div>`;
     });
+}async function deletePost(postId, event) {
+    // منع فتح المقال عند الضغط على زر الحذف
+    if (event) event.stopPropagation();
+
+    // تأكيد الحذف
+    const confirmDelete = confirm("⚠️ هل أنت متأكد من حذف هذا المقال نهائياً؟ لا يمكن التراجع عن هذه الخطوة.");
+    
+    if (confirmDelete) {
+        try {
+            showToast("جاري الحذف...");
+            
+            // الحذف من قاعدة البيانات
+            await db.collection("posts").doc(postId).delete();
+            
+            showToast("تم حذف المنشور بنجاح ✅");
+            
+            // تحديث القائمة فوراً دون إعادة تحميل الصفحة
+            fetchPosts(); 
+            
+        } catch (error) {
+            console.error("Error deleting post: ", error);
+            showToast("عذراً، حدث خطأ أثناء الحذف ❌");
+        }
+    }
 }
         window.onload = initApp;
     </script>
