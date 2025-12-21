@@ -830,7 +830,218 @@
             } catch(e) {
                 showToast('حدث خطأ أثناء الموافقة.');
             }
+   // --- إعدادات Firebase ---
+const firebaseConfig = {
+    apiKey: "AIzaSyAt16kYfN4cNHfTwbdr3KOGbcQJlmE45tg",
+    authDomain: "zomerd-new.firebaseapp.com",
+    projectId: "zomerd-new",
+    storageBucket: "zomerd-new.firebasestorage.app",
+    messagingSenderId: "52188666382",
+    appId: "1:52188666382:web:7879a8c671af9329f67a5f"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const ADMIN_EMAIL = "bo2584668@gmail.com";
+
+let currentUser = null;
+let allPosts = [];
+
+// --- 1. نظام تسجيل الدخول والتحقق من الرتبة ---
+function onGoogleLogin(response) {
+    const base64Url = response.credential.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const userPayload = JSON.parse(window.atob(base64));
+
+    // جلب بيانات المستخدم من قاعدة البيانات للتحقق من صلاحية الناشر
+    db.collection("users").doc(userPayload.email).get().then((doc) => {
+        let userData = {
+            name: userPayload.name,
+            email: userPayload.email,
+            picture: userPayload.picture,
+            isPublisher: false
+        };
+
+        if (doc.exists) {
+            userData.isPublisher = doc.data().isPublisher || false;
+        } else {
+            // إنشاء مستخدم جديد في قاعدة البيانات إذا لم يوجد
+            db.collection("users").doc(userPayload.email).set(userData);
         }
+
+        // إذا كان هو الآدمن الرئيسي
+        if (userData.email === ADMIN_EMAIL) userData.isPublisher = true;
+
+        currentUser = userData;
+        localStorage.setItem('zomerd_user', JSON.stringify(userData));
+        updateUI();
+        hideLogin();
+        showToast(`أهلاً بك يا ${userData.name}`);
+    });
+}
+
+function updateUI() {
+    if (!currentUser) return;
+
+    document.getElementById('header-profile').style.display = 'flex';
+    document.getElementById('user-name-head').innerText = currentUser.name;
+    document.getElementById('user-icon').innerText = currentUser.name.charAt(0);
+    document.getElementById('login-trigger').style.display = 'none';
+
+    // إظهار قسم الإدارة إذا كان ناشراً أو آدمن
+    if (currentUser.isPublisher) {
+        document.getElementById('nav-admin').style.display = 'flex';
+    }
+
+    // إظهار قسم طلبات الناشرين للآدمن فقط
+    if (currentUser.email === ADMIN_EMAIL) {
+        document.getElementById('nav-requests').style.display = 'flex';
+        loadRequests();
+    }
+    
+    fetchPosts();
+}
+
+// --- 2. إدارة المقالات (جلب، نشر، حذف) ---
+async function fetchPosts() {
+    const snapshot = await db.collection("posts").orderBy("time", "desc").get();
+    allPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    renderPosts();
+}
+
+function renderPosts() {
+    const grid = document.getElementById('posts-display-grid');
+    const term = document.getElementById('smart-search').value.toLowerCase();
+    grid.innerHTML = '';
+
+    let filtered = allPosts.filter(p => {
+        const matchSearch = p.title.toLowerCase().includes(term);
+        const matchCategory = (currentCategory === 'all') || (p.category === currentCategory);
+        return matchSearch && matchCategory;
+    });
+
+    filtered.forEach((p, index) => {
+        const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+        // إضافة زر الحذف للآدمن فقط
+        const deleteBtn = isAdmin ? `<button onclick="deletePost('${p.id}', event)" style="position:absolute; top:10px; right:10px; z-index:20; background:red; color:white; border:none; border-radius:5px; padding:5px 10px; cursor:pointer;"><i class="fa fa-trash"></i></button>` : "";
+
+        grid.innerHTML += `
+            <div class="post-card animate__animated animate__fadeInUp" style="animation-delay: ${index * 0.1}s" onclick="openArticle('${p.id}')">
+                ${deleteBtn}
+                <div class="post-img-wrapper">
+                    <img src="${p.image || 'https://via.placeholder.com/600x400'}" class="post-img" loading="lazy">
+                </div>
+                <div class="post-content">
+                    <h3 class="post-title" style="color:${p.textColor || 'var(--txt)'}">${p.title}</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; opacity:0.6;">
+                        <span><i class="fa fa-calendar-day"></i> ${p.time ? new Date(p.time.seconds*1000).toLocaleDateString('ar-EG') : 'الآن'}</span>
+                        <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
+                    </div>
+                </div>
+            </div>`;
+    });
+}
+
+async function deletePost(id, event) {
+    event.stopPropagation(); // منع فتح المقال عند الضغط على حذف
+    if (confirm("هل أنت متأكد من حذف هذا المقال نهائياً؟")) {
+        try {
+            await db.collection("posts").doc(id).delete();
+            showToast("تم حذف المقال بنجاح");
+            fetchPosts();
+        } catch (e) {
+            showToast("حدث خطأ أثناء الحذف");
+        }
+    }
+}
+
+async function publishPost() {
+    const title = document.getElementById('p-title').value;
+    const content = document.getElementById('p-body').innerHTML;
+    const category = document.getElementById('p-category').value;
+
+    if (!title || !content || !category) return showToast("يرجى إكمال كافة البيانات");
+
+    const newPost = {
+        title,
+        content,
+        category,
+        image: uploadedImageUrl || "https://via.placeholder.com/800x400",
+        author: currentUser.name,
+        authorEmail: currentUser.email,
+        time: firebase.firestore.FieldValue.serverTimestamp(),
+        views: 0,
+        likes: 0,
+        textColor: currentEditorColor
+    };
+
+    await db.collection("posts").add(newPost);
+    showToast("تم نشر المقال بنجاح!");
+    nav('home');
+    fetchPosts();
+}
+
+// --- 3. نظام طلبات الناشرين ---
+async function requestToBePublisher() {
+    if (!currentUser) return showToast("سجل دخولك أولاً");
+    
+    await db.collection("requests").doc(currentUser.email).set({
+        name: currentUser.name,
+        email: currentUser.email,
+        time: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    showToast("تم إرسال طلبك للآدمن بنجاح");
+}
+
+async function loadRequests() {
+    const list = document.getElementById('request-list');
+    const snapshot = await db.collection("requests").get();
+    list.innerHTML = "";
+
+    if (snapshot.empty) {
+        list.innerHTML = "لا توجد طلبات معلقة حالياً.";
+        return;
+    }
+
+    snapshot.forEach(doc => {
+        const req = doc.data();
+        list.innerHTML += `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:10px;">
+                <div>
+                    <strong>${req.name}</strong><br>
+                    <small>${req.email}</small>
+                </div>
+                <button onclick="approvePublisher('${req.email}')" style="background:var(--p); color:black; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">موافقة</button>
+            </div>
+        `;
+    });
+}
+
+async function approvePublisher(email) {
+    try {
+        // 1. ترقية المستخدم في قاعدة البيانات
+        await db.collection("users").doc(email).update({ isPublisher: true });
+        // 2. حذف الطلب
+        await db.collection("requests").doc(email).delete();
+        showToast("تمت الموافقة وتفعيل صلاحية الناشر");
+        loadRequests();
+    } catch (e) {
+        showToast("حدث خطأ ما");
+    }
+}
+
+// تشغيل عند التحميل
+window.onload = () => {
+    const saved = localStorage.getItem('zomerd_user');
+    if (saved) {
+        currentUser = JSON.parse(saved);
+        updateUI();
+    }
+    fetchPosts();
+};
+
+// تابع لبقية الوظائف (التنقل، الوضع الليلي، إلخ) كما هي في كودك...
+        }
+        
 
         // رفض طلب ناشر
         async function rejectPublisher(docId) {
