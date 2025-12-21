@@ -1015,7 +1015,26 @@ async function loadRequests() {
         `;
     });
 }
+async function approvePublisher(email) {
+    try {
+        console.log("محاولة الموافقة على:", email); // للتأكد من وصول البيانات
 
+        // تحديث حالة المستخدم ليصبح ناشر
+        await db.collection("users").doc(email).set({ 
+            isPublisher: true 
+        }, { merge: true });
+
+        // حذف الطلب من القائمة
+        await db.collection("requests").doc(email).delete();
+
+        showToast("تمت الموافقة بنجاح! 🎉");
+        loadRequests(); // تحديث القائمة أمامك
+    } catch (error) {
+        // سيظهر لك سبب الخطأ الحقيقي في الـ Console (اضغط F12 في المتصفح لرؤيته)
+        console.error("الخطأ الحقيقي هو:", error); 
+        showToast("حدث خطأ: " + error.message);
+    }
+}
 
             async function approvePublisher(email) {
     try {
