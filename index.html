@@ -829,7 +829,123 @@
                 showToast('تمت الموافقة على الناشر!');
             } catch(e) {
                 showToast('حدث خطأ أثناء الموافقة.');
+         
             }
+            // المتغيرات العالمية للتحكم في الصلاحيات
+let isPublisher = localStorage.getItem('isPublisher') === 'true';
+
+// 1. نظام جلب المنشورات (تعديل لفلترة المقالات غير المعتمدة)
+async function fetchPosts() {
+    // الآدمن يرى كل شيء، المستخدم العادي يرى المعتمد فقط
+    let query = db.collection("posts").orderBy("time", "desc");
+    
+    query.onSnapshot(snapshot => {
+        allPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        // إذا لم يكن آدمن، فلتر المقالات المعتمدة فقط للصفحة الرئيسية
+        if (user?.email !== ADMIN_EMAIL) {
+            allPosts = allPosts.filter(p => p.status === 'approved');
+        }
+        renderPosts();
+    });
+}
+
+// 2. تعديل دالة رندر البوستات لإضافة زر الحذف للآدمن
+function renderPosts() {
+    const grid = document.getElementById('posts-display-grid');
+    grid.innerHTML = '';
+
+    allPosts.forEach((p, index) => {
+        const isAdmin = user?.email === ADMIN_EMAIL;
+        const deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deletePost('${p.id}', event)"><i class="fa shadow fa-trash"></i> حذف</button>` : "";
+        const statusNote = isAdmin ? `<span class="status-badge status-${p.status}">${p.status === 'approved' ? 'معتمد' : 'قيد المراجعة'}</span>` : "";
+
+        grid.innerHTML += `
+            <div class="post-card animate__animated animate__fadeInUp" onclick="openArticle('${p.id}')">
+                <div class="post-img-wrapper">
+                    <img src="${p.image || ''}" class="post-img">
+                </div>
+                <div class="post-content">
+                    ${statusNote}
+                    <h3 class="post-title">${p.title}</h3>
+                    <div class="admin-controls">
+                        ${deleteBtn}
+                        ${isAdmin && p.status === 'pending' ? `<button onclick="approvePost('${p.id}', event)" style="background:#2ed573; color:white; border:none; padding:5px 10px; border-radius:8px;">موافقة</button>` : ""}
+                    </div>
+                </div>
+            </div>`;
+    });
+}
+
+// 3. دالة حذف المنشور (خاصة بالآدمن)
+async function deletePost(id, event) {
+    event.stopPropagation();
+    if(confirm("هل أنت متأكد من حذف هذا المقال نهائياً؟")) {
+        await db.collection("posts").doc(id).delete();
+        showToast("تم حذف المقال بنجاح");
+    }
+}
+
+// 4. دالة الموافقة على مقال (خاصة بالآدمن)
+async function approvePost(id, event) {
+    event.stopPropagation();
+    await db.collection("posts").doc(id).update({ status: 'approved' });
+    showToast("تم اعتماد المقال ونشره للعامة");
+}
+
+// 5. تعديل دالة النشر (الناشر ينشر كـ "معلق" والآدمن ينشر فوراً)
+async function publishPost() {
+    const title = document.getElementById('p-title').value;
+    const body = document.getElementById('p-body').innerHTML;
+    const category = document.getElementById('p-category').value;
+
+    if(!title || !body) return showToast("يرجى إكمال بيانات المقال");
+
+    const postData = {
+        title: title,
+        content: body,
+        category: category,
+        author: user.displayName,
+        authorEmail: user.email,
+        image: uploadedImageUrl || "https://via.placeholder.com/800",
+        views: 0,
+        likes: 0,
+        time: firebase.firestore.FieldValue.serverTimestamp(),
+        // إذا كان الناشر هو الآدمن يتم الاعتماد فوراً، غير ذلك ينتظر المراجعة
+        status: (user.email === ADMIN_EMAIL) ? 'approved' : 'pending'
+    };
+
+    await db.collection("posts").add(postData);
+    showToast(user.email === ADMIN_EMAIL ? "تم النشر فوراً" : "تم إرسال المقال للمراجعة من قبل الإدارة");
+    nav('home');
+}
+
+// 6. نظام إدارة طلبات الناشرين (تعديل عند موافقة الآدمن)
+async function acceptRequest(requestId, userEmail) {
+    // 1. تحديث حالة الطلب
+    await db.collection("requests").doc(requestId).update({ status: 'accepted' });
+    
+    // 2. منح الصلاحية للمستخدم (يتم تخزينها في قاعدة البيانات)
+    await db.collection("users").doc(userEmail).set({ isPublisher: true }, { merge: true });
+    
+    showToast("تمت الموافقة على الناشر الجديد");
+}
+
+// 7. مراقبة حالة المستخدم عند تسجيل الدخول لإظهار صفحة النشر
+function checkPermissions(email) {
+    if (email === ADMIN_EMAIL) {
+        document.getElementById('nav-admin').style.display = 'flex';
+        document.getElementById('nav-requests').style.display = 'flex';
+    } else {
+        // التحقق من قاعدة البيانات إذا كان المستخدم ناشراً معتمداً
+        db.collection("users").doc(email).get().then(doc => {
+            if (doc.exists && doc.data().isPublisher) {
+                document.getElementById('nav-admin').style.display = 'flex';
+                showToast("مرحباً بك أيها الناشر المبدع");
+            }
+        });
+    }
+}
         }
 
         // رفض طلب ناشر
