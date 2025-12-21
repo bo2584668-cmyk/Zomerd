@@ -1075,6 +1075,138 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     fetchPosts();
 });
+ // 1. دالة النشر الذكية (فوري للآدمن ومراجعة للناشر)
+async function publishPost() {
+    const title = document.getElementById('p-title').value;
+    const content = document.getElementById('p-body').innerHTML;
+    const category = document.getElementById('p-category').value;
+
+    if(!title || content.length < 10) return showToast("أكمل بيانات المقال أولاً");
+
+    // التحقق: إذا كان الإيميل هو إيميلك (الآدمن) ينشر فوراً، غير ذلك يذهب للمراجعة
+    const status = (currentUser.email === ADMIN_EMAIL) ? "approved" : "pending";
+
+    try {
+        await db.collection("posts").add({
+            title, content, category,
+            author: currentUser.name,
+            authorEmail: currentUser.email,
+            time: firebase.firestore.FieldValue.serverTimestamp(),
+            status: status,
+            views: 0
+        });
+
+        if(status === "approved") {
+            showToast("تم النشر فوراً ✅");
+            fetchPosts(); // تحديث الصفحة الرئيسية فوراً
+        } else {
+            showToast("تم إرسال المقال للمراجعة.. سيظهر فور موافقة الآدمن ⏳");
+        }
+        
+        // تفريغ الحقول والعودة للرئيسية
+        document.getElementById('p-title').value = "";
+        document.getElementById('p-body').innerHTML = "";
+        nav('home');
+    } catch (e) {
+        showToast("خطأ في النشر: " + e.message);
+    }
+}
+
+// 2. جلب المقالات المعتمدة (Approved) فقط للجمهور
+async function fetchPosts() {
+    try {
+        const snap = await db.collection("posts")
+                       .where("status", "==", "approved")
+                       .orderBy("time", "desc").get();
+        allPosts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderPosts();
+    } catch (e) {
+        console.error("خطأ في جلب المقالات:", e);
+    }
+}
+
+// 3. عرض المقالات "المعلقة" للآدمن فقط لمراجعتها
+async function loadPendingPosts() {
+    const container = document.getElementById('pending-posts-list');
+    if (!container) return;
+
+    try {
+        const snap = await db.collection("posts").where("status", "==", "pending").get();
+        container.innerHTML = snap.empty ? "<p style='opacity:0.5; padding:10px;'>لا توجد مقالات بانتظار المراجعة</p>" : "";
+
+        snap.forEach(doc => {
+            const p = doc.data();
+            container.innerHTML += `
+                <div class="admin-item" style="background:rgba(255,159,67,0.05); padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #ff9f43;">
+                    <strong>${p.title}</strong><br><small>الكاتب: ${p.author}</small>
+                    <div style="margin-top:10px; display:flex; gap:10px;">
+                        <button onclick="previewArticle('${doc.id}')" style="background:var(--p); border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">معاينة</button>
+                        <button onclick="approvePost('${doc.id}')" style="background:#2ecc71; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">نشر ✅</button>
+                        <button onclick="deletePost('${doc.id}', event)" style="background:#ff4757; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">حذف</button>
+                    </div>
+                </div>`;
+        });
+    } catch (e) { console.error(e); }
+}
+
+// 4. الموافقة على نشر المقال (تحويله من pending إلى approved)
+async function approvePost(postId) {
+    try {
+        await db.collection("posts").doc(postId).update({ status: "approved" });
+        showToast("تم اعتماد ونشر المقال بنجاح 🚀");
+        loadPendingPosts(); // تحديث قائمة المراجعة
+        fetchPosts(); // تحديث الصفحة الرئيسية
+    } catch (e) { showToast("خطأ في الموافقة"); }
+}
+
+// 5. قبول طلبات الناشرين (ترقية المستخدم)
+async function approvePublisher(email) {
+    try {
+        await db.collection("users").doc(email).set({ isPublisher: true }, { merge: true });
+        await db.collection("requests").doc(email).delete();
+        showToast("تمت الموافقة وتعيينه كناشر ✅");
+        loadRequests();
+        loadPublishersList();
+    } catch (e) { showToast("فشل في العملية"); }
+}
+
+// 6. التحكم في الناشرين (سحب الصلاحية)
+async function removePublisher(email) {
+    if(confirm("هل تريد سحب صلاحية النشر من هذا الحساب؟")) {
+        try {
+            await db.collection("users").doc(email).update({ isPublisher: false });
+            showToast("تم سحب الصلاحية بنجاح");
+            loadPublishersList();
+        } catch (e) { showToast("حدث خطأ"); }
+    }
+}
+
+// 7. تحديث واجهة المستخدم والصلاحيات (تلقائي عند التحميل)
+async function updateUI() {
+    if (!currentUser) return;
+    
+    try {
+        // التحقق من الصلاحية الحقيقية من فايربيس
+        const userDoc = await db.collection("users").doc(currentUser.email).get();
+        if (userDoc.exists) {
+            currentUser.isPublisher = userDoc.data().isPublisher || false;
+            localStorage.setItem('zomerd_user', JSON.stringify(currentUser));
+        }
+
+        // إظهار قسم الكتابة للناشرين والآدمن
+        if (currentUser.isPublisher) {
+            document.getElementById('nav-admin').style.display = 'flex';
+        }
+        
+        // إظهار قسم الإدارة والمراجعة للآدمن فقط
+        if (currentUser.email === ADMIN_EMAIL) {
+            document.getElementById('nav-requests').style.display = 'flex';
+            loadRequests();      // تحميل طلبات الانضمام
+            loadPendingPosts();  // تحميل المقالات بانتظار الموافقة
+            loadPublishersList();// تحميل قائمة الناشرين الحاليين
+        }
+    } catch (e) { console.error("UpdateUI Error:", e); }
+}       
         window.onload = initApp;
     </script>
 </body>
