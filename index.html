@@ -249,7 +249,23 @@
         #color-picker button.active {
             border-color: black;
         }
-
+.btn-del { 
+    background: #ff4757; 
+    color: white; 
+    border: none; 
+    padding: 8px; 
+    border-radius: 10px; 
+    cursor: pointer; 
+}
+        .admin-actions { 
+    position: absolute; 
+    top: 10px; 
+    right: 10px; 
+    z-index: 20; 
+    display: flex; 
+    gap: 5px; 
+        }
+ 
     </style>
 </head>
 <body>
@@ -1205,6 +1221,18 @@ function fetchPosts() {
                 showToast("تم الحذف بنجاح");
             }
         }
+        // داخل دالة renderPosts
+const isAdmin = user && user.email === ADMIN_EMAIL;
+
+card.innerHTML = `
+    ${isAdmin ? `
+        <div class="admin-actions">
+            <button class="btn-del" onclick="deletePost('${p.id}', event)">
+                <i class="fa fa-trash"></i>
+            </button>
+        </div>` : ''}
+    ... باقي كود الكرت ...
+`;
         // إظهار قسم الكتابة للناشرين والآدمن
         if (currentUser.isPublisher) {
             document.getElementById('nav-admin').style.display = 'flex';
