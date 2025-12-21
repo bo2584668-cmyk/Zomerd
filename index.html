@@ -21,21 +21,10 @@
             --txt: #f1f5f9; --dim: #94a3b8; --border: rgba(255,255,255,0.08); 
             --glass: blur(15px); --grad: linear-gradient(135deg, #00d2ff, #3a7bd5);
         }
-        /* Light theme variables */
-        body.light {
-            --p: #0891b2;
-            --bg: #f8fafc;
-            --card: rgba(245, 245, 250, 0.9);
-            --txt: #0f172a;
-            --dim: #64748b;
-            --border: rgba(0, 0, 0, 0.08);
-            --glass: blur(15px);
-            --grad: linear-gradient(135deg, #0ea5e9, #3b82f6);
-        }
 
         /* الأساسيات */
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo', sans-serif; }
-        body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; width: 100vw; transition: background 0.3s, color 0.3s; }
+        body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; width: 100vw; }
         
         /* شريط القراءة */
         #read-progress { position: fixed; top: 0; left: 0; height: 4px; background: var(--grad); width: 0%; z-index: 9999; transition: width 0.2s; }
@@ -55,7 +44,6 @@
             padding: 16px 20px; border-radius: 15px; cursor: pointer; display: flex; align-items: center; 
             gap: 15px; color: var(--dim); margin: 8px 15px; text-decoration: none; position: relative;
             overflow: hidden;
-            user-select: none;
         }
         .nav-link:hover { background: rgba(0, 210, 255, 0.1); color: var(--p); transform: translateX(-5px); }
         .nav-link.active { background: var(--grad); color: #000; font-weight: bold; box-shadow: 0 10px 20px rgba(0,210,255,0.2); }
@@ -67,39 +55,10 @@
             height: 80px; padding: 0 30px; display: flex; align-items: center; justify-content: space-between; 
             background: rgba(11, 15, 25, 0.8); backdrop-filter: var(--glass); 
             border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
-            transition: background 0.3s, border-color 0.3s;
-        }
-
-        /* في الوضع الفاتح */
-        body.light header {
-            background: rgba(248, 250, 252, 0.9);
-            border-color: rgba(0,0,0,0.1);
         }
 
         .section { padding: 30px; display: none; max-width: 1400px; margin: 0 auto; width: 100%; }
         .section.active { display: block; animation: fadeInRight 0.5s; }
-
-        /* شريط التصنيفات */
-        #category-bar {
-            display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-right: 15px;
-        }
-        #category-bar button {
-            background: rgba(255,255,255,0.05);
-            border: none;
-            border-radius: 15px;
-            padding: 10px 20px;
-            font-weight: 700;
-            cursor: pointer;
-            white-space: nowrap;
-            color: var(--dim);
-            transition: background 0.3s, color 0.3s;
-        }
-        #category-bar button.active,
-        #category-bar button:hover {
-            background: var(--grad);
-            color: black;
-            box-shadow: 0 4px 8px rgba(0,210,255,0.2);
-        }
 
         /* شبكة المقالات العالمية */
         .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
@@ -125,131 +84,17 @@
             position: fixed; bottom: 100px; left: 30px; width: 50px; height: 50px; background: var(--card); 
             border: 1px solid var(--border); color: var(--p); border-radius: 50%; display: none; 
             align-items: center; justify-content: center; cursor: pointer; z-index: 900;
-            transition: background 0.3s, border-color 0.3s, color 0.3s;
-        }
-        body.light #btn-top {
-            background: var(--card);
-            border-color: var(--border);
-            color: var(--p);
         }
 
         /* واجهة المقال الكامل */
-        #article-view { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: none; overflow-y: auto; animation: slideInUp 0.4s; transition: background 0.3s; }
+        #article-view { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: none; overflow-y: auto; animation: slideInUp 0.4s; }
         
         /* Skeleton Loading */
         .skeleton { background: linear-gradient(90deg, #151c2c 25%, #1e293b 50%, #151c2c 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
-        body.light .skeleton { background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
         @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 
         /* Toasts التنبيهات */
         .toast { position: fixed; bottom: 20px; right: 20px; background: var(--grad); color: black; padding: 15px 25px; border-radius: 12px; font-weight: bold; z-index: 10000; display: none; animation: bounceInRight 0.5s; }
-
-        /* إضافات صفحة الإعدادات */
-        #username-input {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1rem;
-            border-radius: 15px;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--txt);
-            margin-bottom: 25px;
-            transition: background 0.3s, color 0.3s, border-color 0.3s;
-        }
-        body.light #username-input {
-            background: #fff;
-            color: #000;
-            border-color: var(--border);
-        }
-
-        #save-username-btn {
-            width: 100%;
-            padding: 15px;
-            background: var(--grad);
-            border: none;
-            color: black;
-            border-radius: 20px;
-            font-size: 1.1rem;
-            font-weight: 900;
-            cursor: pointer;
-        }
-        #save-username-btn:hover {
-            filter: brightness(1.1);
-        }
-
-        /* زر نسخ رابط */
-        #copy-link-btn {
-            padding: 10px 20px;
-            background: var(--p);
-            color: #000;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            margin-bottom: 15px;
-        }
-
-        /* زر طلب ناشر */
-        #request-publisher-btn {
-            margin-top: 20px;
-            padding: 15px;
-            background: var(--p);
-            color: black;
-            border: none;
-            border-radius: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        /* طلبات الناشرين */
-        #request-list > div {
-            background: var(--card);
-            padding: 15px 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border);
-        }
-        #request-list button {
-            background: var(--p);
-            border: none;
-            border-radius: 15px;
-            padding: 8px 15px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        /* محرر المقال */
-        #p-body[contenteditable="true"] {
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            background: transparent;
-            outline: none;
-            caret-color: var(--p);
-            resize: vertical;
-        }
-
-        /* ألوان النص والعناوين */
-        #color-picker {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            user-select: none;
-        }
-        #color-picker button {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: border-color 0.3s;
-        }
-        #color-picker button.active {
-            border-color: black;
-        }
-
     </style>
 </head>
 <body>
@@ -268,8 +113,7 @@
             <div class="nav-link active" onclick="nav('home', event)"><i class="fa-solid fa-bolt"></i> آخر الأخبار</div>
             <div id="nav-admin" class="nav-link" style="display:none;" onclick="nav('write', event)"><i class="fa-solid fa-pen-nib"></i> استوديو الإدارة</div>
             <div class="nav-link" onclick="nav('about', event)"><i class="fa-solid fa-shapes"></i> عن المنصة</div>
-            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-paper-plane"></i> الإعلانات والتواصل</div>
-            <div class="nav-link" onclick="nav('requests', event)" id="nav-requests" style="display:none;"><i class="fa-solid fa-inbox"></i> طلبات الناشرين</div>
+            <div class="nav-link" onclick="nav('contact', event)"><i class="fa-solid fa-paper-plane"></i> الإعلانات</div>
             <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-user-gear"></i> حسابي</div>
         </nav>
         <div id="login-trigger" class="nav-link" onclick="showLogin()" style="color:var(--p); margin-bottom:30px; border: 1px dashed var(--p);"><i class="fa-solid fa-id-badge"></i> تسجيل الدخول</div>
@@ -288,20 +132,8 @@
         </header>
 
         <section id="sec-home" class="section active">
-            <div id="category-bar">
-                <button class="active" onclick="filterCategory('all', event)">الكل</button>
-                <button onclick="filterCategory('قصص', event)">قصص</button>
-                <button onclick="filterCategory('تقنية', event)">تقنية</button>
-                <button onclick="filterCategory('تطوير', event)">تطوير</button>
-                <button onclick="filterCategory('ألعاب', event)">ألعاب</button>
-                <button onclick="filterCategory('أخبار', event)">أخبار</button>
-                <button onclick="filterCategory('ابتكارات', event)">ابتكارات</button>
-                <button onclick="filterCategory('مراجعات', event)">مراجعات</button>
-                <button onclick="filterCategory('تحليلات', event)">تحليلات</button>
-                <button onclick="filterCategory('مقالات', event)">مقالات</button>
-            </div>
             <div style="margin-bottom: 40px; position: relative;">
-                <input type="text" id="smart-search" oninput="renderPosts()" placeholder="عن ماذا تبحث اليوم؟" class="inp-field" style="height:60px; padding:0 30px; font-size:1.1rem; background:rgba(255,255,255,0.03); border-radius:20px; border: 1px solid var(--border); color: var(--txt);">
+                <input type="text" id="smart-search" oninput="renderPosts()" placeholder="عن ماذا تبحث اليوم؟" class="inp-field" style="height:60px; padding:0 30px; font-size:1.1rem; background:rgba(255,255,255,0.03); border-radius:20px; border: 1px solid var(--border);">
                 <i class="fa fa-search" style="position: absolute; left: 25px; top: 20px; color: var(--p);"></i>
             </div>
             <div id="posts-display-grid" class="posts-grid">
@@ -315,43 +147,13 @@
              <div style="max-width:900px; margin:auto; background:var(--card); padding:40px; border-radius:30px; border:1px solid var(--p);">
                 <h2 style="margin-bottom:30px;">إنشاء محتوى جديد</h2>
                 <input type="text" id="p-title" class="inp-field" placeholder="العنوان الرئيسي للمقال...">
-
-                <label style="display:block; margin-bottom:15px; font-weight:bold; color:var(--p);">اختر التصنيف:</label>
-                <select id="p-category" style="width:100%; padding: 10px 15px; border-radius: 15px; margin-bottom: 20px; background: transparent; border: 1px solid var(--border); color: var(--txt); font-size: 1.1rem; cursor:pointer;">
-                    <option value="" disabled selected>اختر تصنيفاً</option>
-                    <option value="قصص">قصص</option>
-                    <option value="تقنية">تقنية</option>
-                    <option value="تطوير">تطوير</option>
-                    <option value="ألعاب">ألعاب</option>
-                    <option value="أخبار">أخبار</option>
-                    <option value="ابتكارات">ابتكارات</option>
-                    <option value="مراجعات">مراجعات</option>
-                    <option value="تحليلات">تحليلات</option>
-                    <option value="مقالات">مقالات</option>
-                </select>
-                
                 <div style="display:flex; gap:10px; margin-bottom:15px;">
                     <label for="img-upload" style="flex:1; background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; border: 1px dashed var(--dim); cursor:pointer; text-align:center;">
                         <i class="fa fa-image" style="display:block; font-size:2rem; margin-bottom:10px;"></i> رفع صورة الغلاف
                     </label>
                     <input type="file" id="img-upload" style="display:none;" onchange="uploadImageHandler(this)">
                 </div>
-                
-                <div id="color-picker" aria-label="اختيار لون النص/العناوين" role="radiogroup" aria-roledescription="Color picker">
-                    <button title="أزرق" style="background:#0088ff;" onclick="setEditorColor('#0088ff', event)"></button>
-                    <button title="أحمر" style="background:#ff3b3b;" onclick="setEditorColor('#ff3b3b', event)"></button>
-                    <button title="أصفر" style="background:#ffcc38;" onclick="setEditorColor('#ffcc38', event)"></button>
-                    <button title="أخضر" style="background:#38ff7b;" onclick="setEditorColor('#38ff7b', event)"></button>
-                    <button title="بنفسجي" style="background:#a338ff;" onclick="setEditorColor('#a338ff', event)"></button>
-                    <button title="برتقالي" style="background:#ff7b38;" onclick="setEditorColor('#ff7b38', event)"></button>
-                    <button title="رمادي" style="background:#888;" onclick="setEditorColor('#888', event)"></button>
-                    <button title="أسود" style="background:#000;" onclick="setEditorColor('#000', event)"></button>
-                    <button title="أبيض" style="background:#fff; border: 1px solid #ccc;" onclick="setEditorColor('#fff', event)"></button>
-                    <button title="بنّي" style="background:#7b5838;" onclick="setEditorColor('#7b5838', event)"></button>
-                </div>
-
-                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:400px; padding:25px; font-size:1.1rem; line-height:1.8; color: var(--txt); border-radius:15px; border:1px solid var(--border); background:transparent;"></div>
-
+                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:400px; padding:25px; font-size:1.1rem; line-height:1.8;"></div>
                 <button onclick="publishPost()" class="btn-p" style="height:60px; font-size:1.2rem; background:var(--grad); color:black; border:none; border-radius:20px; width:100%; cursor:pointer; font-weight:900;">إطلاق المقال الآن</button>
              </div>
         </section>
@@ -364,38 +166,20 @@
             </div>
         </section>
 
-        <!-- قسم الإعلانات والتواصل -->
+        <!-- قسم الإعلانات -->
         <section id="sec-contact" class="section">
             <div style="max-width:900px; margin:auto; color: var(--txt); font-size:1.1rem; line-height:1.6;">
-                <h2>الإعلانات والتواصل</h2>
-                <p>للتواصل بشأن الإعلانات أو الاستفسارات، يرجى التواصل عبر:</p>
-                <ul>
-                    <li><strong>واتساب:</strong> <a href="https://wa.me/201273740256" target="_blank" style="color:var(--p);">+201273740256</a></li>
-                    <li><strong>البريد الإلكتروني:</strong> <a href="mailto:bo2584668@gmail.com" style="color:var(--p);">bo2584668@gmail.com</a></li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- قسم طلبات الناشرين -->
-        <section id="sec-requests" class="section">
-            <div style="max-width:900px; margin:auto; background:var(--card); padding:30px; border-radius:20px;">
-                <h2>طلبات الناشرين</h2>
-                <div id="request-list">تحميل الطلبات...</div>
+                <h2>الإعلانات</h2>
+                <p>للتواصل بشأن الإعلانات، يرجى إرسال بريد إلكتروني إلى: ads@zomerd.net أو الاتصال على الرقم: 123456789.</p>
             </div>
         </section>
 
         <section id="sec-settings" class="section">
-            <div style="max-width:600px; margin:auto; text-align:center; background:var(--card); padding:50px; border-radius:30px; border:1px solid var(--border); transition: background 0.3s, border-color 0.3s;">
+            <div style="max-width:600px; margin:auto; text-align:center; background:var(--card); padding:50px; border-radius:30px; border:1px solid var(--border);">
                 <div id="profile-big-icon" style="width:120px; height:120px; background:var(--grad); margin:0 auto 30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:3.5rem; color:black; font-weight:900;">?</div>
                 <h2 id="profile-name">ضيف المنصة</h2>
                 <p id="profile-email" style="opacity:0.5; margin-bottom:40px;">سجل دخولك لمزامنة مفضلاتك</p>
-                
-                <input type="text" id="username-input" placeholder="أدخل اسم المستخدم الخاص بك" />
-                <button id="save-username-btn">حفظ الاسم</button>
-
-                <button id="request-publisher-btn">طلب أن أكون ناشر</button>
-
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top: 30px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                     <button onclick="logout()" style="padding:15px; border-radius:15px; background:#ff4757; color:white; border:none; cursor:pointer; font-weight:bold;">خروج</button>
                     <button onclick="toggleDarkMode()" style="padding:15px; border-radius:15px; background:white; color:black; border:none; cursor:pointer; font-weight:bold;">الوضع الليلي</button>
                 </div>
@@ -404,11 +188,11 @@
     </main>
 
     <div id="article-view">
-        <div style="position:sticky; top:0; background:rgba(11, 15, 25, 0.9); backdrop-filter:var(--glass); padding:20px; border-bottom:1px solid var(--border); z-index:100; display:flex; justify-content:space-between; align-items:center; transition: background 0.3s, border-color 0.3s;">
+        <div style="position:sticky; top:0; background:rgba(11, 15, 25, 0.9); backdrop-filter:var(--glass); padding:20px; border-bottom:1px solid var(--border); z-index:100; display:flex; justify-content:space-between; align-items:center;">
             <button onclick="closeArticle()" style="background:rgba(255,255,255,0.05); border:none; color:var(--p); padding:10px 20px; border-radius:50px; cursor:pointer; font-weight:bold;"><i class="fa fa-arrow-right"></i> العودة</button>
             <div id="read-time-badge" style="font-size:0.8rem; opacity:0.6;">دقيقة قراءة</div>
         </div>
-        <div id="full-article-data" style="max-width:900px; margin: 40px auto; padding: 0 20px; color: var(--txt);"></div>
+        <div id="full-article-data" style="max-width:900px; margin: 40px auto; padding: 0 20px;"></div>
     </div>
 
     <div id="login-modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:100000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(20px);">
@@ -446,10 +230,7 @@
         let allPosts = [];
         let uploadedImageUrl = "";
 
-        let savedUserName = localStorage.getItem('zomerd_username') || '';
-        let currentCategory = 'all';
-
-        // 1. التنبيهات
+        // 1. نظام التنبيهات
         function showToast(msg) {
             const t = document.getElementById('toast-msg');
             t.innerText = msg;
@@ -457,7 +238,7 @@
             setTimeout(() => t.style.display = 'none', 3000);
         }
 
-        // 2. شريط القراءة والتمرير
+        // 2. معالجة شريط القراءة والتمرير
         document.getElementById('scroll-main').onscroll = function() {
             let winScroll = document.getElementById('scroll-main').scrollTop;
             let height = document.getElementById('scroll-main').scrollHeight - document.getElementById('scroll-main').clientHeight;
@@ -471,18 +252,14 @@
             document.getElementById('scroll-main').scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 3. محرك البحث والفرز مع الفلترة حسب التصنيف
+        // 3. محرك البحث والفرز المحسن
         function renderPosts() {
             const grid = document.getElementById('posts-display-grid');
             const term = document.getElementById('smart-search').value.toLowerCase();
             grid.innerHTML = '';
-
-            let filtered = allPosts.filter(p => {
-                const matchSearch = p.title.toLowerCase().includes(term);
-                const matchCategory = (currentCategory === 'all') || (p.category && p.category === currentCategory);
-                return matchSearch && matchCategory;
-            });
-
+            
+            let filtered = allPosts.filter(p => p.title.toLowerCase().includes(term));
+            
             if(filtered.length === 0) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:50px; opacity:0.5;">لم نجد نتائج لهذا البحث.. جرب كلمات أخرى</div>`;
                 return;
@@ -494,10 +271,10 @@
                     <div class="post-card animate__animated animate__fadeInUp" style="animation-delay: ${index * 0.1}s" onclick="openArticle('${p.id}')">
                         ${isTrending}
                         <div class="post-img-wrapper">
-                            <img src="${p.image || 'https://via.placeholder.com/600x400'}" class="post-img" loading="lazy" alt="صورة المقال">
+                            <img src="${p.image || 'https://via.placeholder.com/600x400'}" class="post-img" loading="lazy">
                         </div>
                         <div class="post-content">
-                            <h3 class="post-title" style="color:${p.textColor || 'var(--txt)'}">${p.title}</h3>
+                            <h3 class="post-title">${p.title}</h3>
                             <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; opacity:0.6;">
                                 <span><i class="fa fa-calendar-day"></i> ${p.time ? new Date(p.time.seconds*1000).toLocaleDateString('ar-EG') : 'الآن'}</span>
                                 <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
@@ -507,52 +284,36 @@
             });
         }
 
-        // فلترة التصنيف مع تفعيل الزر النشط
-        function filterCategory(cat, event) {
-            currentCategory = cat;
-            let buttons = [...document.querySelectorAll('#category-bar button')];
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            renderPosts();
-        }
-
-        // 4. فتح المقال مع نسخ الرابط
+        // 4. فتح المقال مع حساب وقت القراءة
         async function openArticle(id) {
-            if(!user) {
-                showToast('الرجاء تسجيل الدخول أولاً لقراءة المقال');
-                showLogin();
-                return;
-            }
             const p = allPosts.find(x => x.id === id);
-            if(!p) return;
             db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
             
-            const wordsCount = p.content.replace(/<[^>]+>/g, '').split(/\s+/).length;
-            const readTime = Math.ceil(wordsCount / 200);
+            // حساب وقت القراءة (كل 200 كلمة دقيقة)
+            const words = p.content.split(' ').length;
+            const readTime = Math.ceil(words / 200);
             document.getElementById('read-time-badge').innerText = `${readTime} دقائق قراءة`;
 
-            const shareUrl = window.location.origin + window.location.pathname + "#post-" + id;
+            const shareUrl = encodeURIComponent(window.location.href);
             
-
             document.getElementById('full-article-data').innerHTML = `
-                <button id="copy-link-btn" onclick="copyLink('${shareUrl}')">نسخ رابط المنشور</button>
-                <img src="${p.image}" style="width:100%; border-radius:30px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); margin-bottom:40px;" alt="صورة المقال">
+                <img src="${p.image}" style="width:100%; border-radius:30px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); margin-bottom:40px;">
                 <div style="display:flex; gap:10px; margin-bottom:20px;">
                     <span style="background:var(--p); color:black; padding:5px 15px; border-radius:50px; font-weight:bold; font-size:0.8rem;">حصري</span>
-                    <span style="opacity:0.5; font-size:0.8rem;"><i class="fa fa-user"></i> ${p.author || 'براء عمر'}</span>
+                    <span style="opacity:0.5; font-size:0.8rem;"><i class="fa fa-user"></i> براء عمر</span>
                 </div>
-                <h1 style="font-size:2.5rem; line-height:1.3; margin-bottom:30px; font-weight:900; color:${p.textColor || 'var(--txt)'}">${p.title}</h1>
+                <h1 style="font-size:2.5rem; line-height:1.3; margin-bottom:30px; font-weight:900;">${p.title}</h1>
                 <div style="line-height:2.2; font-size:1.2rem; color:#cbd5e1; margin-bottom:50px;">${p.content}</div>
                 
                 <div style="background:var(--card); padding:30px; border-radius:25px; border:1px solid var(--border);">
                     <h3>تفاعل مع الخبر</h3>
                     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin:20px 0;">
                         <button onclick="likePost('${id}')" style="background:rgba(0,210,255,0.1); border:1px solid var(--p); color:var(--p); padding:15px; border-radius:15px; cursor:pointer;"><i class="fa fa-heart"></i> ${p.likes || 0}</button>
-                        <a href="https://wa.me/?text=${encodeURIComponent(p.title)}%20${encodeURIComponent(shareUrl)}" style="background:#25d366; color:white; display:flex; align-items:center; justify-content:center; border-radius:15px; text-decoration:none;"><i class="fab fa-whatsapp"></i></a>
-                        <a href="https://t.me/share/url?url=${encodeURIComponent(shareUrl)}" style="background:#0088cc; color:white; display:flex; align-items:center; justify-content:center; border-radius:15px; text-decoration:none;"><i class="fab fa-telegram"></i></a>
+                        <a href="https://wa.me/?text=${encodeURIComponent(p.title)}%20${shareUrl}" style="background:#25d366; color:white; display:flex; align-items:center; justify-content:center; border-radius:15px; text-decoration:none;"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://t.me/share/url?url=${shareUrl}" style="background:#0088cc; color:white; display:flex; align-items:center; justify-content:center; border-radius:15px; text-decoration:none;"><i class="fab fa-telegram"></i></a>
                     </div>
                     <div id="comments-box">
-                        <input type="text" id="comm-input-${id}" class="inp-field" placeholder="شاركنا رأيك..." style="margin-bottom:10px; color: var(--txt); background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid var(--border); padding: 12px;">
+                        <input type="text" id="comm-input-${id}" class="inp-field" placeholder="شاركنا رأيك..." style="margin-bottom:10px;">
                         <button onclick="addComment('${id}')" style="width:100%; padding:15px; background:white; color:black; border:none; border-radius:15px; font-weight:bold; cursor:pointer;">إرسال التعليق</button>
                         <div id="comments-list-${id}" style="margin-top:20px;"></div>
                     </div>
@@ -562,14 +323,7 @@
             loadComments(id);
         }
 
-        // نسخ الرابط للوحة الحافظة
-        function copyLink(url) {
-            navigator.clipboard.writeText(url).then(() => {
-                showToast('تم نسخ رابط المنشور');
-            });
-        }
-
-        // 5. دوال جوجل تسجيل الدخول
+        // 5. الوظائف الأساسية المتبقية
         function onGoogleLogin(res) {
             user = JSON.parse(atob(res.credential.split('.')[1]));
             localStorage.setItem('zomerd_user', JSON.stringify(user));
@@ -578,10 +332,6 @@
         }
 
         function initApp() {
-            // إعداد اسم المستخدم المحفوظ
-            const usernameInput = document.getElementById('username-input');
-            const saveUsernameBtn = document.getElementById('save-username-btn');
-
             if(user) {
                 document.getElementById('login-trigger').style.display = 'none';
                 document.getElementById('header-profile').style.display = 'flex';
@@ -590,67 +340,12 @@
                 document.getElementById('profile-big-icon').innerText = user.given_name[0];
                 document.getElementById('profile-name').innerText = user.name;
                 document.getElementById('profile-email').innerText = user.email;
-                if(user.email === ADMIN_EMAIL) {
-                    document.getElementById('nav-admin').style.display = 'flex';
-                    document.getElementById('nav-requests').style.display = 'flex';
-                }
+                if(user.email === ADMIN_EMAIL) document.getElementById('nav-admin').style.display = 'flex';
             }
-
-            // ضع اسم المستخدم المحفوظ في الحقل
-            if(savedUserName) {
-                usernameInput.value = savedUserName;
-                if(!user) document.getElementById('profile-name').innerText = savedUserName;
-            }
-
-            saveUsernameBtn.onclick = () => {
-                const newName = usernameInput.value.trim();
-                if(newName.length === 0){
-                    showToast("يرجى إدخال اسم صحيح!");
-                    return;
-                }
-                savedUserName = newName;
-                localStorage.setItem('zomerd_username', newName);
-                showToast("تم حفظ اسم المستخدم بنجاح!");
-                if(!user) {
-                    document.getElementById('profile-name').innerText = newName;
-                }
-            }
-
-            // طلب ناشر
-            document.getElementById('request-publisher-btn').onclick = async () => {
-                if(!user) { showLogin(); return; }
-                const existing = await db.collection("publisher_requests").where('userId', '==', user.sub).get();
-                if(!existing.empty){
-                    showToast('لقد تم تقديم طلب مسبقا، يرجى الانتظار للمراجعة.');
-                    return;
-                }
-                await db.collection("publisher_requests").add({
-                    userId: user.sub,
-                    name: user.name,
-                    email: user.email,
-                    time: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                showToast('تم إرسال طلبك بنجاح، يرجى انتظار الموافقة.');
-            };
-
-            // تحميل طلبات الناشرين للادمن
-            if(user && user.email === ADMIN_EMAIL){
-                listenToRequests();
-            }
-
-            // دعم الوضع الليلي/الفاتح من التخزين المحلي
-            const darkModeStored = localStorage.getItem('zomerd_dark_mode') || 'dark';
-            if(darkModeStored === 'light') {
-                document.body.classList.add('light');
-            } else {
-                document.body.classList.remove('light');
-            }
-
             particlesJS('particles-js', { "particles": { "number": { "value": 50 }, "color": { "value": "#00d2ff" }, "links": { "color": "#00d2ff", "opacity": 0.1 }, "move": { "speed": 1 } } });
             listenToPosts();
         }
 
-        // رفع الصورة
         async function uploadImageHandler(input) {
             const file = input.files[0];
             const formData = new FormData();
@@ -662,57 +357,18 @@
             showToast("تم الرفع بنجاح!");
         }
 
-        // اختيار لون النص أو العناوين داخل المحرر
-        function setEditorColor(color, event) {
-            // إزالة تفعيل من الأزرار
-            document.querySelectorAll('#color-picker button').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            document.execCommand('styleWithCSS', false, true);
-
-            // تطبيق اللون على النص المحدد
-            if(document.getSelection().rangeCount > 0) {
-                document.execCommand('foreColor', false, color);
-            }
-            // حفظ لون النص الأخير للاستخدام عند عرض المقال (اختياري)
-            lastChosenColor = color;
-        }
-        let lastChosenColor = 'var(--txt)';
-
-        // نشر مقال مع تحقق عدد الكلمات، إضافة اللون والتصنيف
         async function publishPost() {
-            const title = document.getElementById('p-title').value.trim();
-            const content = document.getElementById('p-body').innerHTML.trim();
-            const category = document.getElementById('p-category').value;
-            if(!title) { showToast("يرجى إدخال عنوان المقال"); return; }
-            if(!content || content.replace(/<[^>]+>/g, '').trim().split(/\s+/).length < 400) {
-                showToast("يجب أن يحتوي المقال على 400 كلمة على الأقل");
-                return;
-            }
-            if(!category) {
-                showToast("يرجى اختيار تصنيف للمقال");
-                return;
-            }
-            if(!user || user.email !== ADMIN_EMAIL) {
-                if(!user) showLogin();
-                return;
-            }
+            const title = document.getElementById('p-title').value;
+            const content = document.getElementById('p-body').innerHTML;
+            if(!title || !content || !user || user.email !== ADMIN_EMAIL) return;
             await db.collection("posts").add({
-                title, 
-                content, 
-                image: uploadedImageUrl, 
-                author: user.name, 
-                likes: 0, 
-                views: 0,
-                category,
-                textColor: lastChosenColor,
+                title, content, image: uploadedImageUrl, author: user.name, likes: 0, views: 0,
                 time: firebase.firestore.FieldValue.serverTimestamp()
             });
-            showToast("تم نشر المقال الجديد بنجاح!");
-            new Audio('https://actions.google.com/sounds/v1/alarms/medium_bell_ring.ogg').play();
+            showToast("تم نشر المقال العالمي الجديد!");
             nav('home');
         }
 
-        // الاستماع لتحديثات المقالات
         function listenToPosts() {
             db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
                 allPosts = [];
@@ -721,7 +377,6 @@
             });
         }
 
-        // تعليق
         function loadComments(postId) {
             db.collection("posts").doc(postId).collection("comments").orderBy("time", "asc").onSnapshot(snap => {
                 const list = document.getElementById(`comments-list-${postId}`);
@@ -742,87 +397,28 @@
             const input = document.getElementById(`comm-input-${postId}`);
             if(!input.value.trim()) return;
             await db.collection("posts").doc(postId).collection("comments").add({
-                user: user.name, text: input.value.trim(), time: firebase.firestore.FieldValue.serverTimestamp()
+                user: user.name, text: input.value, time: firebase.firestore.FieldValue.serverTimestamp()
             });
             input.value = '';
             showToast("تمت إضافة تعليقك");
         }
 
-        // إعجاب
         function likePost(id) { 
             db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) }); 
             showToast("شكراً لإعجابك!");
         }
-       function renderPosts() {
-    const grid = document.getElementById('posts-display-grid');
-    if (!grid) return;
-    grid.innerHTML = '';
 
-    allPosts.forEach((p, index) => {
-        // التحقق إذا كان المستخدم الحالي هو الأدمن
-        const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
-        
-        // إنشاء زر الحذف (يظهر فقط للأدمن)
-        const deleteBtn = isAdmin ? `
-            <button class="admin-delete-btn" title="حذف المقال" onclick="deletePost('${p.id}', event)">
-                <i class="fa-solid fa-trash"></i>
-            </button>` : "";
-
-        grid.innerHTML += `
-            <div class="post-card animate__animated animate__fadeInUp" style="animation-delay: ${index * 0.1}s" onclick="openArticle('${p.id}')">
-                ${deleteBtn}
-                <div class="post-img-wrapper">
-                    <img src="${p.image || 'https://via.placeholder.com/600x400'}" class="post-img" loading="lazy">
-                </div>
-                <div class="post-content">
-                    <h3 class="post-title" style="color:${p.textColor || 'var(--txt)'}">${p.title}</h3>
-                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; opacity:0.6; margin-top:10px;">
-                        <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
-                        <span><i class="fa fa-user"></i> ${p.author || 'ناشر'}</span>
-                    </div>;
-          });     
-    }   
-function renderPosts() {
-    const grid = document.getElementById('posts-display-grid');
-    if (!grid) return;
-    grid.innerHTML = '';
-
-    allPosts.forEach((p, index) => {
-        // التحقق إذا كان المستخدم الحالي هو الأدمن
-        const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
-        
-        // إنشاء زر الحذف (يظهر فقط للأدمن)
-        const deleteBtn = isAdmin ? `
-            <button class="admin-delete-btn" title="حذف المقال" onclick="deletePost('${p.id}', event)">
-                <i class="fa-solid fa-trash"></i>
-            </button>` : "";
-
-        grid.innerHTML += `
-            <div class="post-card animate__animated animate__fadeInUp" style="animation-delay: ${index * 0.1}s" onclick="openArticle('${p.id}')">
-                ${deleteBtn}
-                <div class="post-img-wrapper">
-                    <img src="${p.image || 'https://via.placeholder.com/600x400'}" class="post-img" loading="lazy">
-                </div>
-                <div class="post-content">
-                    <h3 class="post-title" style="color:${p.textColor || 'var(--txt)'}">${p.title}</h3>
-                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; opacity:0.6; margin-top:10px;">
-                        <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
-                        <span><i class="fa fa-user"></i> ${p.author || 'ناشر'}</span>
-                    </div>;
-                    }
-    
-        // التنقل بين الأقسام
         function nav(id, e) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('sec-' + id).classList.add('active');
             if(e) e.currentTarget.classList.add('active');
+            // تحديث عنوان الشريط العلوي بشكل مناسب لكل قسم
             if(id === 'home') document.getElementById('sec-title').innerText = 'الأخبار العاجلة';
             else if(id === 'write') document.getElementById('sec-title').innerText = 'الاستوديو';
             else if(id === 'about') document.getElementById('sec-title').innerText = 'عن المنصة';
-            else if(id === 'contact') document.getElementById('sec-title').innerText = 'الإعلانات والتواصل';
+            else if(id === 'contact') document.getElementById('sec-title').innerText = 'الإعلانات';
             else if(id === 'settings') document.getElementById('sec-title').innerText = 'الإعدادات';
-            else if(id === 'requests') document.getElementById('sec-title').innerText = 'طلبات الناشرين';
 
             if(window.innerWidth <= 992) toggleMenu();
         }
@@ -830,75 +426,9 @@ function renderPosts() {
         function toggleMenu() { document.getElementById('main-aside').classList.toggle('open'); }
         function showLogin() { document.getElementById('login-modal').style.display = 'flex'; }
         function hideLogin() { document.getElementById('login-modal').style.display = 'none'; }
-        function logout() { 
-            localStorage.clear(); 
-            user = null;
-            document.getElementById('profile-name').innerText = savedUserName || 'ضيف المنصة';
-            document.getElementById('profile-email').innerText = 'سجل دخولك لمزامنة مفضلاتك';
-            document.getElementById('header-profile').style.display = 'none'; 
-            document.getElementById('login-trigger').style.display = 'flex';
-            document.getElementById('nav-admin').style.display = 'none';
-            document.getElementById('nav-requests').style.display = 'none';
-            nav('home');
-        }
+        function logout() { localStorage.clear(); location.reload(); }
         function closeArticle() { document.getElementById('article-view').style.display = 'none'; }
-
-        // تبديل الوضع الليلي والفاتح وحفظ الإعداد
-        function toggleDarkMode() {
-            if(document.body.classList.contains('light')) {
-                document.body.classList.remove('light');
-                localStorage.setItem('zomerd_dark_mode', 'dark');
-                showToast('تم التبديل إلى الوضع الداكن');
-            } else {
-                document.body.classList.add('light');
-                localStorage.setItem('zomerd_dark_mode', 'light');
-                showToast('تم التبديل إلى الوضع الفاتح');
-            }
-        }
-
-        // الاستماع لطلبات الناشرين للادمن
-        function listenToRequests() {
-            db.collection("publisher_requests").orderBy('time','desc').onSnapshot(snap => {
-                const container = document.getElementById('request-list');
-                container.innerHTML = '';
-                if(snap.empty){
-                    container.innerHTML = '<p style="opacity:0.5; text-align:center; padding:20px;">لا توجد طلبات حالياً.</p>';
-                    return;
-                }
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    container.innerHTML += `<div>
-                        <strong>${data.name}</strong> (${data.email})<br>
-                        <small style="opacity:0.6;">${data.time ? new Date(data.time.seconds*1000).toLocaleString('ar-EG') : ''}</small>
-                        <button onclick="approvePublisher('${doc.id}', '${data.userId}')">موافقة</button>
-                        <button onclick="rejectPublisher('${doc.id}')">رفض</button>
-                    </div>`;
-                });
-            });
-        }
-
-        // الموافقة على ناشر
-        async function approvePublisher(docId, userId) {
-            try {
-                // إضافة دور الناشر في مجموعتك الخاصة (جرب إضافة حقل في قاعدة بيانات أو نظام أذونات)
-                await db.collection("publishers").doc(userId).set({active: true});
-                await db.collection("publisher_requests").doc(docId).delete();
-                showToast('تمت الموافقة على الناشر!');
-            } catch(e) {
-                showToast('حدث خطأ أثناء الموافقة.');
-            }
-        }
-
-        // رفض طلب ناشر
-        async function rejectPublisher(docId) {
-            try {
-                await db.collection("publisher_requests").doc(docId).delete();
-                showToast('تم رفض الطلب بنجاح!');
-            } catch(e) {
-                showToast('حدث خطأ أثناء رفض الطلب.');
-            }
-        }
-
+        
         window.onload = initApp;
     </script>
 </body>
