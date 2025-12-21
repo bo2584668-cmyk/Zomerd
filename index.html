@@ -430,407 +430,10 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAt16kYfN4cNHfTwbdr3KOGbcQJlmE45tg",
-            authDomain: "zomerd-new.firebaseapp.com",
-            projectId: "zomerd-new",
-            storageBucket: "zomerd-new.firebasestorage.app",
-            messagingSenderId: "52188666382",
-            appId: "1:52188666382:web:7879a8c671af9329f67a5f"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const ADMIN_EMAIL = "bo2584668@gmail.com";
         
-        let user = JSON.parse(localStorage.getItem('zomerd_user')) || null;
-        let allPosts = [];
-        let uploadedImageUrl = "";
-
-        let savedUserName = localStorage.getItem('zomerd_username') || '';
-        let currentCategory = 'all';
-
-        // 1. التنبيهات
-        function showToast(msg) {
-            const t = document.getElementById('toast-msg');
-            t.innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
-        }
-
-        // 2. شريط القراءة والتمرير
-        document.getElementById('scroll-main').onscroll = function() {
-            let winScroll = document.getElementById('scroll-main').scrollTop;
-            let height = document.getElementById('scroll-main').scrollHeight - document.getElementById('scroll-main').clientHeight;
-            let scrolled = (winScroll / height) * 100;
-            document.getElementById("read-progress").style.width = scrolled + "%";
-            
-            document.getElementById('btn-top').style.display = winScroll > 500 ? 'flex' : 'none';
-        };
-
-        function scrollToTop() {
-            document.getElementById('scroll-main').scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // 3. محرك البحث والفرز مع الفلترة حسب التصنيف
-        function renderPosts() {
-            const grid = document.getElementById('posts-display-grid');
-            const term = document.getElementById('smart-search').value.toLowerCase();
-            grid.innerHTML = '';
-
-            let filtered = allPosts.filter(p => {
-                const matchSearch = p.title.toLowerCase().includes(term);
-                const matchCategory = (currentCategory === 'all') || (p.category && p.category === currentCategory);
-                return matchSearch && matchCategory;
-            });
-
-            if(filtered.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:50px; opacity:0.5;">لم نجد نتائج لهذا البحث.. جرب كلمات أخرى</div>`;
-                return;
-            }
-
-            filtered.forEach((p, index) => {
-                const isTrending = p.views > 50 ? `<div class="trending-badge"><i class="fa fa-fire"></i> تريند</div>` : "";
-                grid.innerHTML += `
-                    <div class="post-card animate__animated animate__fadeInUp" style="animation-delay: ${index * 0.1}s" onclick="openArticle('${p.id}')">
-                        ${isTrending}
-                        <div class="post-img-wrapper">
-                            <img src="${p.image || 'https://via.placeholder.com/600x400'}" class="post-img" loading="lazy" alt="صورة المقال">
-                        </div>
-                        <div class="post-content">
-                            <h3 class="post-title" style="color:${p.textColor || 'var(--txt)'}">${p.title}</h3>
-                            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; opacity:0.6;">
-                                <span><i class="fa fa-calendar-day"></i> ${p.time ? new Date(p.time.seconds*1000).toLocaleDateString('ar-EG') : 'الآن'}</span>
-                                <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
-                            </div>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        // فلترة التصنيف مع تفعيل الزر النشط
-        function filterCategory(cat, event) {
-            currentCategory = cat;
-            let buttons = [...document.querySelectorAll('#category-bar button')];
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            renderPosts();
-        }
-
-        // 4. فتح المقال مع نسخ الرابط
-        async function openArticle(id) {
-            if(!user) {
-                showToast('الرجاء تسجيل الدخول أولاً لقراءة المقال');
-                showLogin();
-                return;
-            }
-            const p = allPosts.find(x => x.id === id);
-            if(!p) return;
-            db.collection("posts").doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
-            
-            const wordsCount = p.content.replace(/<[^>]+>/g, '').split(/\s+/).length;
-            const readTime = Math.ceil(wordsCount / 200);
-            document.getElementById('read-time-badge').innerText = `${readTime} دقائق قراءة`;
-
-            const shareUrl = window.location.origin + window.location.pathname + "#post-" + id;
-            
-
-            document.getElementById('full-article-data').innerHTML = `
-                <button id="copy-link-btn" onclick="copyLink('${shareUrl}')">نسخ رابط المنشور</button>
-                <img src="${p.image}" style="width:100%; border-radius:30px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); margin-bottom:40px;" alt="صورة المقال">
-                <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    <span style="background:var(--p); color:black; padding:5px 15px; border-radius:50px; font-weight:bold; font-size:0.8rem;">حصري</span>
-                    <span style="opacity:0.5; font-size:0.8rem;"><i class="fa fa-user"></i> ${p.author || 'براء عمر'}</span>
-                </div>
-                <h1 style="font-size:2.5rem; line-height:1.3; margin-bottom:30px; font-weight:900; color:${p.textColor || 'var(--txt)'}">${p.title}</h1>
-                <div style="line-height:2.2; font-size:1.2rem; color:#cbd5e1; margin-bottom:50px;">${p.content}</div>
-                
-                <div style="background:var(--card); padding:30px; border-radius:25px; border:1px solid var(--border);">
-                    <h3>تفاعل مع الخبر</h3>
-                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin:20px 0;">
-                        <button onclick="likePost('${id}')" style="background:rgba(0,210,255,0.1); border:1px solid var(--p); color:var(--p); padding:15px; border-radius:15px; cursor:pointer;"><i class="fa fa-heart"></i> ${p.likes || 0}</button>
-                        <a href="https://wa.me/?text=${encodeURIComponent(p.title)}%20${encodeURIComponent(shareUrl)}" style="background:#25d366; color:white; display:flex; align-items:center; justify-content:center; border-radius:15px; text-decoration:none;"><i class="fab fa-whatsapp"></i></a>
-                        <a href="https://t.me/share/url?url=${encodeURIComponent(shareUrl)}" style="background:#0088cc; color:white; display:flex; align-items:center; justify-content:center; border-radius:15px; text-decoration:none;"><i class="fab fa-telegram"></i></a>
-                    </div>
-                    <div id="comments-box">
-                        <input type="text" id="comm-input-${id}" class="inp-field" placeholder="شاركنا رأيك..." style="margin-bottom:10px; color: var(--txt); background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid var(--border); padding: 12px;">
-                        <button onclick="addComment('${id}')" style="width:100%; padding:15px; background:white; color:black; border:none; border-radius:15px; font-weight:bold; cursor:pointer;">إرسال التعليق</button>
-                        <div id="comments-list-${id}" style="margin-top:20px;"></div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('article-view').style.display = 'block';
-            loadComments(id);
-        }
-
-        // نسخ الرابط للوحة الحافظة
-        function copyLink(url) {
-            navigator.clipboard.writeText(url).then(() => {
-                showToast('تم نسخ رابط المنشور');
-            });
-        }
-
-        // 5. دوال جوجل تسجيل الدخول
-        function onGoogleLogin(res) {
-            user = JSON.parse(atob(res.credential.split('.')[1]));
-            localStorage.setItem('zomerd_user', JSON.stringify(user));
-            showToast(`مرحباً بك يا ${user.given_name}`);
-            setTimeout(() => location.reload(), 1500);
-        }
-
-        function initApp() {
-            // إعداد اسم المستخدم المحفوظ
-            const usernameInput = document.getElementById('username-input');
-            const saveUsernameBtn = document.getElementById('save-username-btn');
-
-            if(user) {
-                document.getElementById('login-trigger').style.display = 'none';
-                document.getElementById('header-profile').style.display = 'flex';
-                document.getElementById('user-icon').innerText = user.given_name[0];
-                document.getElementById('user-name-head').innerText = user.given_name;
-                document.getElementById('profile-big-icon').innerText = user.given_name[0];
-                document.getElementById('profile-name').innerText = user.name;
-                document.getElementById('profile-email').innerText = user.email;
-                if(user.email === ADMIN_EMAIL) {
-                    document.getElementById('nav-admin').style.display = 'flex';
-                    document.getElementById('nav-requests').style.display = 'flex';
-                }
-            }
-
-            // ضع اسم المستخدم المحفوظ في الحقل
-            if(savedUserName) {
-                usernameInput.value = savedUserName;
-                if(!user) document.getElementById('profile-name').innerText = savedUserName;
-            }
-
-            saveUsernameBtn.onclick = () => {
-                const newName = usernameInput.value.trim();
-                if(newName.length === 0){
-                    showToast("يرجى إدخال اسم صحيح!");
-                    return;
-                }
-                savedUserName = newName;
-                localStorage.setItem('zomerd_username', newName);
-                showToast("تم حفظ اسم المستخدم بنجاح!");
-                if(!user) {
-                    document.getElementById('profile-name').innerText = newName;
-                }
-            }
-
-            // طلب ناشر
-            document.getElementById('request-publisher-btn').onclick = async () => {
-                if(!user) { showLogin(); return; }
-                const existing = await db.collection("publisher_requests").where('userId', '==', user.sub).get();
-                if(!existing.empty){
-                    showToast('لقد تم تقديم طلب مسبقا، يرجى الانتظار للمراجعة.');
-                    return;
-                }
-                await db.collection("publisher_requests").add({
-                    userId: user.sub,
-                    name: user.name,
-                    email: user.email,
-                    time: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                showToast('تم إرسال طلبك بنجاح، يرجى انتظار الموافقة.');
-            };
-
-            // تحميل طلبات الناشرين للادمن
-            if(user && user.email === ADMIN_EMAIL){
-                listenToRequests();
-            }
-
-            // دعم الوضع الليلي/الفاتح من التخزين المحلي
-            const darkModeStored = localStorage.getItem('zomerd_dark_mode') || 'dark';
-            if(darkModeStored === 'light') {
-                document.body.classList.add('light');
-            } else {
-                document.body.classList.remove('light');
-            }
-
-            particlesJS('particles-js', { "particles": { "number": { "value": 50 }, "color": { "value": "#00d2ff" }, "links": { "color": "#00d2ff", "opacity": 0.1 }, "move": { "speed": 1 } } });
-            listenToPosts();
-        }
-
-        // رفع الصورة
-        async function uploadImageHandler(input) {
-            const file = input.files[0];
-            const formData = new FormData();
-            formData.append("image", file);
-            showToast("جاري رفع الصورة...");
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d`, { method: "POST", body: formData });
-            const data = await res.json();
-            uploadedImageUrl = data.data.url;
-            showToast("تم الرفع بنجاح!");
-        }
-
-        // اختيار لون النص أو العناوين داخل المحرر
-        function setEditorColor(color, event) {
-            // إزالة تفعيل من الأزرار
-            document.querySelectorAll('#color-picker button').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            document.execCommand('styleWithCSS', false, true);
-
-            // تطبيق اللون على النص المحدد
-            if(document.getSelection().rangeCount > 0) {
-                document.execCommand('foreColor', false, color);
-            }
-            // حفظ لون النص الأخير للاستخدام عند عرض المقال (اختياري)
-            lastChosenColor = color;
-        }
-        let lastChosenColor = 'var(--txt)';
-
-        // نشر مقال مع تحقق عدد الكلمات، إضافة اللون والتصنيف
-        async function publishPost() {
-            const title = document.getElementById('p-title').value.trim();
-            const content = document.getElementById('p-body').innerHTML.trim();
-            const category = document.getElementById('p-category').value;
-            if(!title) { showToast("يرجى إدخال عنوان المقال"); return; }
-            if(!content || content.replace(/<[^>]+>/g, '').trim().split(/\s+/).length < 400) {
-                showToast("يجب أن يحتوي المقال على 400 كلمة على الأقل");
-                return;
-            }
-            if(!category) {
-                showToast("يرجى اختيار تصنيف للمقال");
-                return;
-            }
-            if(!user || user.email !== ADMIN_EMAIL) {
-                if(!user) showLogin();
-                return;
-            }
-            await db.collection("posts").add({
-                title, 
-                content, 
-                image: uploadedImageUrl, 
-                author: user.name, 
-                likes: 0, 
-                views: 0,
-                category,
-                textColor: lastChosenColor,
-                time: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            showToast("تم نشر المقال الجديد بنجاح!");
-            new Audio('https://actions.google.com/sounds/v1/alarms/medium_bell_ring.ogg').play();
-            nav('home');
-        }
-
-        // الاستماع لتحديثات المقالات
-        function listenToPosts() {
-            db.collection("posts").orderBy("time", "desc").onSnapshot(snap => {
-                allPosts = [];
-                snap.forEach(doc => allPosts.push({id: doc.id, ...doc.data()}));
-                renderPosts();
-            });
-        }
-
-        // تعليق
-        function loadComments(postId) {
-            db.collection("posts").doc(postId).collection("comments").orderBy("time", "asc").onSnapshot(snap => {
-                const list = document.getElementById(`comments-list-${postId}`);
-                if (!list) return;
-                list.innerHTML = '';
-                snap.forEach(doc => {
-                    const c = doc.data();
-                    list.innerHTML += `<div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; margin-bottom:10px; border-right:4px solid var(--p);">
-                        <div style="font-weight:bold; color:var(--p); font-size:0.8rem;">${c.user}</div>
-                        <div style="font-size:0.95rem;">${c.text}</div>
-                    </div>`;
-                });
-            });
-        }
-
-        async function addComment(postId) {
-            if(!user) { showLogin(); return; }
-            const input = document.getElementById(`comm-input-${postId}`);
-            if(!input.value.trim()) return;
-            await db.collection("posts").doc(postId).collection("comments").add({
-                user: user.name, text: input.value.trim(), time: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            input.value = '';
-            showToast("تمت إضافة تعليقك");
-        }
-
-        // إعجاب
-        function likePost(id) { 
-            db.collection("posts").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) }); 
-            showToast("شكراً لإعجابك!");
-        }
-
-        // التنقل بين الأقسام
-        function nav(id, e) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById('sec-' + id).classList.add('active');
-            if(e) e.currentTarget.classList.add('active');
-            if(id === 'home') document.getElementById('sec-title').innerText = 'الأخبار العاجلة';
-            else if(id === 'write') document.getElementById('sec-title').innerText = 'الاستوديو';
-            else if(id === 'about') document.getElementById('sec-title').innerText = 'عن المنصة';
-            else if(id === 'contact') document.getElementById('sec-title').innerText = 'الإعلانات والتواصل';
-            else if(id === 'settings') document.getElementById('sec-title').innerText = 'الإعدادات';
-            else if(id === 'requests') document.getElementById('sec-title').innerText = 'طلبات الناشرين';
-
-            if(window.innerWidth <= 992) toggleMenu();
-        }
-
-        function toggleMenu() { document.getElementById('main-aside').classList.toggle('open'); }
-        function showLogin() { document.getElementById('login-modal').style.display = 'flex'; }
-        function hideLogin() { document.getElementById('login-modal').style.display = 'none'; }
-        function logout() { 
-            localStorage.clear(); 
-            user = null;
-            document.getElementById('profile-name').innerText = savedUserName || 'ضيف المنصة';
-            document.getElementById('profile-email').innerText = 'سجل دخولك لمزامنة مفضلاتك';
-            document.getElementById('header-profile').style.display = 'none'; 
-            document.getElementById('login-trigger').style.display = 'flex';
-            document.getElementById('nav-admin').style.display = 'none';
-            document.getElementById('nav-requests').style.display = 'none';
-            nav('home');
-        }
-        function closeArticle() { document.getElementById('article-view').style.display = 'none'; }
-
-        // تبديل الوضع الليلي والفاتح وحفظ الإعداد
-        function toggleDarkMode() {
-            if(document.body.classList.contains('light')) {
-                document.body.classList.remove('light');
-                localStorage.setItem('zomerd_dark_mode', 'dark');
-                showToast('تم التبديل إلى الوضع الداكن');
-            } else {
-                document.body.classList.add('light');
-                localStorage.setItem('zomerd_dark_mode', 'light');
-                showToast('تم التبديل إلى الوضع الفاتح');
-            }
-        }
-
-        // الاستماع لطلبات الناشرين للادمن
-        function listenToRequests() {
-            db.collection("publisher_requests").orderBy('time','desc').onSnapshot(snap => {
-                const container = document.getElementById('request-list');
-                container.innerHTML = '';
-                if(snap.empty){
-                    container.innerHTML = '<p style="opacity:0.5; text-align:center; padding:20px;">لا توجد طلبات حالياً.</p>';
-                    return;
-                }
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    container.innerHTML += `<div>
-                        <strong>${data.name}</strong> (${data.email})<br>
-                        <small style="opacity:0.6;">${data.time ? new Date(data.time.seconds*1000).toLocaleString('ar-EG') : ''}</small>
-                        <button onclick="approvePublisher('${doc.id}', '${data.userId}')">موافقة</button>
-                        <button onclick="rejectPublisher('${doc.id}')">رفض</button>
-                    </div>`;
-                });
-            });
-        }
-
-        // الموافقة على ناشر
-        async function approvePublisher(docId, userId) {
-            try {
-                // إضافة دور الناشر في مجموعتك الخاصة (جرب إضافة حقل في قاعدة بيانات أو نظام أذونات)
-                await db.collection("publishers").doc(userId).set({active: true});
-                await db.collection("publisher_requests").doc(docId).delete();
-                showToast('تمت الموافقة على الناشر!');
-            } catch(e) {
-                showToast('حدث خطأ أثناء الموافقة.');
-            }
-   // --- إعدادات Firebase ---
+        // ==========================================
+// 1. الإعدادات الأساسية والاتصال بـ Firebase
+// ==========================================
 const firebaseConfig = {
     apiKey: "AIzaSyAt16kYfN4cNHfTwbdr3KOGbcQJlmE45tg",
     authDomain: "zomerd-new.firebaseapp.com",
@@ -843,371 +446,229 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const ADMIN_EMAIL = "bo2584668@gmail.com";
 
-let currentUser = null;
+let currentUser = JSON.parse(localStorage.getItem('zomerd_user')) || null;
 let allPosts = [];
+let uploadedImageUrl = "";
+let currentCategory = 'all';
+let lastChosenColor = 'var(--txt)';
 
-// --- 1. نظام تسجيل الدخول والتحقق من الرتبة ---
+// ==========================================
+// 2. نظام تسجيل الدخول وتحديث الواجهة (UI)
+// ==========================================
+
 function onGoogleLogin(response) {
     const base64Url = response.credential.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     const userPayload = JSON.parse(window.atob(base64));
 
-    // جلب بيانات المستخدم من قاعدة البيانات للتحقق من صلاحية الناشر
     db.collection("users").doc(userPayload.email).get().then((doc) => {
         let userData = {
             name: userPayload.name,
             email: userPayload.email,
             picture: userPayload.picture,
-            isPublisher: false
+            isPublisher: (userPayload.email === ADMIN_EMAIL)
         };
 
         if (doc.exists) {
-            userData.isPublisher = doc.data().isPublisher || false;
+            userData.isPublisher = doc.data().isPublisher || (userPayload.email === ADMIN_EMAIL);
         } else {
-            // إنشاء مستخدم جديد في قاعدة البيانات إذا لم يوجد
             db.collection("users").doc(userPayload.email).set(userData);
         }
-
-        // إذا كان هو الآدمن الرئيسي
-        if (userData.email === ADMIN_EMAIL) userData.isPublisher = true;
 
         currentUser = userData;
         localStorage.setItem('zomerd_user', JSON.stringify(userData));
         updateUI();
         hideLogin();
         showToast(`أهلاً بك يا ${userData.name}`);
+        setTimeout(() => location.reload(), 1000);
     });
 }
 
-function updateUI() {
+async function updateUI() {
     if (!currentUser) return;
+
+    // تحديث الصلاحية من السيرفر لضمان الدقة
+    const userDoc = await db.collection("users").doc(currentUser.email).get();
+    if (userDoc.exists) {
+        currentUser.isPublisher = userDoc.data().isPublisher || false;
+        localStorage.setItem('zomerd_user', JSON.stringify(currentUser));
+    }
 
     document.getElementById('header-profile').style.display = 'flex';
     document.getElementById('user-name-head').innerText = currentUser.name;
     document.getElementById('user-icon').innerText = currentUser.name.charAt(0);
     document.getElementById('login-trigger').style.display = 'none';
 
-    // إظهار قسم الإدارة إذا كان ناشراً أو آدمن
+    // إظهار استوديو النشر للناشرين والآدمن
     if (currentUser.isPublisher) {
         document.getElementById('nav-admin').style.display = 'flex';
     }
 
-    // إظهار قسم طلبات الناشرين للآدمن فقط
+    // إظهار لوحة التحكم الكاملة للآدمن فقط
     if (currentUser.email === ADMIN_EMAIL) {
         document.getElementById('nav-requests').style.display = 'flex';
-        loadRequests();
-    }
-    
-    fetchPosts();
-}
-
-// --- 2. إدارة المقالات (جلب، نشر، حذف) ---
-async function fetchPosts() {
-    const snapshot = await db.collection("posts").orderBy("time", "desc").get();
-    allPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    renderPosts();
-}
-
-function renderPosts() {
-    const grid = document.getElementById('posts-display-grid');
-    const term = document.getElementById('smart-search').value.toLowerCase();
-    grid.innerHTML = '';
-
-    let filtered = allPosts.filter(p => {
-        const matchSearch = p.title.toLowerCase().includes(term);
-        const matchCategory = (currentCategory === 'all') || (p.category === currentCategory);
-        return matchSearch && matchCategory;
-    });
-
-    filtered.forEach((p, index) => {
-        const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
-        // إضافة زر الحذف للآدمن فقط
-        const deleteBtn = isAdmin ? `<button onclick="deletePost('${p.id}', event)" style="position:absolute; top:10px; right:10px; z-index:20; background:red; color:white; border:none; border-radius:5px; padding:5px 10px; cursor:pointer;"><i class="fa fa-trash"></i></button>` : "";
-
-        grid.innerHTML += `
-            <div class="post-card animate__animated animate__fadeInUp" style="animation-delay: ${index * 0.1}s" onclick="openArticle('${p.id}')">
-                ${deleteBtn}
-                <div class="post-img-wrapper">
-                    <img src="${p.image || 'https://via.placeholder.com/600x400'}" class="post-img" loading="lazy">
-                </div>
-                <div class="post-content">
-                    <h3 class="post-title" style="color:${p.textColor || 'var(--txt)'}">${p.title}</h3>
-                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; opacity:0.6;">
-                        <span><i class="fa fa-calendar-day"></i> ${p.time ? new Date(p.time.seconds*1000).toLocaleDateString('ar-EG') : 'الآن'}</span>
-                        <span><i class="fa fa-eye"></i> ${p.views || 0}</span>
-                    </div>
-                </div>
-            </div>`;
-    });
-}
-
-async function deletePost(id, event) {
-    event.stopPropagation(); // منع فتح المقال عند الضغط على حذف
-    if (confirm("هل أنت متأكد من حذف هذا المقال نهائياً؟")) {
-        try {
-            await db.collection("posts").doc(id).delete();
-            showToast("تم حذف المقال بنجاح");
-            fetchPosts();
-        } catch (e) {
-            showToast("حدث خطأ أثناء الحذف");
-        }
+        loadRequests();      // طلبات الناشرين
+        loadPendingPosts();  // المقالات بانتظار الموافقة
+        loadPublishersList();// التحكم في الناشرين
     }
 }
+
+// ==========================================
+// 3. محرك النشر والمراجعة (Posts & Review)
+// ==========================================
 
 async function publishPost() {
-    const title = document.getElementById('p-title').value;
-    const content = document.getElementById('p-body').innerHTML;
+    const title = document.getElementById('p-title').value.trim();
+    const content = document.getElementById('p-body').innerHTML.trim();
     const category = document.getElementById('p-category').value;
 
-    if (!title || !content || !category) return showToast("يرجى إكمال كافة البيانات");
-
-    const newPost = {
-        title,
-        content,
-        category,
-        image: uploadedImageUrl || "https://via.placeholder.com/800x400",
-        author: currentUser.name,
-        authorEmail: currentUser.email,
-        time: firebase.firestore.FieldValue.serverTimestamp(),
-        views: 0,
-        likes: 0,
-        textColor: currentEditorColor
-    };
-
-    await db.collection("posts").add(newPost);
-    showToast("تم نشر المقال بنجاح!");
-    nav('home');
-    fetchPosts();
-}
-
-
-// تابع لبقية الوظائف (التنقل، الوضع الليلي، إلخ) كما هي في كودك...
-        }
-        
-
-        // رفض طلب ناشر
-        async function rejectPublisher(docId) {
-            try {
-                await db.collection("publisher_requests").doc(docId).delete();
-                showToast('تم رفض الطلب بنجاح!');
-            } catch(e) {
-                showToast('حدث خطأ أثناء رفض الطلب.');
-            }
-        }
-// 1. إرسال طلب الناشر
-async function requestToBePublisher() {
-    if (!currentUser) return showToast("سجل دخولك أولاً");
-    
-    try {
-        await db.collection("requests").doc(currentUser.email).set({
-            name: currentUser.name,
-            email: currentUser.email,
-            time: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        showToast("تم إرسال طلبك للآدمن بنجاح");
-    } catch (error) {
-        showToast("خطأ في إرسال الطلب: " + error.message);
+    if (!title || content.replace(/<[^>]+>/g, '').trim().split(/\s+/).length < 400) {
+        return showToast("المقال يجب أن يكون 400 كلمة على الأقل");
     }
-}
 
-// 2. عرض الطلبات للآدمن
-async function loadRequests() {
-    const list = document.getElementById('request-list');
-    if (!list) return; // تأمين في حال عدم وجود العنصر
-
-    try {
-        const snapshot = await db.collection("requests").get();
-        list.innerHTML = "";
-
-        if (snapshot.empty) {
-            list.innerHTML = "<p style='text-align:center; opacity:0.5;'>لا توجد طلبات معلقة حالياً.</p>";
-            return;
-        }
-
-        snapshot.forEach(doc => {
-            const req = doc.data();
-            list.innerHTML += `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:10px;">
-                    <div>
-                        <strong>${req.name}</strong><br>
-                        <small>${req.email}</small>
-                    </div>
-                    <button onclick="approvePublisher('${req.email}')" style="background:var(--p); color:black; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">موافقة</button>
-                </div>
-            `;
-        });
-    } catch (error) {
-        console.error("خطأ في تحميل الطلبات:", error);
-    }
-}
-
-// 3. الموافقة على الناشر (نسخة واحدة قوية ومختصرة)
-async function approvePublisher(email) {
-    if (!email) return;
-
-    try {
-        console.log("جاري الموافقة على:", email);
-
-        // أ- ترقية المستخدم في جدول المستخدمين
-        await db.collection("users").doc(email).set({ 
-            isPublisher: true 
-        }, { merge: true });
-
-        // ب- حذف الطلب من جدول الطلبات
-        await db.collection("requests").doc(email).delete();
-
-        showToast("تمت الموافقة وتفعيل صلاحية الناشر بنجاح ✅");
-        
-        // ج- تحديث القائمة فوراً
-        loadRequests();
-    } catch (error) {
-        console.error("Error approving publisher:", error);
-        showToast("فشل في القبول: " + error.message);
-    }
-}
-
-// تشغيل عند التحميل
-window.addEventListener('DOMContentLoaded', () => {
-    const saved = localStorage.getItem('zomerd_user');
-    if (saved) {
-        currentUser = JSON.parse(saved);
-        updateUI();
-    }
-    fetchPosts();
-});
- // 1. دالة النشر الذكية (فوري للآدمن ومراجعة للناشر)
-async function publishPost() {
-    const title = document.getElementById('p-title').value;
-    const content = document.getElementById('p-body').innerHTML;
-    const category = document.getElementById('p-category').value;
-
-    if(!title || content.length < 10) return showToast("أكمل بيانات المقال أولاً");
-
-    // التحقق: إذا كان الإيميل هو إيميلك (الآدمن) ينشر فوراً، غير ذلك يذهب للمراجعة
+    // المنطق: الآدمن ينشر فوراً (approved)، الناشر يذهب للمراجعة (pending)
     const status = (currentUser.email === ADMIN_EMAIL) ? "approved" : "pending";
 
     try {
         await db.collection("posts").add({
             title, content, category,
+            image: uploadedImageUrl || "https://via.placeholder.com/800x400",
             author: currentUser.name,
             authorEmail: currentUser.email,
             time: firebase.firestore.FieldValue.serverTimestamp(),
             status: status,
-            views: 0
+            views: 0,
+            likes: 0,
+            textColor: lastChosenColor
         });
 
-        if(status === "approved") {
+        if (status === "approved") {
             showToast("تم النشر فوراً ✅");
-            fetchPosts(); // تحديث الصفحة الرئيسية فوراً
+            fetchPosts();
         } else {
-            showToast("تم إرسال المقال للمراجعة.. سيظهر فور موافقة الآدمن ⏳");
+            showToast("تم إرسال المقال للمراجعة ⏳");
         }
-        
-        // تفريغ الحقول والعودة للرئيسية
+
         document.getElementById('p-title').value = "";
         document.getElementById('p-body').innerHTML = "";
         nav('home');
-    } catch (e) {
-        showToast("خطأ في النشر: " + e.message);
-    }
+    } catch (e) { showToast("خطأ في النشر: " + e.message); }
 }
 
-// 2. جلب المقالات المعتمدة (Approved) فقط للجمهور
 async function fetchPosts() {
-    try {
-        const snap = await db.collection("posts")
-                       .where("status", "==", "approved")
-                       .orderBy("time", "desc").get();
-        allPosts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        renderPosts();
-    } catch (e) {
-        console.error("خطأ في جلب المقالات:", e);
-    }
+    // جلب المقالات المقبولة فقط للجمهور
+    const snap = await db.collection("posts")
+                   .where("status", "==", "approved")
+                   .orderBy("time", "desc").get();
+    allPosts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    renderPosts();
 }
 
-// 3. عرض المقالات "المعلقة" للآدمن فقط لمراجعتها
 async function loadPendingPosts() {
     const container = document.getElementById('pending-posts-list');
     if (!container) return;
 
-    try {
-        const snap = await db.collection("posts").where("status", "==", "pending").get();
-        container.innerHTML = snap.empty ? "<p style='opacity:0.5; padding:10px;'>لا توجد مقالات بانتظار المراجعة</p>" : "";
+    const snap = await db.collection("posts").where("status", "==", "pending").get();
+    container.innerHTML = snap.empty ? "<p style='opacity:0.5;'>لا توجد مقالات للمراجعة</p>" : "";
 
-        snap.forEach(doc => {
-            const p = doc.data();
-            container.innerHTML += `
-                <div class="admin-item" style="background:rgba(255,159,67,0.05); padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #ff9f43;">
-                    <strong>${p.title}</strong><br><small>الكاتب: ${p.author}</small>
-                    <div style="margin-top:10px; display:flex; gap:10px;">
-                        <button onclick="previewArticle('${doc.id}')" style="background:var(--p); border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">معاينة</button>
-                        <button onclick="approvePost('${doc.id}')" style="background:#2ecc71; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">نشر ✅</button>
-                        <button onclick="deletePost('${doc.id}', event)" style="background:#ff4757; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">حذف</button>
-                    </div>
-                </div>`;
-        });
-    } catch (e) { console.error(e); }
+    snap.forEach(doc => {
+        const p = doc.data();
+        container.innerHTML += `
+            <div style="background:rgba(255,159,67,0.05); padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #ff9f43;">
+                <strong>${p.title}</strong><br><small>بواسطة: ${p.author}</small>
+                <div style="margin-top:10px; display:flex; gap:10px;">
+                    <button onclick="previewArticle('${doc.id}')" style="background:var(--p); border:none; padding:6px; border-radius:6px; cursor:pointer;">معاينة</button>
+                    <button onclick="approvePost('${doc.id}')" style="background:#2ecc71; border:none; padding:6px; border-radius:6px; cursor:pointer;">نشر ✅</button>
+                    <button onclick="deletePost('${doc.id}', event)" style="background:#ff4757; border:none; padding:6px; border-radius:6px; cursor:pointer;">حذف</button>
+                </div>
+            </div>`;
+    });
 }
 
-// 4. الموافقة على نشر المقال (تحويله من pending إلى approved)
 async function approvePost(postId) {
-    try {
-        await db.collection("posts").doc(postId).update({ status: "approved" });
-        showToast("تم اعتماد ونشر المقال بنجاح 🚀");
-        loadPendingPosts(); // تحديث قائمة المراجعة
-        fetchPosts(); // تحديث الصفحة الرئيسية
-    } catch (e) { showToast("خطأ في الموافقة"); }
+    await db.collection("posts").doc(postId).update({ status: "approved" });
+    showToast("تم اعتماد ونشر المقال");
+    loadPendingPosts();
+    fetchPosts();
 }
 
-// 5. قبول طلبات الناشرين (ترقية المستخدم)
+// ==========================================
+// 4. إدارة الناشرين (Admin Management)
+// ==========================================
+
+async function loadRequests() {
+    const list = document.getElementById('request-list');
+    const snap = await db.collection("requests").get();
+    list.innerHTML = snap.empty ? "<p style='opacity:0.5;'>لا توجد طلبات</p>" : "";
+
+    snap.forEach(doc => {
+        const req = doc.data();
+        list.innerHTML += `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:5px;">
+                <span>${req.name}</span>
+                <button onclick="approvePublisher('${req.email}')" style="background:var(--p); color:black; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">قبول</button>
+            </div>`;
+    });
+}
+
 async function approvePublisher(email) {
-    try {
-        await db.collection("users").doc(email).set({ isPublisher: true }, { merge: true });
-        await db.collection("requests").doc(email).delete();
-        showToast("تمت الموافقة وتعيينه كناشر ✅");
-        loadRequests();
-        loadPublishersList();
-    } catch (e) { showToast("فشل في العملية"); }
+    await db.collection("users").doc(email).set({ isPublisher: true }, { merge: true });
+    await db.collection("requests").doc(email).delete();
+    showToast("تمت ترقية الناشر بنجاح ✅");
+    loadRequests();
+    loadPublishersList();
 }
 
-// 6. التحكم في الناشرين (سحب الصلاحية)
+async function loadPublishersList() {
+    const list = document.getElementById('publishers-management-list');
+    const snap = await db.collection("users").where("isPublisher", "==", true).get();
+    list.innerHTML = "";
+    snap.forEach(doc => {
+        const p = doc.data();
+        if(p.email === ADMIN_EMAIL) return;
+        list.innerHTML += `
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px; padding:8px; background:rgba(255,255,255,0.02); border-radius:8px;">
+                <span>${p.name}</span>
+                <button onclick="removePublisher('${p.email}')" style="color:#ff4757; background:none; border:none; cursor:pointer;">سحب صلاحية</button>
+            </div>`;
+    });
+}
+
 async function removePublisher(email) {
-    if(confirm("هل تريد سحب صلاحية النشر من هذا الحساب؟")) {
-        try {
-            await db.collection("users").doc(email).update({ isPublisher: false });
-            showToast("تم سحب الصلاحية بنجاح");
-            loadPublishersList();
-        } catch (e) { showToast("حدث خطأ"); }
+    if(confirm("سحب صلاحية النشر؟")) {
+        await db.collection("users").doc(email).update({ isPublisher: false });
+        showToast("تم الحذف");
+        loadPublishersList();
     }
 }
 
-// 7. تحديث واجهة المستخدم والصلاحيات (تلقائي عند التحميل)
-async function updateUI() {
-    if (!currentUser) return;
-    
-    try {
-        // التحقق من الصلاحية الحقيقية من فايربيس
-        const userDoc = await db.collection("users").doc(currentUser.email).get();
-        if (userDoc.exists) {
-            currentUser.isPublisher = userDoc.data().isPublisher || false;
-            localStorage.setItem('zomerd_user', JSON.stringify(currentUser));
-        }
+// ==========================================
+// 5. الوظائف العامة (Utilities)
+// ==========================================
 
-        // إظهار قسم الكتابة للناشرين والآدمن
-        if (currentUser.isPublisher) {
-            document.getElementById('nav-admin').style.display = 'flex';
-        }
-        
-        // إظهار قسم الإدارة والمراجعة للآدمن فقط
-        if (currentUser.email === ADMIN_EMAIL) {
-            document.getElementById('nav-requests').style.display = 'flex';
-            loadRequests();      // تحميل طلبات الانضمام
-            loadPendingPosts();  // تحميل المقالات بانتظار الموافقة
-            loadPublishersList();// تحميل قائمة الناشرين الحاليين
-        }
-    } catch (e) { console.error("UpdateUI Error:", e); }
-}       
-        window.onload = initApp;
+function showToast(msg) {
+    const t = document.getElementById('toast-msg');
+    t.innerText = msg;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 3000);
+}
+
+async function deletePost(id, event) {
+    event.stopPropagation();
+    if (confirm("حذف المقال نهائياً؟")) {
+        await db.collection("posts").doc(id).delete();
+        showToast("تم الحذف");
+        fetchPosts();
+        loadPendingPosts();
+    }
+}
+
+window.onload = () => { 
+    updateUI(); 
+    fetchPosts(); 
+    particlesJS('particles-js', { "particles": { "number": { "value": 50 }, "color": { "value": "#00d2ff" } } });
+};
+   
     </script>
 </body>
 </html>
