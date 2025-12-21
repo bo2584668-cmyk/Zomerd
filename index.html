@@ -1028,6 +1028,25 @@ async function approvePublisher(email) {
         showToast("حدث خطأ ما");
     }
 }
+            async function approvePublisher(email) {
+    try {
+        // 1. استخدام set مع merge لضمان إنشاء السجل حتى لو لم يكن موجوداً
+        await db.collection("users").doc(email).set({ 
+            isPublisher: true 
+        }, { merge: true });
+
+        // 2. حذف الطلب من قائمة الانتظار
+        await db.collection("requests").doc(email).delete();
+
+        showToast("تمت الموافقة وتفعيل صلاحية الناشر بنجاح ✅");
+        
+        // تحديث القائمة فوراً
+        loadRequests();
+    } catch (error) {
+        console.error("Error approving publisher:", error);
+        showToast("فشل في القبول: تأكد من إعدادات الحماية في Firebase");
+    }
+}
 
 // تشغيل عند التحميل
 window.onload = () => {
