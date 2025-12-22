@@ -853,19 +853,7 @@
                 showToast('حدث خطأ أثناء رفض الطلب.');
             }
         }
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        splash.classList.add('splash-hidden');
-        
-        // حذف العنصر تماماً من المتصفح بعد الاختفاء لتحسين الأداء
-        setTimeout(() => {
-            splash.remove();
-        }, 800);
-    }, 2000); // 2000 تعني ثانيتين، يمكنك تقليلها أو زيادتها
-});
 
-// getAdComboOffers();   
         window.onload = initApp;
     </script>
 </body>
