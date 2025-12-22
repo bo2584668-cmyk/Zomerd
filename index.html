@@ -922,25 +922,7 @@ window.addEventListener('load', () => {
         }, 800);
     }, 2000); // 2000 تعني ثانيتين، يمكنك تقليلها أو زيادتها
 });
-   const apiKey = 'debae40564044920ccdabb501a71d022'; // مفتاحك الذي أرسلته
 
-async function getAdComboOffers() {
-    try {
-        const response = await fetch(`https://api.adcombo.com/api/v2/offers/?api_key=${apiKey}&country=EG`);
-        const data = await response.json();
-        
-        console.log("العروض المتاحة في مصر:", data);
-        
-        // هنا يمكنك كتابة كود لعرض هذه العروض داخل موقعك تلقائياً
-        data.forEach(offer => {
-            console.log(`العرض: ${offer.name}, الربح: ${offer.payout}`);
-        });
-    } catch (error) {
-        console.error("خطأ في الاتصال بالـ API:", error);
-    }
-}
-
-// تشغيل الدالة عند طلبها
 // getAdComboOffers();   
         window.onload = initApp;
     </script>
