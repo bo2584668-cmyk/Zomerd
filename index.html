@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<meta charset="UTF-8" />
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <title>زمرد نت | المنصة العالمية للأخبار</title>
     
@@ -248,7 +250,6 @@
             border-color: black;
         }
 
-}
     </style>
 </head>
 <body>
@@ -261,7 +262,7 @@
     <aside id="main-aside">
         <div style="padding:40px 20px; text-align:center;">
             <h1 style="color:var(--p); font-weight: 900; font-size: 2.2rem; letter-spacing: -1px;">زمرد<span style="color:white">نت</span></h1>
-            <p style="font-size: 0.8rem; opacity: 0.5; margin-top: 5px; font-weight: 600;"> تم التطوير بواسطه براء عمر </p>
+            <p style="font-size: 0.8rem; opacity: 0.5; margin-top: 5px; font-weight: 600;">PREMIUM NEWS FEED</p>
         </div>
         <nav style="flex: 1;">
             <div class="nav-link active" onclick="nav('home', event)"><i class="fa-solid fa-bolt"></i> آخر الأخبار</div>
@@ -272,21 +273,6 @@
             <div class="nav-link" onclick="nav('settings', event)"><i class="fa-solid fa-user-gear"></i> حسابي</div>
         </nav>
         <div id="login-trigger" class="nav-link" onclick="showLogin()" style="color:var(--p); margin-bottom:30px; border: 1px dashed var(--p);"><i class="fa-solid fa-id-badge"></i> تسجيل الدخول</div>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-HMMY7D165B"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-HMMY7D165B');
-<div id="splash-screen">
-    <div class="splash-content">
-        <img src="https://gemini.google.com/share/250bd04acdfe" id="splash-logo" alt="Zomerd Net Logo">
-        <div class="loader-line"></div>
-    </div>
-</div>
-</script>
     </aside>
 
     <main id="scroll-main">
@@ -298,6 +284,9 @@
             <div id="header-profile" style="display:none; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:5px 15px; border-radius:50px;">
                 <span id="user-name-head" style="font-size:0.8rem; font-weight:bold;">براء</span>
                 <div id="user-icon" style="width:35px; height:35px; background:var(--grad); color:black; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900;">B</div>
+     <script src="https://quge5.com/88/tag.min.js" data-zone="195181" async data-cfasync="false"></script>  
+    <script type="text/javascript" src="https://filestrue.com/script_include.php?id=1862944"></script>
+     
             </div>
         </header>
 
@@ -322,8 +311,6 @@
                 <div class="post-card skeleton" style="height:350px;"></div>
                 <div class="post-card skeleton" style="height:350px;"></div>
                 <div class="post-card skeleton" style="height:350px;"></div>
-   <script src="https://quge5.com/88/tag.min.js" data-zone="195181" async data-cfasync="false"></script>  
-    <script type="text/javascript" src="https://filestrue.com/script_include.php?id=1862944"></script>
             </div>
         </section>
 
@@ -364,7 +351,11 @@
                     <button title="أسود" style="background:#000;" onclick="setEditorColor('#000', event)"></button>
                     <button title="أبيض" style="background:#fff; border: 1px solid #ccc;" onclick="setEditorColor('#fff', event)"></button>
                     <button title="بنّي" style="background:#7b5838;" onclick="setEditorColor('#7b5838', event)"></button>
-                </div>             
+                </div>
+
+                <div id="p-body" class="inp-field" contenteditable="true" style="min-height:400px; padding:25px; font-size:1.1rem; line-height:1.8; color: var(--txt); border-radius:15px; border:1px solid var(--border); background:transparent;"></div>
+
+                <button onclick="publishPost()" class="btn-p" style="height:60px; font-size:1.2rem; background:var(--grad); color:black; border:none; border-radius:20px; width:100%; cursor:pointer; font-weight:900;">إطلاق المقال الآن</button>
              </div>
         </section>
 
