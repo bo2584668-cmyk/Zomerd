@@ -442,26 +442,7 @@
                     <li><strong>واتساب:</strong> <a href="https://wa.me/201273740256" target="_blank" style="color:var(--p);">+201273740256</a></li>
                     <li><strong>البريد الإلكتروني:</strong> <a href="mailto:bo2584668@gmail.com" style="color:var(--p);">bo2584668@gmail.com</a></li>
                 </ul>
-  const apiKey = 'debae40564044920ccdabb501a71d022'; // مفتاحك الذي أرسلته
 
-async function getAdComboOffers() {
-    try {
-        const response = await fetch(`https://api.adcombo.com/api/v2/offers/?api_key=${apiKey}&country=EG`);
-        const data = await response.json();
-        
-        console.log("العروض المتاحة في مصر:", data);
-        
-        // هنا يمكنك كتابة كود لعرض هذه العروض داخل موقعك تلقائياً
-        data.forEach(offer => {
-            console.log(`العرض: ${offer.name}, الربح: ${offer.payout}`);
-        });
-    } catch (error) {
-        console.error("خطأ في الاتصال بالـ API:", error);
-    }
-}
-
-// تشغيل الدالة عند طلبها
-// getAdComboOffers();    
             </div>
         </section>
 
@@ -941,6 +922,26 @@ window.addEventListener('load', () => {
         }, 800);
     }, 2000); // 2000 تعني ثانيتين، يمكنك تقليلها أو زيادتها
 });
+   const apiKey = 'debae40564044920ccdabb501a71d022'; // مفتاحك الذي أرسلته
+
+async function getAdComboOffers() {
+    try {
+        const response = await fetch(`https://api.adcombo.com/api/v2/offers/?api_key=${apiKey}&country=EG`);
+        const data = await response.json();
+        
+        console.log("العروض المتاحة في مصر:", data);
+        
+        // هنا يمكنك كتابة كود لعرض هذه العروض داخل موقعك تلقائياً
+        data.forEach(offer => {
+            console.log(`العرض: ${offer.name}, الربح: ${offer.payout}`);
+        });
+    } catch (error) {
+        console.error("خطأ في الاتصال بالـ API:", error);
+    }
+}
+
+// تشغيل الدالة عند طلبها
+// getAdComboOffers();   
         window.onload = initApp;
     </script>
 </body>
