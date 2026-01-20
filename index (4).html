@@ -1,0 +1,1786 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
+        <title>زمرد نت | منصة الأخبار العالمية</title>
+        <meta
+            name="description"
+            content="أحدث الأخبار والمقالات التقنية والحصرية من زمرد نت"
+        />
+        <link rel="manifest" href="/manifest.json" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+        />
+        <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5562460683071642"
+            crossorigin="anonymous"
+        ></script>
+
+        <style>
+            :root {
+                --primary: #d32f2f;
+                --secondary: #f57f17;
+                --bg: #f8f9fa;
+                --text: #1a1a1a;
+                --border: #e0e0e0;
+                --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                --glass: rgba(255, 255, 255, 0.9);
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: "Cairo", sans-serif;
+                background: var(--bg);
+                color: var(--text);
+                line-height: 1.6;
+                overflow-x: hidden;
+            }
+
+            /* Header & Navigation */
+            header {
+                background: #fff;
+                border-bottom: 3px solid var(--primary);
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                box-shadow: var(--shadow);
+            }
+
+            .header-top {
+                border-bottom: 1px solid #eee;
+                padding: 15px 0;
+            }
+            .header-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+                font-weight: 900;
+                color: var(--primary);
+                letter-spacing: -1px;
+                text-decoration: none;
+            }
+            .logo span {
+                color: #333;
+            }
+
+            .search-box {
+                flex: 1;
+                margin: 0 40px;
+                position: relative;
+                max-width: 500px;
+                input {
+                    width: 100%;
+                    padding: 12px 45px 12px 20px;
+                    border: 1px solid #ddd;
+                    border-radius: 30px;
+                    font-size: 0.95rem;
+                    outline: none;
+                    transition: 0.3s;
+                    &:focus {
+                        border-color: var(--primary);
+                        box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.1);
+                    }
+                }
+                i {
+                    position: absolute;
+                    right: 18px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: #888;
+                }
+            }
+
+            nav {
+                background: #fff;
+                border-bottom: 1px solid var(--border);
+                overflow-x: auto;
+            }
+            nav::-webkit-scrollbar {
+                display: none;
+            }
+            nav ul {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+                display: flex;
+                list-style: none;
+            }
+            nav li a {
+                display: block;
+                padding: 18px 22px;
+                color: #444;
+                text-decoration: none;
+                font-weight: 800;
+                border-bottom: 4px solid transparent;
+                transition: 0.3s;
+                font-size: 1.05rem;
+            }
+            nav li a:hover,
+            nav li a.active {
+                color: var(--primary);
+                border-bottom-color: var(--primary);
+                background: rgba(211, 47, 47, 0.05);
+            }
+
+            /* Layout */
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 30px 20px;
+            }
+            .layout {
+                display: grid;
+                grid-template-columns: 1fr 320px;
+                gap: 35px;
+            }
+
+            @media (max-width: 992px) {
+                .layout {
+                    grid-template-columns: 1fr;
+                }
+                .sidebar {
+                    order: 2;
+                }
+            }
+
+            /* Featured Section */
+            .featured-news {
+                display: grid;
+                grid-template-columns: 1.6fr 1fr;
+                gap: 20px;
+                margin-bottom: 40px;
+            }
+            @media (max-width: 768px) {
+                .featured-news {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .featured-main {
+                position: relative;
+                height: 480px;
+                border-radius: 12px;
+                overflow: hidden;
+                cursor: pointer;
+                box-shadow: var(--shadow);
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+                &:hover img {
+                    transform: scale(1.08);
+                }
+            }
+            .featured-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                    to top,
+                    rgba(0, 0, 0, 0.95) 0%,
+                    rgba(0, 0, 0, 0.4) 60%,
+                    transparent 100%
+                );
+                padding: 45px 35px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+            }
+            .badge {
+                background: var(--primary);
+                color: #fff;
+                padding: 5px 15px;
+                border-radius: 6px;
+                font-size: 0.85rem;
+                font-weight: 800;
+                width: fit-content;
+                margin-bottom: 18px;
+                text-transform: uppercase;
+            }
+            .featured-overlay h2 {
+                color: #fff;
+                font-size: 2.5rem;
+                font-weight: 900;
+                line-height: 1.2;
+                margin-bottom: 10px;
+            }
+
+            .featured-side-grid {
+                display: grid;
+                grid-template-rows: 1fr 1fr;
+                gap: 20px;
+            }
+            .featured-side-item {
+                position: relative;
+                border-radius: 12px;
+                overflow: hidden;
+                cursor: pointer;
+                box-shadow: var(--shadow);
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: 0.7s;
+                }
+                &:hover img {
+                    transform: scale(1.08);
+                }
+            }
+            .featured-side-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                    to top,
+                    rgba(0, 0, 0, 0.85),
+                    transparent
+                );
+                padding: 25px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                h3 {
+                    color: #fff;
+                    font-size: 1.2rem;
+                    font-weight: 800;
+                    line-height: 1.4;
+                }
+            }
+
+            /* Posts Section */
+            .posts-section {
+                background: #fff;
+                border-radius: 12px;
+                box-shadow: var(--shadow);
+                overflow: hidden;
+            }
+            .posts-header {
+                padding: 20px 30px;
+                border-bottom: 3px solid #f0f0f0;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .posts-header h2 {
+                font-size: 1.5rem;
+                font-weight: 900;
+                border-right: 6px solid var(--primary);
+                padding-right: 15px;
+                color: #333;
+            }
+
+            .post-item {
+                padding: 30px;
+                display: grid;
+                grid-template-columns: 280px 1fr;
+                gap: 30px;
+                border-bottom: 1px solid #f0f0f0;
+                transition: 0.4s;
+                &:last-child {
+                    border-bottom: none;
+                }
+                &:hover {
+                    background: #fafafa;
+                }
+            }
+            @media (max-width: 650px) {
+                .post-item {
+                    grid-template-columns: 1fr;
+                    padding: 20px;
+                }
+                .post-image {
+                    width: 100% !important;
+                    height: 220px !important;
+                }
+            }
+
+            .post-image {
+                width: 280px;
+                height: 190px;
+                border-radius: 10px;
+                overflow: hidden;
+                position: relative;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: 0.8s;
+                }
+            }
+            .post-item:hover .post-image img {
+                transform: scale(1.1);
+            }
+
+            .post-content h3 {
+                font-size: 1.4rem;
+                font-weight: 900;
+                color: #222;
+                margin-bottom: 15px;
+                line-height: 1.5;
+                transition: 0.3s;
+            }
+            .post-item:hover .post-content h3 {
+                color: var(--primary);
+            }
+            .post-content p {
+                font-size: 1.05rem;
+                color: #555;
+                line-height: 1.7;
+                margin-bottom: 15px;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            .post-meta {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 20px;
+                font-size: 0.9rem;
+                color: #777;
+                font-weight: 600;
+            }
+            .post-meta i {
+                color: var(--primary);
+                margin-left: 5px;
+            }
+
+            /* Sidebar & Widgets */
+            .sidebar-box {
+                background: #fff;
+                border-radius: 12px;
+                box-shadow: var(--shadow);
+                margin-bottom: 30px;
+                overflow: hidden;
+            }
+            .sidebar-title {
+                padding: 18px 25px;
+                border-bottom: 3px solid var(--primary);
+                font-weight: 900;
+                font-size: 1.2rem;
+                color: #222;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .trending-item {
+                padding: 20px 25px;
+                border-bottom: 1px solid #f5f5f5;
+                display: flex;
+                gap: 20px;
+                cursor: pointer;
+                transition: 0.3s;
+                &:last-child {
+                    border-bottom: none;
+                }
+                &:hover {
+                    background: #f9f9f9;
+                }
+                .number {
+                    font-size: 2rem;
+                    font-weight: 900;
+                    color: #eee;
+                    min-width: 40px;
+                    transition: 0.3s;
+                }
+                &:hover .number {
+                    color: var(--primary);
+                    transform: scale(1.1);
+                }
+                h4 {
+                    font-size: 1rem;
+                    font-weight: 800;
+                    color: #333;
+                    line-height: 1.5;
+                }
+            }
+
+            /* Footer */
+            footer {
+                background: #111;
+                color: #fff;
+                padding: 80px 0 40px;
+                margin-top: 60px;
+            }
+            .footer-grid {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 50px;
+            }
+            footer h4 {
+                color: #fff;
+                font-size: 1.4rem;
+                margin-bottom: 30px;
+                font-weight: 900;
+                border-right: 5px solid var(--primary);
+                padding-right: 15px;
+            }
+            footer p {
+                color: #bbb;
+                font-size: 1rem;
+                line-height: 1.9;
+            }
+            .footer-bottom {
+                max-width: 1200px;
+                margin: 50px auto 0;
+                padding: 30px 20px 0;
+                border-top: 1px solid #222;
+                text-align: center;
+                color: #777;
+                font-size: 1rem;
+            }
+
+            /* Modals & Views */
+            #article-view {
+                position: fixed;
+                inset: 0;
+                background: #fff;
+                z-index: 2000;
+                overflow-y: auto;
+                display: none;
+            }
+            .article-container {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 40px 20px;
+            }
+            .article-body {
+                font-size: 1.35rem;
+                line-height: 2.1;
+                color: #333;
+                text-align: justify;
+            }
+            .article-body p {
+                margin-bottom: 30px;
+            }
+            .article-body img {
+                width: 100%;
+                border-radius: 12px;
+                margin: 30px 0;
+                box-shadow: var(--shadow);
+            }
+
+            .share-buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin: 40px 0;
+            }
+            .share-btn {
+                padding: 12px 25px;
+                border-radius: 8px;
+                color: #fff;
+                cursor: pointer;
+                border: none;
+                font-weight: 800;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 1rem;
+                transition: 0.3s;
+            }
+            .share-btn:hover {
+                filter: brightness(1.1);
+                transform: translateY(-3px);
+            }
+            .whatsapp {
+                background: #25d366;
+            }
+            .facebook {
+                background: #1877f2;
+            }
+            .twitter {
+                background: #000;
+            }
+
+            /* Utils */
+            .skeleton {
+                background: linear-gradient(
+                    90deg,
+                    #f0f0f0 25%,
+                    #e5e5e5 50%,
+                    #f0f0f0 75%
+                );
+                background-size: 200% 100%;
+                animation: loading 1.6s infinite;
+            }
+            @keyframes loading {
+                from {
+                    background-position: 200% 0;
+                }
+                to {
+                    background-position: -200% 0;
+                }
+            }
+            .toast {
+                position: fixed;
+                bottom: 30px;
+                left: 30px;
+                background: var(--primary);
+                color: #fff;
+                padding: 18px 30px;
+                border-radius: 8px;
+                z-index: 4000;
+                display: none;
+                font-weight: 800;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                animation: fadeInUp 0.5s;
+            }
+            .admin-delete {
+                position: absolute;
+                top: 12px;
+                left: 12px;
+                background: rgba(211, 47, 47, 0.95);
+                color: #fff;
+                border: none;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                z-index: 10;
+                transition: 0.3s;
+            }
+            .admin-delete:hover {
+                background: #b71c1c;
+                transform: scale(1.15);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="toast-msg" class="toast"></div>
+
+        <header>
+            <div class="header-top">
+                <div class="header-container">
+                    <a href="/" class="logo" onclick="nav('home', event)"
+                        >زمرد <span>نت</span></a
+                    >
+                    <div class="search-box">
+                        <i class="fa fa-search"></i>
+                        <input
+                            type="text"
+                            id="smart-search"
+                            placeholder="عن ماذا تبحث اليوم؟"
+                            oninput="renderPosts()"
+                        />
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 20px">
+                        <div
+                            id="header-profile"
+                            style="
+                                display: none;
+                                align-items: center;
+                                gap: 12px;
+                                background: #f8f9fa;
+                                padding: 6px 15px;
+                                border-radius: 30px;
+                                border: 1px solid #eee;
+                            "
+                        >
+                            <span
+                                id="user-name-head"
+                                style="font-weight: 800; font-size: 0.95rem"
+                            ></span>
+                            <div
+                                id="user-icon"
+                                style="
+                                    width: 38px;
+                                    height: 38px;
+                                    border-radius: 50%;
+                                    background: var(--primary);
+                                    color: white;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-weight: 900;
+                                    font-size: 1.1rem;
+                                "
+                            ></div>
+                        </div>
+                        <button
+                            id="login-btn"
+                            onclick="showLogin()"
+                            style="
+                                background: var(--primary);
+                                color: white;
+                                border: none;
+                                padding: 12px 28px;
+                                border-radius: 30px;
+                                cursor: pointer;
+                                font-weight: 800;
+                                transition: 0.3s;
+                                box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
+                            "
+                        >
+                            دخول
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li>
+                        <a href="#" class="active" onclick="nav('home', event)"
+                            >الرئيسية</a
+                        >
+                    </li>
+                    <li>
+                        <a href="#" onclick="nav('home', event)"
+                            >الأخبار التقنية</a
+                        >
+                    </li>
+                    <li>
+                        <a href="#" onclick="nav('home', event)"
+                            >تطوير المواقع</a
+                        >
+                    </li>
+                    <li>
+                        <a href="#" onclick="nav('home', event)"
+                            >الذكاء الاصطناعي</a
+                        >
+                    </li>
+                    <li>
+                        <a href="#" onclick="nav('privacy', event)"
+                            >سياسة الخصوصية</a
+                        >
+                    </li>
+                    <li id="admin-nav" style="display: none">
+                        <a
+                            href="#"
+                            onclick="nav('write', event)"
+                            style="color: var(--primary)"
+                            >+ استوديو النشر</a
+                        >
+                    </li>
+                    <li>
+                        <a href="#" onclick="nav('settings', event)">حسابي</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="container">
+            <div class="layout">
+                <main>
+                    <div class="featured-news" id="featured-section">
+                        <div class="featured-main skeleton"></div>
+                        <div class="featured-side-grid">
+                            <div class="featured-side-item skeleton"></div>
+                            <div class="featured-side-item skeleton"></div>
+                        </div>
+                    </div>
+
+                    <div class="posts-section">
+                        <div class="posts-header">
+                            <h2>آخر ما تم نشره</h2>
+                        </div>
+                        <div class="posts-grid" id="posts-display-grid">
+                            <div
+                                class="post-item skeleton"
+                                style="height: 200px"
+                            ></div>
+                            <div
+                                class="post-item skeleton"
+                                style="height: 200px"
+                            ></div>
+                            <div
+                                class="post-item skeleton"
+                                style="height: 200px"
+                            ></div>
+                        </div>
+                    </div>
+                </main>
+
+                <aside class="sidebar">
+                    <div class="sidebar-box">
+                        <div class="sidebar-title">
+                            <i
+                                class="fa fa-chart-line"
+                                style="color: var(--primary)"
+                            ></i>
+                            الأكثر قراءة الآن
+                        </div>
+                        <div id="trending-list">
+                            <div
+                                class="trending-item skeleton"
+                                style="height: 80px"
+                            ></div>
+                            <div
+                                class="trending-item skeleton"
+                                style="height: 80px"
+                            ></div>
+                            <div
+                                class="trending-item skeleton"
+                                style="height: 80px"
+                            ></div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="sidebar-box"
+                        id="admin-panel"
+                        style="display: none"
+                    >
+                        <div class="sidebar-title">
+                            <i class="fa fa-user-shield"></i> لوحة الإدارة
+                        </div>
+                        <div style="padding: 25px">
+                            <button
+                                onclick="nav('write')"
+                                style="
+                                    width: 100%;
+                                    background: var(--primary);
+                                    color: white;
+                                    border: none;
+                                    padding: 15px;
+                                    border-radius: 8px;
+                                    cursor: pointer;
+                                    font-weight: 800;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    gap: 12px;
+                                    transition: 0.3s;
+                                    box-shadow: 0 4px 15px
+                                        rgba(211, 47, 47, 0.2);
+                                "
+                            >
+                                <i class="fa fa-plus-circle"></i> نشر مقال جديد
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-box">
+                        <div class="sidebar-title">
+                            <i class="fa fa-paper-plane"></i> تواصل معنا
+                        </div>
+                        <div style="padding: 25px">
+                            <p
+                                style="
+                                    font-size: 1rem;
+                                    color: #666;
+                                    margin-bottom: 20px;
+                                "
+                            >
+                                نحن هنا للإجابة على استفساراتكم التقنية
+                                والتجارية:
+                            </p>
+                            <a
+                                href="mailto:bo2584668@gmail.com"
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    gap: 10px;
+                                    padding: 14px;
+                                    background: #f8f9fa;
+                                    border-radius: 8px;
+                                    color: var(--primary);
+                                    text-decoration: none;
+                                    font-weight: 800;
+                                    margin-bottom: 12px;
+                                    border: 1px solid #eee;
+                                "
+                            >
+                                <i class="fa fa-envelope"></i>
+                                bo2584668@gmail.com
+                            </a>
+                            <a
+                                href="https://wa.me/201273740256"
+                                target="_blank"
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    gap: 10px;
+                                    padding: 14px;
+                                    background: #25d366;
+                                    border-radius: 8px;
+                                    color: #fff;
+                                    text-decoration: none;
+                                    font-weight: 800;
+                                    transition: 0.3s;
+                                    box-shadow: 0 4px 12px
+                                        rgba(37, 211, 102, 0.2);
+                                "
+                            >
+                                <i class="fab fa-whatsapp"></i> تواصل عبر واتساب
+                            </a>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-grid">
+                <div>
+                    <a
+                        href="/"
+                        class="logo"
+                        style="margin-bottom: 25px; display: block"
+                        >زمرد <span>نت</span></a
+                    >
+                    <p>
+                        منصة زمرد نت هي بوابتك الشاملة لكل ما هو جديد في عالم
+                        التقنية، البرمجة، والابتكار الرقمي. نسعى دائماً لتقديم
+                        محتوى عربي عالي الجودة يواكب التطور المتسارع.
+                    </p>
+                </div>
+                <div>
+                    <h4>تصفح الموقع</h4>
+                    <ul style="list-style: none; padding: 0">
+                        <li style="margin-bottom: 15px">
+                            <a
+                                href="#"
+                                onclick="nav('home', event)"
+                                style="
+                                    color: #bbb;
+                                    text-decoration: none;
+                                    transition: 0.3s;
+                                "
+                                onmouseover="this.style.color='#fff'"
+                                onmouseout="this.style.color='#bbb'"
+                                >الصفحة الرئيسية</a
+                            >
+                        </li>
+                        <li style="margin-bottom: 15px">
+                            <a
+                                href="#"
+                                onclick="nav('contact', event)"
+                                style="
+                                    color: #bbb;
+                                    text-decoration: none;
+                                    transition: 0.3s;
+                                "
+                                onmouseover="this.style.color='#fff'"
+                                onmouseout="this.style.color='#bbb'"
+                                >اتصل بنا</a
+                            >
+                        </li>
+                        <li style="margin-bottom: 15px">
+                            <a
+                                href="#"
+                                onclick="nav('privacy', event)"
+                                style="
+                                    color: #bbb;
+                                    text-decoration: none;
+                                    transition: 0.3s;
+                                "
+                                onmouseover="this.style.color='#fff'"
+                                onmouseout="this.style.color='#bbb'"
+                                >سياسة الخصوصية</a
+                            >
+                        </li>
+                        <li style="margin-bottom: 15px">
+                            <a
+                                href="#"
+                                onclick="nav('settings', event)"
+                                style="
+                                    color: #bbb;
+                                    text-decoration: none;
+                                    transition: 0.3s;
+                                "
+                                onmouseover="this.style.color='#fff'"
+                                onmouseout="this.style.color='#bbb'"
+                                >إعدادات الحساب</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>بيانات التواصل</h4>
+                    <p style="margin-bottom: 15px">
+                        <i
+                            class="fa fa-envelope"
+                            style="margin-left: 12px; color: var(--primary)"
+                        ></i>
+                        bo2584668@gmail.com
+                    </p>
+                    <p style="margin-bottom: 15px">
+                        <i
+                            class="fa fa-phone"
+                            style="margin-left: 12px; color: var(--primary)"
+                        ></i>
+                        +201273740256
+                    </p>
+                    <p>
+                        <i
+                            class="fa fa-map-marker-alt"
+                            style="margin-left: 12px; color: var(--primary)"
+                        ></i>
+                        القاهرة، جمهورية مصر العربية
+                    </p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2026 زمرد نت - جميع الحقوق محفوظة. تم التطوير بشغف بواسطة
+                فريق زمرد.
+            </div>
+        </footer>
+
+        <!-- Views -->
+        <div id="article-view">
+            <div class="article-container">
+                <button
+                    onclick="closeArticle()"
+                    style="
+                        background: var(--primary);
+                        color: #fff;
+                        border: none;
+                        padding: 12px 30px;
+                        border-radius: 30px;
+                        cursor: pointer;
+                        font-weight: 800;
+                        margin-bottom: 40px;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        transition: 0.3s;
+                        box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
+                    "
+                >
+                    <i class="fa fa-arrow-right"></i> العودة للرئيسية
+                </button>
+                <div id="full-article-data"></div>
+            </div>
+        </div>
+
+        <div
+            id="privacy-section"
+            style="
+                display: none;
+                max-width: 900px;
+                margin: 40px auto;
+                padding: 0 20px;
+            "
+        >
+            <div
+                style="
+                    background: white;
+                    padding: 45px;
+                    border-radius: 12px;
+                    box-shadow: var(--shadow);
+                    border: 1px solid #eee;
+                "
+            >
+                <h2
+                    style="
+                        font-size: 2.2rem;
+                        font-weight: 900;
+                        margin-bottom: 30px;
+                        color: var(--primary);
+                        border-bottom: 2px solid #f0f0f0;
+                        padding-bottom: 15px;
+                    "
+                >
+                    سياسة الخصوصية
+                </h2>
+                <div style="line-height: 2; font-size: 1.1rem; color: #333">
+                    <p>
+                        مرحباً بك في زمرد نت. نحن نقدر خصوصيتك ونلتزم بحماية
+                        بياناتك الشخصية.
+                    </p>
+                    <h3 style="margin: 20px 0 10px; color: #111">
+                        1. البيانات التي نجمعها
+                    </h3>
+                    <p>
+                        نجمع المعلومات التي تقدمها لنا عند تسجيل الدخول عبر
+                        جوجل، مثل الاسم والبريد الإلكتروني، وذلك لتوفير تجربة
+                        مخصصة لك.
+                    </p>
+                    <h3 style="margin: 20px 0 10px; color: #111">
+                        2. كيف نستخدم بياناتك
+                    </h3>
+                    <p>
+                        نستخدم بياناتك لتحديد هويتك ككاتب أو معلق، ولتحسين جودة
+                        المحتوى المقدم لك.
+                    </p>
+                    <h3 style="margin: 20px 0 10px; color: #111">
+                        3. ملفات تعريف الارتباط (Cookies)
+                    </h3>
+                    <p>
+                        نستخدم ملفات تعريف الارتباط لتحليل حركة المرور وتقديم
+                        إعلانات مخصصة عبر Google AdSense.
+                    </p>
+                    <h3 style="margin: 20px 0 10px; color: #111">
+                        4. حماية البيانات
+                    </h3>
+                    <p>
+                        نستخدم تقنيات أمنية متقدمة لضمان عدم وصول أطراف غير مصرح
+                        لها إلى بياناتك.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div
+            id="contact-section"
+            style="
+                display: none;
+                max-width: 900px;
+                margin: 40px auto;
+                padding: 0 20px;
+            "
+        >
+            <div
+                style="
+                    background: white;
+                    padding: 45px;
+                    border-radius: 12px;
+                    box-shadow: var(--shadow);
+                    border: 1px solid #eee;
+                "
+            >
+                <h2
+                    style="
+                        font-size: 2.2rem;
+                        font-weight: 900;
+                        margin-bottom: 30px;
+                        color: var(--primary);
+                        border-bottom: 2px solid #f0f0f0;
+                        padding-bottom: 15px;
+                    "
+                >
+                    تواصل معنا
+                </h2>
+                <div
+                    style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 30px;
+                    "
+                >
+                    <div>
+                        <h3 style="margin-bottom: 20px; color: #111">
+                            معلومات التواصل المباشر
+                        </h3>
+                        <div
+                            style="
+                                margin-bottom: 20px;
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                            "
+                        >
+                            <div
+                                style="
+                                    width: 50px;
+                                    height: 50px;
+                                    background: #f0f0f0;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    color: var(--primary);
+                                    font-size: 1.5rem;
+                                "
+                            >
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 800">واتساب</div>
+                                <a
+                                    href="https://wa.me/201273740256"
+                                    target="_blank"
+                                    style="color: #666; text-decoration: none"
+                                    >+20 127 374 0256</a
+                                >
+                            </div>
+                        </div>
+                        <div
+                            style="
+                                margin-bottom: 20px;
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                            "
+                        >
+                            <div
+                                style="
+                                    width: 50px;
+                                    height: 50px;
+                                    background: #f0f0f0;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    color: var(--primary);
+                                    font-size: 1.5rem;
+                                "
+                            >
+                                <i class="fa fa-envelope"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 800">
+                                    البريد الإلكتروني
+                                </div>
+                                <a
+                                    href="mailto:bo2584668@gmail.com"
+                                    style="color: #666; text-decoration: none"
+                                    >bo2584668@gmail.com</a
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        style="
+                            background: #fafafa;
+                            padding: 25px;
+                            border-radius: 12px;
+                        "
+                    >
+                        <h3 style="margin-bottom: 20px; color: #111">
+                            ساعات العمل
+                        </h3>
+                        <p style="color: #666; margin-bottom: 10px">
+                            نحن متاحون للرد على استفساراتكم:
+                        </p>
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                margin-bottom: 8px;
+                            "
+                        >
+                            <span>السبت - الخميس:</span>
+                            <span style="font-weight: 800">9 ص - 10 م</span>
+                        </div>
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                            "
+                        >
+                            <span>الجمعة:</span>
+                            <span style="font-weight: 800">عطلة رسمية</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            id="write-section"
+            style="
+                display: none;
+                max-width: 900px;
+                margin: 40px auto;
+                padding: 0 20px;
+            "
+        >
+            <div
+                style="
+                    background: white;
+                    padding: 45px;
+                    border-radius: 12px;
+                    box-shadow: var(--shadow);
+                    border: 1px solid #eee;
+                "
+            >
+                <h2
+                    style="
+                        font-size: 2rem;
+                        font-weight: 900;
+                        margin-bottom: 30px;
+                        color: var(--primary);
+                        border-bottom: 2px solid #f0f0f0;
+                        padding-bottom: 15px;
+                    "
+                >
+                    استوديو نشر المقالات
+                </h2>
+
+                <div style="margin-bottom: 25px">
+                    <label
+                        style="
+                            display: block;
+                            font-weight: 800;
+                            margin-bottom: 10px;
+                        "
+                        >عنوان المقال:</label
+                    >
+                    <input
+                        type="text"
+                        id="p-title"
+                        placeholder="أدخل عنواناً جذاباً وقوياً..."
+                        style="
+                            width: 100%;
+                            padding: 15px;
+                            border: 1px solid #ddd;
+                            border-radius: 8px;
+                            font-size: 1.1rem;
+                            outline: none;
+                            transition: 0.3s;
+                            &:focus {
+                                border-color: var(--primary);
+                            }
+                        "
+                    />
+                </div>
+
+                <div
+                    style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                        margin-bottom: 25px;
+                    "
+                >
+                    <div>
+                        <label
+                            style="
+                                display: block;
+                                font-weight: 800;
+                                margin-bottom: 10px;
+                            "
+                            >التصنيف:</label
+                        >
+                        <select
+                            id="p-category"
+                            style="
+                                width: 100%;
+                                padding: 15px;
+                                border: 1px solid #ddd;
+                                border-radius: 8px;
+                                font-size: 1rem;
+                                outline: none;
+                            "
+                        >
+                            <option value="أخبار">أخبار</option>
+                            <option value="تقنية">تقنية</option>
+                            <option value="تطوير">تطوير</option>
+                            <option value="الذكاء الاصطناعي">
+                                الذكاء الاصطناعي
+                            </option>
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            style="
+                                display: block;
+                                font-weight: 800;
+                                margin-bottom: 10px;
+                            "
+                            >صورة الغلاف:</label
+                        >
+                        <input
+                            type="file"
+                            id="img-upload"
+                            onchange="uploadImageHandler(this)"
+                            style="
+                                padding: 10px;
+                                border: 1px dashed #ccc;
+                                border-radius: 8px;
+                                width: 100%;
+                            "
+                        />
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 30px">
+                    <label
+                        style="
+                            display: block;
+                            font-weight: 800;
+                            margin-bottom: 10px;
+                        "
+                        >محتوى المقال:</label
+                    >
+                    <div
+                        id="p-body"
+                        contenteditable="true"
+                        style="
+                            width: 100%;
+                            min-height: 450px;
+                            padding: 25px;
+                            border: 1px solid #ddd;
+                            border-radius: 8px;
+                            font-size: 1.2rem;
+                            line-height: 1.8;
+                            outline: none;
+                            background: #fafafa;
+                            overflow-y: auto;
+                        "
+                    ></div>
+                </div>
+
+                <button
+                    onclick="publishPost()"
+                    style="
+                        width: 100%;
+                        background: var(--primary);
+                        color: white;
+                        border: none;
+                        padding: 20px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 900;
+                        font-size: 1.3rem;
+                        transition: 0.3s;
+                        box-shadow: 0 10px 25px rgba(211, 47, 47, 0.3);
+                    "
+                >
+                    نشر المقال الآن
+                    <i class="fa fa-paper-plane" style="margin-right: 10px"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modals -->
+        <div
+            id="login-modal"
+            style="
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                z-index: 3000;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                backdrop-filter: blur(10px);
+            "
+        >
+            <div
+                style="
+                    background: white;
+                    padding: 50px;
+                    border-radius: 15px;
+                    width: 90%;
+                    max-width: 450px;
+                    text-align: center;
+                    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+                "
+            >
+                <div
+                    style="
+                        width: 80px;
+                        height: 80px;
+                        background: var(--primary);
+                        color: #fff;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto 25px;
+                        font-size: 2.5rem;
+                        box-shadow: 0 10px 20px rgba(211, 47, 47, 0.3);
+                    "
+                >
+                    <i class="fa fa-user-lock"></i>
+                </div>
+                <h2
+                    style="
+                        font-size: 1.8rem;
+                        font-weight: 900;
+                        margin-bottom: 15px;
+                        color: #111;
+                    "
+                >
+                    مرحباً بك في زمرد نت
+                </h2>
+                <p style="color: #666; margin-bottom: 35px; font-size: 1.05rem">
+                    سجل دخولك لتتمكن من التفاعل والتعليق ومتابعة أحدث الأخبار
+                </p>
+                <div
+                    id="g_id_onload"
+                    data-client_id="564938368672-s4t74chhfhqjf9qkbi4bp9n06j83gjti.apps.googleusercontent.com"
+                    data-callback="onGoogleLogin"
+                ></div>
+                <div class="g_id_signin" data-type="standard"></div>
+                <button
+                    onclick="hideLogin()"
+                    style="
+                        width: 100%;
+                        background: #f0f0f0;
+                        color: #444;
+                        border: none;
+                        padding: 14px;
+                        margin-top: 20px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 800;
+                        transition: 0.3s;
+                    "
+                >
+                    إغلاق
+                </button>
+            </div>
+        </div>
+
+        <script
+            src="https://accounts.google.com/gsi/client"
+            async
+            defer
+        ></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+        <script>
+            const firebaseConfig = {
+                apiKey: "AIzaSyDNjPHGrIg0V0h82Tz0dO_nxNCn8S9yE_s",
+                authDomain: "zomerd-new.firebaseapp.com",
+                projectId: "zomerd-new",
+                storageBucket: "zomerd-new.firebasestorage.app",
+                messagingSenderId: "52188666382",
+                appId: "1:52188666382:web:7879a8c671af9329f67a5f",
+            };
+
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            const ADMIN_EMAIL = "bo2584668@gmail.com";
+
+            let user = JSON.parse(localStorage.getItem("zomerd_user")) || null;
+            let allPosts = [];
+            let uploadedImageUrl = "";
+            let currentView = "home";
+
+            function showToast(msg) {
+                const t = document.getElementById("toast-msg");
+                t.innerText = msg;
+                t.style.display = "block";
+                setTimeout(() => (t.style.display = "none"), 4000);
+            }
+
+            function renderPosts() {
+                const grid = document.getElementById("posts-display-grid");
+                const term = document
+                    .getElementById("smart-search")
+                    .value.toLowerCase();
+                grid.innerHTML = "";
+
+                let filtered = allPosts.filter((p) =>
+                    p.title.toLowerCase().includes(term),
+                );
+
+                if (filtered.length === 0) {
+                    grid.innerHTML =
+                        '<div style="grid-column: 1/-1; text-align: center; padding: 80px; color: #999; font-weight: 700; font-size: 1.2rem;">عذراً، لم يتم العثور على نتائج للبحث..</div>';
+                    return;
+                }
+
+                filtered.forEach((p, i) => {
+                    const card = document.createElement("div");
+                    card.className =
+                        "post-item animate__animated animate__fadeInUp";
+                    card.style.animationDelay = i * 0.1 + "s";
+                    card.innerHTML = `
+                    <div class="post-image" onclick="openArticle('${p.id}')" style="cursor: pointer;">
+                        <img src="${p.image || "https://via.placeholder.com/280x190"}" loading="lazy" alt="صورة المقال">
+                        ${user && user.email === ADMIN_EMAIL ? `<button class="admin-delete" onclick="deletePost('${p.id}', event)" style="display: flex;"><i class="fa fa-trash"></i></button>` : ""}
+                    </div>
+                    <div class="post-content" onclick="openArticle('${p.id}')" style="cursor: pointer;">
+                        <div class="post-meta" style="margin-bottom: 12px;">
+                            <span><i class="fa fa-tag"></i> ${p.category || "عام"}</span>
+                            <span><i class="fa fa-calendar-alt"></i> ${p.time ? new Date(p.time.seconds * 1000).toLocaleDateString("ar-EG") : "الآن"}</span>
+                        </div>
+                        <h3>${p.title}</h3>
+                        <p>${p.content ? p.content.replace(/<[^>]+>/g, "").substring(0, 160) : ""}...</p>
+                        <div class="post-meta">
+                            <span><i class="fa fa-eye"></i> ${p.views || 0} مشاهدة</span>
+                            <span><i class="fa fa-user-edit"></i> ${p.author || "زمرد"}</span>
+                        </div>
+                    </div>
+                `;
+                    grid.appendChild(card);
+                });
+            }
+
+            function renderFeatured() {
+                const featured = document.getElementById("featured-section");
+                if (!allPosts.length) return;
+
+                const top = allPosts.slice(0, 3);
+                const main = top[0];
+                const sides = top.slice(1);
+
+                featured.innerHTML = `
+                <div class="featured-main animate__animated animate__fadeIn" onclick="openArticle('${main.id}')">
+                    <img src="${main.image || "https://via.placeholder.com/800x480"}" alt="الخبر الرئيسي">
+                    <div class="featured-overlay">
+                        <div class="badge">خبر حصري</div>
+                        <h2>${main.title}</h2>
+                    </div>
+                </div>
+                <div class="featured-side-grid">
+                    ${sides
+                        .map(
+                            (p, idx) => `
+                        <div class="featured-side-item animate__animated animate__fadeIn" style="animation-delay: ${0.2 * (idx + 1)}s" onclick="openArticle('${p.id}')">
+                            <img src="${p.image || "https://via.placeholder.com/400x240"}" alt="خبر هام">
+                            <div class="featured-side-overlay">
+                                <h3>${p.title}</h3>
+                            </div>
+                        </div>
+                    `,
+                        )
+                        .join("")}
+                </div>
+            `;
+            }
+
+            function renderTrending() {
+                const list = document.getElementById("trending-list");
+                const trending = [...allPosts]
+                    .sort((a, b) => (b.views || 0) - (a.views || 0))
+                    .slice(0, 5);
+
+                list.innerHTML = trending
+                    .map(
+                        (p, i) => `
+                <div class="trending-item animate__animated animate__fadeInRight" style="animation-delay: ${i * 0.1}s" onclick="openArticle('${p.id}')">
+                    <div class="number">0${i + 1}</div>
+                    <h4>${p.title}</h4>
+                </div>
+            `,
+                    )
+                    .join("");
+            }
+
+            async function deletePost(id, event) {
+                event.stopPropagation();
+                if (
+                    !confirm(
+                        "🚨 تحذير: هل أنت متأكد من حذف هذه المقالة نهائياً؟",
+                    )
+                )
+                    return;
+                try {
+                    await db.collection("posts").doc(id).delete();
+                    showToast("✅ تم حذف المقالة بنجاح");
+                } catch (e) {
+                    showToast("❌ خطأ: فشل الحذف");
+                }
+            }
+
+            function openArticle(id) {
+                const post = allPosts.find((p) => p.id === id);
+                if (!post) return;
+
+                db.collection("posts")
+                    .doc(id)
+                    .update({
+                        views: firebase.firestore.FieldValue.increment(1),
+                    })
+                    .catch(() => {});
+
+                document.getElementById("full-article-data").innerHTML = `
+                <div class="post-meta" style="margin-bottom: 25px; font-size: 1rem;">
+                    <span style="background: var(--primary); color: #fff; padding: 6px 15px; border-radius: 6px; font-weight: 900;">${post.category || "عام"}</span>
+                    <span style="margin-right: 20px;"><i class="fa fa-user-edit"></i> كاتب المقال: ${post.author || "براء"}</span>
+                    <span style="margin-right: 20px;"><i class="fa fa-calendar-check"></i> نُشر في: ${post.time ? new Date(post.time.seconds * 1000).toLocaleDateString("ar-EG") : ""}</span>
+                    <span style="margin-right: 20px;"><i class="fa fa-fire"></i> ${post.views || 0} قراءة</span>
+                </div>
+                <h1 style="font-size: 3rem; line-height: 1.25; margin-bottom: 35px; font-weight: 900; color: #111; border-right: 8px solid var(--primary); padding-right: 20px;">${post.title}</h1>
+                <img src="${post.image}" style="width: 100%; border-radius: 12px; margin-bottom: 40px; box-shadow: 0 15px 40px rgba(0,0,0,0.15);" alt="صورة الخبر">
+                
+                <div class="share-buttons">
+                    <button class="share-btn whatsapp" onclick="window.open('https://wa.me/?text=' + encodeURIComponent(post.title + ' ' + window.location.href))"><i class="fab fa-whatsapp"></i> مشاركة عبر واتساب</button>
+                    <button class="share-btn facebook" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href))"><i class="fab fa-facebook-f"></i> فيسبوك</button>
+                    <button class="share-btn twitter" onclick="window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(post.title) + '&url=' + encodeURIComponent(window.location.href))"><i class="fab fa-x-twitter"></i> تويتر</button>
+                </div>
+
+                <div class="article-body">
+                    ${post.content}
+                </div>
+                
+                <div style="margin-top: 60px; padding: 40px; background: #f8f9fa; border-radius: 15px; text-align: center; border: 1px solid #eee;">
+                    <h3 style="font-size: 1.6rem; margin-bottom: 20px; font-weight: 900;">شكراً لثقتك في زمرد نت</h3>
+                    <p style="color: #666; margin-bottom: 30px; font-size: 1.1rem;">هدفنا هو تقديم الحقيقة والخبر اليقين في أسرع وقت ممكن.</p>
+                    <button onclick="closeArticle()" style="background: var(--primary); color: white; border: none; padding: 15px 45px; border-radius: 30px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: 0.3s; box-shadow: 0 6px 20px rgba(211,47,47,0.3);">العودة إلى الصفحة الرئيسية <i class="fa fa-home" style="margin-right: 10px;"></i></button>
+                </div>
+            `;
+                document.getElementById("article-view").style.display = "block";
+                document.body.style.overflow = "hidden";
+                window.scrollTo(0, 0);
+            }
+
+            function closeArticle() {
+                document.getElementById("article-view").style.display = "none";
+                document.body.style.overflow = "auto";
+            }
+
+            function listenToPosts() {
+                db.collection("posts")
+                    .orderBy("time", "desc")
+                    .limit(50)
+                    .onSnapshot((snap) => {
+                        allPosts = [];
+                        snap.forEach((doc) =>
+                            allPosts.push({ id: doc.id, ...doc.data() }),
+                        );
+                        renderFeatured();
+                        renderPosts();
+                        renderTrending();
+                    });
+            }
+
+            function onGoogleLogin(res) {
+                const base64Url = res.credential.split(".")[1];
+                const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+                const jsonPayload = decodeURIComponent(
+                    atob(base64)
+                        .split("")
+                        .map(
+                            (c) =>
+                                "%" +
+                                ("00" + c.charCodeAt(0).toString(16)).slice(-2),
+                        )
+                        .join(""),
+                );
+                user = JSON.parse(jsonPayload);
+                localStorage.setItem("zomerd_user", JSON.stringify(user));
+                hideLogin();
+                updateUI();
+                showToast(`✅ أهلاً بك يا ${user.given_name} في عالم زمرد!`);
+            }
+
+            function updateUI() {
+                if (user) {
+                    document.getElementById("login-btn").style.display = "none";
+                    document.getElementById("header-profile").style.display =
+                        "flex";
+                    document.getElementById("user-name-head").innerText =
+                        user.name;
+                    document.getElementById("user-icon").innerText =
+                        user.name[0].toUpperCase();
+
+                    if (user.email === ADMIN_EMAIL) {
+                        document.getElementById("admin-nav").style.display =
+                            "block";
+                        document.getElementById("admin-panel").style.display =
+                            "block";
+                    }
+                }
+            }
+
+            async function publishPost() {
+                const title = document.getElementById("p-title").value.trim();
+                const content = document
+                    .getElementById("p-body")
+                    .innerHTML.trim();
+                const category = document.getElementById("p-category").value;
+
+                if (!title || content.length < 50) {
+                    showToast("⚠️ يرجى كتابة عنوان ومحتوى كافٍ للمقال!");
+                    return;
+                }
+                if (!user || user.email !== ADMIN_EMAIL) {
+                    showToast("🛑 خطأ: لا تملك صلاحيات النشر!");
+                    return;
+                }
+
+                try {
+                    await db.collection("posts").add({
+                        title,
+                        content,
+                        image: uploadedImageUrl,
+                        author: user.name,
+                        category,
+                        views: 0,
+                        time: firebase.firestore.FieldValue.serverTimestamp(),
+                    });
+                    showToast("🚀 تم نشر مقالك بنجاح وهو متاح الآن للجميع!");
+                    document.getElementById("p-title").value = "";
+                    document.getElementById("p-body").innerHTML = "";
+                    nav("home");
+                } catch (e) {
+                    showToast("❌ خطأ في الاتصال بقاعدة البيانات!");
+                }
+            }
+
+            function uploadImageHandler(input) {
+                const file = input.files[0];
+                if (!file) return;
+                const formData = new FormData();
+                formData.append("image", file);
+                showToast("⏳ جاري رفع الصورة، يرجى الانتظار...");
+                fetch(
+                    "https://api.imgbb.com/1/upload?key=22d566497cb5778087e8dd132dc8116d",
+                    { method: "POST", body: formData },
+                )
+                    .then((r) => r.json())
+                    .then((d) => {
+                        uploadedImageUrl = d.data.url;
+                        showToast("✅ تم رفع الصورة بنجاح!");
+                    })
+                    .catch(() => showToast("❌ فشل رفع الصورة!"));
+            }
+
+            function nav(section, e) {
+                if (e) e.preventDefault();
+                currentView = section;
+
+                // UI Switch
+                document.getElementById("write-section").style.display =
+                    section === "write" ? "block" : "none";
+                document.getElementById("privacy-section").style.display =
+                    section === "privacy" ? "block" : "none";
+                document.getElementById("contact-section").style.display =
+                    section === "contact" ? "block" : "none";
+
+                const mainContent =
+                    section === "home" || section === "settings";
+                document.querySelector("main").style.display = mainContent
+                    ? "block"
+                    : "none";
+                document.querySelector(".sidebar").style.display = mainContent
+                    ? "block"
+                    : "none";
+
+                // Active Link
+                document
+                    .querySelectorAll("nav li a")
+                    .forEach((a) => a.classList.remove("active"));
+                if (e) e.target.classList.add("active");
+
+                window.scrollTo(0, 0);
+            }
+
+            function showLogin() {
+                document.getElementById("login-modal").style.display = "flex";
+            }
+            function hideLogin() {
+                document.getElementById("login-modal").style.display = "none";
+            }
+
+            window.addEventListener("load", () => {
+                updateUI();
+                listenToPosts();
+            });
+        </script>
+    </body>
+</html>
